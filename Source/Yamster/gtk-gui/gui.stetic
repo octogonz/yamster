@@ -1,0 +1,2945 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../../../Run/Yamster.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="Yamster.MainWindow" design-size="985 649">
+    <action-group name="Default">
+      <action id="mnuFile">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_File</property>
+        <property name="ShortLabel" translatable="yes">_File</property>
+      </action>
+      <action id="mnuHelp">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Help</property>
+        <property name="ShortLabel" translatable="yes">_Help</property>
+      </action>
+      <action id="mnuHelpAbout">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_About Yamster...</property>
+        <property name="ShortLabel" translatable="yes">_About Yamster...</property>
+        <signal name="Activated" handler="mnuHelpAbout_Activated" />
+      </action>
+      <action id="mnuFileExit">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">E_xit</property>
+        <property name="ShortLabel" translatable="yes">E_xit</property>
+        <signal name="Activated" handler="mnuFileExit_Activated" />
+      </action>
+      <action id="mnuYammerSyncAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Yammer Sync...</property>
+        <property name="ShortLabel" translatable="yes">_Yammer Sync...</property>
+        <signal name="Activated" handler="mnuFileYammerSync_Activated" />
+      </action>
+      <action id="OnlineDocumentationAction">
+        <property name="Type">Action</property>
+        <property name="Accelerator">F1</property>
+        <property name="Label" translatable="yes">Online _Documentation...</property>
+        <property name="ShortLabel" translatable="yes">Online _Documentation...</property>
+        <signal name="Activated" handler="mnuHelpManual_Activated" />
+      </action>
+      <action id="mnuHelpWebSite">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Yamster Web Site</property>
+        <property name="ShortLabel" translatable="yes">_Yamster Web Site</property>
+        <signal name="Activated" handler="mnuHelpWebSite_Activated" />
+      </action>
+      <action id="mnuHelpDiscussionGroup">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Ask a Question...</property>
+        <property name="ShortLabel" translatable="yes">_Ask a Question...</property>
+        <signal name="Activated" handler="mnuHelpDiscussionGroup_Activated" />
+      </action>
+    </action-group>
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Yamster!</property>
+    <property name="Icon">resource:Yamster.Resources.Yamster-16x16.png</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.MenuBar" id="ctlMenuBar">
+            <property name="MemberName" />
+            <node name="ctlMenuBar" type="Menubar">
+              <node type="Menu" action="mnuFile">
+                <node type="Menuitem" action="mnuYammerSyncAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="mnuFileExit" />
+              </node>
+              <node type="Menu" action="mnuHelp">
+                <node type="Menuitem" action="OnlineDocumentationAction" />
+                <node type="Menuitem" action="mnuHelpDiscussionGroup" />
+                <node type="Menuitem" action="mnuHelpWebSite" />
+                <node type="Separator" />
+                <node type="Menuitem" action="mnuHelpAbout" />
+              </node>
+            </node>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <property name="BorderWidth">5</property>
+            <child>
+              <widget class="Gtk.Notebook" id="ctlScreenBox">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="CurrentPage">0</property>
+                <child>
+                  <widget class="Yamster.ViewsScreen" id="ctlViewsScreen">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label4">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">_Views</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.GroupThreadScreen" id="ctlGroupThreadScreen">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label7">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">_Groups</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.ConversationsScreen" id="ctlConversationsScreen">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label9">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">_Conversations</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.SearchScreen" id="ctlSearchScreen">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="lblScreenSearch">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">_Search</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.GroupConfigScreen" id="ctlGroupConfigScreen">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label17">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">Sync Settings</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox10">
+                <property name="MemberName" />
+                <property name="WidthRequest">380</property>
+                <property name="Spacing">6</property>
+                <property name="BorderWidth">5</property>
+                <child>
+                  <widget class="Gtk.HBox" id="hbox11">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <placeholder />
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnAboutBox">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">_About Yamster...</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btnAboutBox_Clicked" />
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnSync">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">_Yammer Sync...</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btnSync_Click" />
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnTest">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">Test</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btnTest_Click" />
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">3</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.ThreadViewer" id="ctlThreadViewer">
+                    <property name="MemberName" />
+                    <property name="WidthRequest">400</property>
+                    <property name="Events">ButtonPressMask</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="ctlStatusBarHbox">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Statusbar" id="ctlStatusBarMain">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <property name="HasResizeGrip">False</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Statusbar" id="ctlStatusBarTotalYams">
+                <property name="MemberName" />
+                <property name="WidthRequest">150</property>
+                <property name="Spacing">6</property>
+                <property name="HasResizeGrip">False</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Statusbar" id="ctlStatusBarSyncStatus">
+                <property name="MemberName" />
+                <property name="WidthRequest">100</property>
+                <property name="Spacing">6</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="Yamster.SyncWindow" design-size="518 373">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <property name="Title" translatable="yes">Yammer Sync</property>
+    <property name="Icon">resource:Yamster.Resources.Yamster-16x16.png</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="BorderWidth">15</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.VBox" id="vbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Table" id="table1">
+                <property name="MemberName" />
+                <property name="NRows">4</property>
+                <property name="NColumns">2</property>
+                <property name="RowSpacing">6</property>
+                <property name="ColumnSpacing">6</property>
+                <child>
+                  <widget class="Gtk.Label" id="label2">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Status:</property>
+                  </widget>
+                  <packing>
+                    <property name="AutoSize">True</property>
+                    <property name="XOptions">Fill</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">False</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label3">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Current Feed:</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">1</property>
+                    <property name="BottomAttach">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="XOptions">Fill</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">False</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label4">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">History Progress:</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">2</property>
+                    <property name="BottomAttach">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="XOptions">Fill</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">False</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label5">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Yams In Database:</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">3</property>
+                    <property name="BottomAttach">4</property>
+                    <property name="AutoSize">True</property>
+                    <property name="XOptions">Fill</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">False</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Entry" id="txtGroupHistory">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">False</property>
+                    <property name="InvisibleChar">?</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">2</property>
+                    <property name="BottomAttach">3</property>
+                    <property name="LeftAttach">1</property>
+                    <property name="RightAttach">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">True</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Entry" id="txtSyncGroup">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">False</property>
+                    <property name="InvisibleChar">?</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">1</property>
+                    <property name="BottomAttach">2</property>
+                    <property name="LeftAttach">1</property>
+                    <property name="RightAttach">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">True</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Entry" id="txtSyncStatus">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">False</property>
+                    <property name="InvisibleChar">?</property>
+                  </widget>
+                  <packing>
+                    <property name="LeftAttach">1</property>
+                    <property name="RightAttach">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">True</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Entry" id="txtTotalMessages">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="IsEditable">False</property>
+                    <property name="InvisibleChar">?</property>
+                  </widget>
+                  <packing>
+                    <property name="TopAttach">3</property>
+                    <property name="BottomAttach">4</property>
+                    <property name="LeftAttach">1</property>
+                    <property name="RightAttach">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="YOptions">Fill</property>
+                    <property name="XExpand">True</property>
+                    <property name="XFill">True</property>
+                    <property name="XShrink">False</property>
+                    <property name="YExpand">False</property>
+                    <property name="YFill">True</property>
+                    <property name="YShrink">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hbox1">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Frame" id="frame1">
+                    <property name="MemberName" />
+                    <child>
+                      <widget class="Gtk.Alignment" id="GtkAlignment">
+                        <property name="MemberName" />
+                        <property name="Xalign">0</property>
+                        <property name="Yalign">0</property>
+                        <property name="BorderWidth">12</property>
+                        <child>
+                          <widget class="Gtk.VBox" id="vbox4">
+                            <property name="MemberName" />
+                            <property name="Spacing">6</property>
+                            <child>
+                              <widget class="Gtk.RadioButton" id="radAlgorithmOptimizeReading">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="Label" translatable="yes">Optimize Reading: New content first, fill the history incrementally</property>
+                                <property name="Active">True</property>
+                                <property name="DrawIndicator">True</property>
+                                <property name="HasLabel">True</property>
+                                <property name="UseUnderline">True</property>
+                                <property name="Group">grpAlgorithm</property>
+                              </widget>
+                              <packing>
+                                <property name="Position">0</property>
+                                <property name="AutoSize">True</property>
+                                <property name="Expand">False</property>
+                                <property name="Fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gtk.RadioButton" id="radAlgorithmBulkDownload">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="Label" translatable="yes">Bulk Download: Fill the history first, then sync new content</property>
+                                <property name="DrawIndicator">True</property>
+                                <property name="HasLabel">True</property>
+                                <property name="UseUnderline">True</property>
+                                <property name="Group">grpAlgorithm</property>
+                              </widget>
+                              <packing>
+                                <property name="Position">1</property>
+                                <property name="AutoSize">True</property>
+                                <property name="Expand">False</property>
+                                <property name="Fill">False</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblAlgorithm">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">Algorithm</property>
+                        <property name="UseMarkup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder />
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox5">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.HBox" id="hbox2">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.CheckButton" id="chkHistoryLimitDays">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Skip threads older than</property>
+                        <property name="Active">True</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Toggled" handler="chkHistoryLimitDays_Toggled" />
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">False</property>
+                        <property name="Expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.SpinButton" id="txtHistoryLimitDays">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Lower">1</property>
+                        <property name="Upper">999</property>
+                        <property name="PageIncrement">10</property>
+                        <property name="StepIncrement">1</property>
+                        <property name="ClimbRate">1</property>
+                        <property name="Numeric">True</property>
+                        <property name="Value">90</property>
+                        <signal name="ValueChanged" handler="txtHistoryLimitDays_ValueChanged" />
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblHistoryLimitDays">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">days</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Fixed" id="fixed1">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">20</property>
+                        <property name="HasWindow">False</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">3</property>
+                        <property name="AutoSize">False</property>
+                        <property name="Expand">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblHistoryLimitDaysHint">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">(i.e. XX/XX/XXXX)</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">4</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HButtonBox" id="hbuttonbox2">
+            <property name="MemberName" />
+            <property name="BorderWidth">10</property>
+            <property name="Size">3</property>
+            <property name="LayoutStyle">Spread</property>
+            <child>
+              <widget class="Gtk.Button" id="btnStart">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Start</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnStart_Click" />
+              </widget>
+              <packing>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnStop">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Stop</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnStop_Click" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnOnce">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Once</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnOnce_Click" />
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.MessageGrid" design-size="302 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Yamster.Grid" id="ctlGrid">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.SearchScreen" design-size="583 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox2">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">6</property>
+        <child>
+          <widget class="Gtk.Table" id="table1">
+            <property name="MemberName" />
+            <property name="NRows">5</property>
+            <property name="NColumns">4</property>
+            <property name="RowSpacing">6</property>
+            <property name="ColumnSpacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnSearch">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Search</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnSearch_Clicked" />
+              </widget>
+              <packing>
+                <property name="LeftAttach">3</property>
+                <property name="RightAttach">4</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnShowYql">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">_YQL...</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnShowYql_Clicked" />
+              </widget>
+              <packing>
+                <property name="LeftAttach">2</property>
+                <property name="RightAttach">3</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.UserEntryWidget" id="ctlLikedByUserEntry">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">4</property>
+                <property name="BottomAttach">5</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.UserEntryWidget" id="ctlMentioningUserEntry">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">3</property>
+                <property name="BottomAttach">4</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.UserEntryWidget" id="ctlSentByUserEntry">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hbox4">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <placeholder />
+                </child>
+                <child>
+                  <widget class="Gtk.CheckButton" id="chkWholeWords">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Label" translatable="yes">Whole words only</property>
+                    <property name="DrawIndicator">True</property>
+                    <property name="HasLabel">True</property>
+                    <property name="UseUnderline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="PackType">End</property>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">False</property>
+                    <property name="Expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.RadioButton" id="rbMatchAll">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Label" translatable="yes">Match all terms</property>
+                    <property name="DrawIndicator">True</property>
+                    <property name="HasLabel">True</property>
+                    <property name="UseUnderline">True</property>
+                    <property name="Group">group1</property>
+                  </widget>
+                  <packing>
+                    <property name="PackType">End</property>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">False</property>
+                    <property name="Expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.RadioButton" id="rbMatchAny">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Label" translatable="yes">Match any terms</property>
+                    <property name="DrawIndicator">True</property>
+                    <property name="HasLabel">True</property>
+                    <property name="UseUnderline">True</property>
+                    <property name="Group">group1</property>
+                  </widget>
+                  <packing>
+                    <property name="PackType">End</property>
+                    <property name="Position">3</property>
+                    <property name="AutoSize">False</property>
+                    <property name="Expand">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="TopAttach">1</property>
+                <property name="BottomAttach">2</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">False</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">Sent By:</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">Yam Contains:</property>
+              </widget>
+              <packing>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label4">
+                <property name="MemberName" />
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">Mentioning:</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">3</property>
+                <property name="BottomAttach">4</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label5">
+                <property name="MemberName" />
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">Liked By:</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">4</property>
+                <property name="BottomAttach">5</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="txtSearch">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="KeyReleaseEvent" handler="txtSearch_KeyRelease" />
+              </widget>
+              <packing>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Fixed" id="fixed1">
+            <property name="MemberName" />
+            <property name="HasWindow">False</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Yamster.MessageGrid" id="ctlMessageViewer">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <signal name="FocusedItemChanged" handler="ctlMessageViewer_FocusedItemChanged" />
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="label3">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">(SHIFT+click headers for multi-sort)</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lblSearchResults">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="Xalign">1</property>
+                <property name="LabelProp" translatable="yes">X messages matched.</property>
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">3</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ThreadViewerMessageTile" design-size="2545 552">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.EventBox" id="ctlWidgetBox">
+        <property name="MemberName" />
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <property name="BorderWidth">3</property>
+            <child>
+              <widget class="Gtk.Image" id="ctlUserImage">
+                <property name="MemberName" />
+                <property name="WidthRequest">33</property>
+                <property name="HeightRequest">33</property>
+                <property name="Yalign">0</property>
+                <property name="Pixbuf">resource:Yamster.Resources.AnonymousPhoto-33x33.png</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox2">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.EventBox" id="ctlHighlightBox">
+                    <property name="MemberName" />
+                    <child>
+                      <widget class="Gtk.VBox" id="vbox3">
+                        <property name="MemberName" />
+                        <property name="Spacing">6</property>
+                        <child>
+                          <widget class="Gtk.Label" id="lblSender">
+                            <property name="MemberName" />
+                            <property name="WidthRequest">300</property>
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">&lt;b&gt;Person With Long Name&lt;/b&gt; in reply to &lt;b&gt;Person With Long Name&lt;/b&gt;</property>
+                            <property name="UseMarkup">True</property>
+                            <property name="Wrap">True</property>
+                            <property name="Selectable">True</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">0</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblBody">
+                            <property name="MemberName" />
+                            <property name="WidthRequest">300</property>
+                            <property name="LabelProp" translatable="yes">FYI I asked the other people, and they said that at last week's book club meeting people were also generally uncomfortable with metaprogramming except in special situations where there was a clear need. The feeling was that if you're having to automatically generate a lot of definitions, maybe the design is wrong.
+
+ As for your point [1], I've heard tales of these "small" code bases, but I don't believe they actually exist heheh.</property>
+                            <property name="Wrap">True</property>
+                            <property name="Selectable">True</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">1</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HBox" id="ctlLikesHbox">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Alignment" id="ctlImageAlign">
+                        <property name="MemberName" />
+                        <property name="TopPadding">2</property>
+                        <child>
+                          <widget class="Gtk.Image" id="ctlThumbImage">
+                            <property name="MemberName" />
+                            <property name="Yalign">0</property>
+                            <property name="Pixbuf">resource:Yamster.Resources.LikeThumb.png</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblLikes">
+                        <property name="MemberName" />
+                        <property name="WidthRequest">270</property>
+                        <property name="Xalign">0</property>
+                        <property name="Yalign">0</property>
+                        <property name="LabelProp" translatable="yes">You, &lt;b&gt;Person #1&lt;/b&gt;, &lt;b&gt;Person #2&lt;/b&gt;, &lt;b&gt;Person #3&lt;/b&gt; and 4 others like this.</property>
+                        <property name="UseMarkup">True</property>
+                        <property name="Wrap">True</property>
+                        <property name="Selectable">True</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HBox" id="hbox3">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Label" id="lblLike">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Like&lt;/a&gt;</property>
+                        <property name="UseMarkup">True</property>
+                        <signal name="ButtonPressEvent" handler="lblLike_ButtonPress" />
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblUnlike">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Unlike&lt;/a&gt;</property>
+                        <property name="UseMarkup">True</property>
+                        <signal name="ButtonPressEvent" handler="lblUnlike_ButtonPress" />
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblReply">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Reply&lt;/a&gt;</property>
+                        <property name="UseMarkup">True</property>
+                        <signal name="ButtonPressEvent" handler="lblReply_ButtonPress" />
+                      </widget>
+                      <packing>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder />
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblTimestamp">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">1:20pm 1/2/2013</property>
+                        <property name="Selectable">True</property>
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">4</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.EventBox" id="ctlStarEventBox">
+                        <property name="MemberName" />
+                        <signal name="ButtonPressEvent" handler="ctlStarEventBox_ButtonPress" />
+                        <child>
+                          <widget class="Gtk.HBox" id="ctlStarHBox">
+                            <property name="MemberName" />
+                            <property name="Spacing">3</property>
+                            <child>
+                              <widget class="Gtk.Image" id="ctlImageStarOn">
+                                <property name="MemberName" />
+                                <property name="Pixbuf">resource:Yamster.Resources.Star-OnWhite.png</property>
+                              </widget>
+                              <packing>
+                                <property name="Position">0</property>
+                                <property name="AutoSize">True</property>
+                                <property name="Expand">False</property>
+                                <property name="Fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="Gtk.Image" id="ctlImageStarOff">
+                                <property name="MemberName" />
+                                <property name="Pixbuf">resource:Yamster.Resources.Star-OffWhite.png</property>
+                              </widget>
+                              <packing>
+                                <property name="Position">1</property>
+                                <property name="AutoSize">True</property>
+                                <property name="Expand">False</property>
+                                <property name="Fill">False</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="PackType">End</property>
+                        <property name="Position">5</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.EventBox" id="ctlAttachmentBox">
+                    <property name="MemberName" />
+                    <property name="Visible">False</property>
+                    <signal name="ButtonPressEvent" handler="ctlAttachmentBox_ButtonPress" />
+                    <child>
+                      <widget class="Gtk.Image" id="ctlAttachmentImage">
+                        <property name="MemberName" />
+                        <property name="Pixbuf">resource:Yamster.Resources.LoadingImage.png</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">3</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HSeparator" id="ctlSeparator">
+                    <property name="MemberName" />
+                  </widget>
+                  <packing>
+                    <property name="PackType">End</property>
+                    <property name="Position">4</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ThreadViewer" design-size="400 479">
+    <property name="MemberName" />
+    <property name="WidthRequest">400</property>
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+            <property name="MemberName" />
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.Viewport" id="GtkViewport">
+                <property name="MemberName" />
+                <property name="ShadowType">None</property>
+                <child>
+                  <widget class="Gtk.VBox" id="ctlVBox">
+                    <property name="MemberName" />
+                    <property name="ShowScrollbars">True</property>
+                    <child>
+                      <widget class="Yamster.ThreadViewerMessageTile" id="messagetilewidget1">
+                        <property name="MemberName" />
+                        <property name="Events">ButtonPressMask</property>
+                        <property name="Highlighted">False</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Yamster.ThreadViewerMessageTile" id="messagetilewidget2">
+                        <property name="MemberName" />
+                        <property name="Events">ButtonPressMask</property>
+                        <property name="Highlighted">False</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Yamster.ThreadViewerMessageTile" id="messagetilewidget3">
+                        <property name="MemberName" />
+                        <property name="Events">ButtonPressMask</property>
+                        <property name="Highlighted">False</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Yamster.MessageComposer" id="ctlMessageComposer">
+                        <property name="MemberName" />
+                        <property name="HeightRequest">170</property>
+                        <property name="Events">ButtonPressMask</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">3</property>
+                        <property name="AutoSize">False</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="ctlBottomHBox">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Button" id="btnOpenThread">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">_Web View...</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnOpenThread_Clicked" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnRefreshThread">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">Refresh</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnRefreshThread_Clicked" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnNewThread">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">New Thread</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnNewThread_Clicked" />
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.CheckButton" id="chkThreadRead">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Label" translatable="yes">_Read</property>
+                <property name="DrawIndicator">True</property>
+                <property name="HasLabel">True</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Toggled" handler="chkThreadRead_Toggled" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">4</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.Grid" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+        <property name="MemberName" />
+        <property name="ShadowType">In</property>
+        <child>
+          <widget class="Gtk.TreeView" id="ctlTreeView">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="ShowScrollbars">True</property>
+            <signal name="KeyPressEvent" handler="ctlTreeView_KeyPress" />
+            <signal name="KeyReleaseEvent" handler="ctlTreeView_KeyRelease" />
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.GroupGrid" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Yamster.Grid" id="ctlGrid">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.GroupThreadScreen" design-size="450 347">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HPaned" id="hpaned1">
+        <property name="MemberName" />
+        <property name="CanFocus">True</property>
+        <property name="Position">170</property>
+        <property name="BorderWidth">6</property>
+        <child>
+          <widget class="Gtk.VBox" id="vbox12">
+            <property name="MemberName" />
+            <child>
+              <widget class="Gtk.Label" id="label3">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Groups</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.GroupGrid" id="ctlGroupGrid">
+                <property name="MemberName" />
+                <property name="WidthRequest">200</property>
+                <property name="Events">ButtonPressMask</property>
+                <signal name="FocusedItemChanged" handler="ctlGroupGrid_FocusedItemChanged" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.CheckButton" id="chkNonSyncedGroups">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Label" translatable="yes">Show non-synced groups</property>
+                <property name="DrawIndicator">True</property>
+                <property name="HasLabel">True</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Toggled" handler="chkNonSyncedGroups_Toggled" />
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Resize">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.VBox" id="vbox13">
+            <property name="MemberName" />
+            <child>
+              <widget class="Gtk.HBox" id="hbox2">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Label" id="label4">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Threads</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label5">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">(press SPACE to mark read)</property>
+                  </widget>
+                  <packing>
+                    <property name="PackType">End</property>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.ThreadGrid" id="ctlThreadGrid">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+                <property name="TrackRead">False</property>
+                <signal name="FocusedItemChanged" handler="ctlThreadGrid_FocusedItemChanged" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.HBox" id="hbox1">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.CheckButton" id="chkShowReadThreads">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Label" translatable="yes">Show read threads</property>
+                    <property name="DrawIndicator">True</property>
+                    <property name="HasLabel">True</property>
+                    <property name="UseUnderline">True</property>
+                    <signal name="Toggled" handler="chkShowReadThreads_Toggled" />
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="lblMarkAllRead">
+                    <property name="MemberName" />
+                    <property name="Xalign">1</property>
+                    <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Mark All Read&lt;/a&gt;</property>
+                    <property name="UseMarkup">True</property>
+                    <signal name="ButtonPressEvent" handler="lblMarkAllRead_ButtonPress" />
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="Yamster.AboutWindow" design-size="360 215">
+    <property name="MemberName" />
+    <property name="WidthRequest">360</property>
+    <property name="HeightRequest">215</property>
+    <property name="Visible">False</property>
+    <property name="Title" translatable="yes">About Yamster</property>
+    <property name="Icon">resource:Yamster.Resources.Yamster-16x16.png</property>
+    <property name="TypeHint">Splashscreen</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="BorderWidth">1</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <property name="DefaultWidth">360</property>
+    <property name="DefaultHeight">215</property>
+    <property name="Decorated">False</property>
+    <signal name="KeyPressEvent" handler="Window_KeyPress" />
+    <signal name="ButtonReleaseEvent" handler="Window_ButtonRelease" />
+    <child>
+      <widget class="Gtk.HBox" id="hbox1">
+        <property name="MemberName" />
+        <child>
+          <widget class="Gtk.EventBox" id="ctlLeftBox">
+            <property name="MemberName" />
+            <child>
+              <widget class="Gtk.Image" id="image1">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="Yalign">0</property>
+                <property name="Pixbuf">resource:Yamster.Resources.AboutBoxLeft.png</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.EventBox" id="ctlRightBox">
+            <property name="MemberName" />
+            <child>
+              <widget class="Gtk.Alignment" id="alignment1">
+                <property name="MemberName" />
+                <property name="LeftPadding">10</property>
+                <property name="RightPadding">16</property>
+                <child>
+                  <widget class="Gtk.VBox" id="vbox1">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Image" id="image2">
+                        <property name="MemberName" />
+                        <property name="Xalign">0</property>
+                        <property name="Yalign">0</property>
+                        <property name="Pixbuf">resource:Yamster.Resources.AboutBoxTop.png</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.VBox" id="vbox2">
+                        <property name="MemberName" />
+                        <property name="Spacing">6</property>
+                        <child>
+                          <widget class="Gtk.Label" id="lblBuildNumber">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">Build X.X.X</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">0</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblBuildNumber1">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">Copyright (c) Microsoft Corporation</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">1</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblLicense">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">Released under the &lt;a href=""&gt;The MIT License&lt;/a&gt;</property>
+                            <property name="UseMarkup">True</property>
+                            <signal name="ButtonPressEvent" handler="lblLicense_ButtonPress" />
+                          </widget>
+                          <packing>
+                            <property name="Position">2</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Fixed" id="fixed1">
+                            <property name="MemberName" />
+                            <property name="HeightRequest">5</property>
+                            <property name="HasWindow">False</property>
+                          </widget>
+                          <packing>
+                            <property name="Position">3</property>
+                            <property name="AutoSize">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblHelpManual">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Online Documentation&lt;/a&gt;</property>
+                            <property name="UseMarkup">True</property>
+                            <signal name="ButtonPressEvent" handler="lblHelpManual_ButtonPress" />
+                          </widget>
+                          <packing>
+                            <property name="Position">4</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblDiscussionGroup">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Ask a Question...&lt;/a&gt;</property>
+                            <property name="UseMarkup">True</property>
+                            <signal name="ButtonPressEvent" handler="lblDiscussionGroup_ButtonPress" />
+                          </widget>
+                          <packing>
+                            <property name="Position">5</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="Gtk.Label" id="lblWebSite">
+                            <property name="MemberName" />
+                            <property name="Xalign">0</property>
+                            <property name="Yalign">0</property>
+                            <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Yamster Web Site&lt;/a&gt;</property>
+                            <property name="UseMarkup">True</property>
+                            <signal name="ButtonPressEvent" handler="lblWebSite_ButtonPress" />
+                          </widget>
+                          <packing>
+                            <property name="Position">6</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Expand">False</property>
+                            <property name="Fill">False</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.GroupConfigScreen" design-size="588 338">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">6</property>
+        <child>
+          <widget class="Gtk.CheckButton" id="chkSyncInbox">
+            <property name="MemberName" />
+            <property name="HeightRequest">25</property>
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Sync threads that appear in the Yammer Inbox</property>
+            <property name="Active">True</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+            <property name="Xalign">0</property>
+            <signal name="Toggled" handler="chkSyncInbox_Toggled" />
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="Xalign">0</property>
+            <property name="Yalign">1</property>
+            <property name="LabelProp" translatable="yes">Groups</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Yamster.GroupGrid" id="ctlGroupGrid">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+                <signal name="FocusedItemChanged" handler="ctlGroupGrid_FocusedItemChanged" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox2">
+                <property name="MemberName" />
+                <property name="Spacing">6</property>
+                <child>
+                  <widget class="Gtk.Button" id="btnAddGroup">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Type">TextOnly</property>
+                    <property name="Label" translatable="yes">Add Another Group...</property>
+                    <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="btnAddGroup_Clicked" />
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Button" id="btnViewGroup">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="Type">TextOnly</property>
+                    <property name="Label" translatable="yes">Web View...</property>
+                    <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="btnViewGroup_Clicked" />
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder />
+                </child>
+                <child>
+                  <placeholder />
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="Yamster.AddGroupWindow" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <property name="Title" translatable="yes">Add Yammer Group</property>
+    <property name="Icon">resource:Yamster.Resources.Yamster-16x16.png</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">8</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Entry" id="txtSearch">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="KeyReleaseEvent" handler="txtSearch_KeyRelease" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnSearch">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">_Search Yammer</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnSearch_Clicked" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Yamster.Grid" id="ctlGrid">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <signal name="FocusedItemChanged" handler="ctlGrid_FocusedItemChanged" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnCancel">
+                <property name="MemberName" />
+                <property name="WidthRequest">90</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">_Cancel</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnCancel_Clicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnAddGroup">
+                <property name="MemberName" />
+                <property name="WidthRequest">90</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">_Add Group</property>
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnAddGroup_Clicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ConversationsScreen" design-size="561 366">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">6</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Fixed" id="fixed1">
+                <property name="MemberName" />
+                <property name="HasWindow">False</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnCancelSearch">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="CanFocus">True</property>
+                <property name="Type">TextOnly</property>
+                <property name="Label" translatable="yes">X</property>
+                <signal name="Clicked" handler="btnCancelSearch_Clicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Image" id="ctlSearchImage">
+                <property name="MemberName" />
+                <property name="Visible">False</property>
+                <property name="Xalign">0</property>
+                <property name="Pixbuf">resource:Yamster.Resources.Search.png</property>
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="txtSearch">
+                <property name="MemberName" />
+                <property name="WidthRequest">250</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="Changed" handler="txtSearch_Changed" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">3</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Find Person:</property>
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">4</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Yamster.Grid" id="ctlGrid">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <signal name="FocusedItemChanged" handler="ctlGrid_FocusedItemChanged" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <placeholder />
+            </child>
+            <child>
+              <widget class="Gtk.CheckButton" id="chkShowMultiParticipant">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Label" translatable="yes">Show conversations with multiple participants</property>
+                <property name="DrawIndicator">True</property>
+                <property name="HasLabel">True</property>
+                <property name="UseUnderline">True</property>
+                <property name="Xalign">1</property>
+                <signal name="Clicked" handler="chkShowMultiParticipant_Clicked" />
+              </widget>
+              <packing>
+                <property name="PackType">End</property>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ThreadViewerDivider" design-size="300 34">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.EventBox" id="ctlOuterBox">
+        <property name="MemberName" />
+        <child>
+          <widget class="Gtk.Alignment" id="alignment1">
+            <property name="MemberName" />
+            <property name="LeftPadding">3</property>
+            <property name="TopPadding">12</property>
+            <property name="RightPadding">8</property>
+            <property name="BottomPadding">6</property>
+            <child>
+              <widget class="Gtk.EventBox" id="ctlColorBox">
+                <property name="MemberName" />
+                <property name="HeightRequest">10</property>
+                <child>
+                  <placeholder />
+                </child>
+              </widget>
+            </child>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.MessageComposer" design-size="344 186">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.EventBox" id="ctlWidgetBox">
+        <property name="MemberName" />
+        <child>
+          <widget class="Gtk.HBox" id="hbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <property name="BorderWidth">3</property>
+            <child>
+              <widget class="Gtk.Fixed" id="fixed1">
+                <property name="MemberName" />
+                <property name="WidthRequest">33</property>
+                <property name="HasWindow">False</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox1">
+                <property name="MemberName" />
+                <property name="Spacing">4</property>
+                <child>
+                  <widget class="Gtk.HBox" id="ctlReplyToBox">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Label" id="lblReplyTo">
+                        <property name="MemberName" />
+                        <property name="Visible">False</property>
+                        <property name="Xalign">0</property>
+                        <property name="LabelProp" translatable="yes">&lt;b&gt;...replying to John Doe&lt;/b&gt;</property>
+                        <property name="UseMarkup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.EventBox" id="ctlCancelBox">
+                        <property name="MemberName" />
+                        <signal name="ButtonPressEvent" handler="ctlCancelBox_ButtonPress" />
+                        <child>
+                          <widget class="Gtk.Image" id="ctlCancelImage">
+                            <property name="MemberName" />
+                            <property name="Visible">False</property>
+                            <property name="Yalign">0.8</property>
+                            <property name="Pixbuf">resource:Yamster.Resources.CancelX.png</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder />
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+                    <property name="MemberName" />
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gtk.TextView" id="txtBody">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <property name="Text" translatable="yes" />
+                        <property name="WrapMode">WordChar</property>
+                        <signal name="WidgetEvent" handler="txtBody_WidgetEvent" />
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HBox" id="hbox3">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.Label" id="label1">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">CC:</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Yamster.UserEntryWidget" id="ctlCCUserEntry">
+                        <property name="MemberName" />
+                        <property name="Events">ButtonPressMask</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Button" id="btnSend">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Type">TextOnly</property>
+                        <property name="Label" translatable="yes">_Send</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btnSend_Clicked" />
+                      </widget>
+                      <packing>
+                        <property name="Position">2</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Fixed" id="fixed2">
+                <property name="MemberName" />
+                <property name="WidthRequest">2</property>
+                <property name="HasWindow">False</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">False</property>
+                <property name="Expand">False</property>
+              </packing>
+            </child>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ThreadGrid" design-size="300 300">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Yamster.Grid" id="ctlGrid">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.ViewsScreen" design-size="509 530">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.HPaned" id="hpaned1">
+        <property name="MemberName" />
+        <property name="CanFocus">True</property>
+        <property name="Position">141</property>
+        <property name="BorderWidth">6</property>
+        <child>
+          <widget class="Gtk.VBox" id="vbox1">
+            <property name="MemberName" />
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Views</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Yamster.Grid" id="ctlQueriesGrid">
+                <property name="MemberName" />
+                <property name="Events">ButtonPressMask</property>
+                <signal name="FocusedItemChanged" handler="ctlQueriesGrid_FocusedItemChanged" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Fixed" id="fixed1">
+                <property name="MemberName" />
+                <property name="HeightRequest">21</property>
+                <property name="HasWindow">False</property>
+              </widget>
+              <packing>
+                <property name="Position">2</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Resize">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Notebook" id="ctlNotebook">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="CurrentPage">1</property>
+            <property name="ShowBorder">False</property>
+            <child>
+              <widget class="Gtk.VBox" id="vbox2">
+                <property name="MemberName" />
+                <child>
+                  <widget class="Gtk.Label" id="label2">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Threads</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.ThreadGrid" id="ctlThreadGrid">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                    <property name="TrackRead">False</property>
+                    <signal name="FocusedItemChanged" handler="ctlThreadGrid_FocusedItemChanged" />
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.HBox" id="hbox1">
+                    <property name="MemberName" />
+                    <property name="Spacing">6</property>
+                    <child>
+                      <widget class="Gtk.CheckButton" id="chkShowReadThreads">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="Label" translatable="yes">Show read threads</property>
+                        <property name="DrawIndicator">True</property>
+                        <property name="HasLabel">True</property>
+                        <property name="UseUnderline">True</property>
+                        <signal name="Toggled" handler="chkShowReadThreads_Toggled" />
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="lblMarkAllRead">
+                        <property name="MemberName" />
+                        <property name="Xalign">1</property>
+                        <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Mark All Read&lt;/a&gt;</property>
+                        <property name="UseMarkup">True</property>
+                        <signal name="ButtonPressEvent" handler="lblMarkAllRead_ButtonPress" />
+                      </widget>
+                      <packing>
+                        <property name="Position">1</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label5">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page1</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.VBox" id="vbox3">
+                <property name="MemberName" />
+                <child>
+                  <widget class="Gtk.Label" id="label6">
+                    <property name="MemberName" />
+                    <property name="Xalign">0</property>
+                    <property name="LabelProp" translatable="yes">Yams</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Yamster.MessageGrid" id="ctlMessageGrid">
+                    <property name="MemberName" />
+                    <property name="Events">ButtonPressMask</property>
+                    <signal name="FocusedItemChanged" handler="ctlMessageGrid_FocusedItemChanged" />
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.Fixed" id="fixed2">
+                    <property name="MemberName" />
+                    <property name="HeightRequest">21</property>
+                    <property name="HasWindow">False</property>
+                  </widget>
+                  <packing>
+                    <property name="Position">2</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label4">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page2</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="Yamster.UserChooserWindow" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Select User</property>
+    <property name="BorderWidth">4</property>
+    <property name="Decorated">False</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox1">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Entry" id="txtSearch">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="Changed" handler="txtSearch_Changed" />
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Button" id="btnCancel">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Type">TextAndIcon</property>
+                <property name="Icon">stock:gtk-cancel Menu</property>
+                <property name="Label" translatable="yes" />
+                <property name="UseUnderline">True</property>
+                <signal name="Clicked" handler="btnCancel_Clicked" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Yamster.Grid" id="ctlGrid">
+            <property name="MemberName" />
+            <property name="Events">ButtonPressMask</property>
+            <signal name="WidgetEvent" handler="ctlGrid_Widget" />
+            <signal name="ViewUpdated" handler="ctlGrid_ViewUpdated" />
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="Yamster.UserEntryWidget" design-size="300 39">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.Entry" id="txtEntry">
+        <property name="MemberName" />
+        <property name="CanFocus">True</property>
+        <property name="IsEditable">True</property>
+        <property name="InvisibleChar">●</property>
+        <signal name="WidgetEvent" handler="txtEntry_WidgetEvent" />
+        <signal name="Changed" handler="txtEntry_Changed" />
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Window" id="Yamster.EditYqlWindow" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">YQL Query Viewer</property>
+    <property name="Icon">resource:Yamster.Resources.Yamster-16x16.png</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="BorderWidth">4</property>
+    <child>
+      <widget class="Gtk.VBox" id="vbox3">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes">The YQL query that was generated for this search:</property>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+            <property name="MemberName" />
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.TextView" id="txtEditor">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="ShowScrollbars">True</property>
+                <property name="Editable">False</property>
+                <property name="Text" translatable="yes" />
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

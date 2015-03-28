@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yamster.Native-Win32", "Yamster.Native-Win32\Yamster.Native-Win32.csproj", "{D5979E0A-4BEB-4972-8303-4EC54FE49566}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yamster", "Yamster\Yamster.csproj", "{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D5979E0A-4BEB-4972-8303-4EC54FE49566} = {D5979E0A-4BEB-4972-8303-4EC54FE49566}
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502} = {C03A86E2-EA46-46A6-8240-D3F6B661A502}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yamster.Core", "Yamster.Core\Yamster.Core.csproj", "{C03A86E2-EA46-46A6-8240-D3F6B661A502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YamsterCmd", "YamsterCmd\YamsterCmd.csproj", "{7F268A6A-B6FA-4D7B-8A9B-67E0A8609BE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502} = {C03A86E2-EA46-46A6-8240-D3F6B661A502}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5979E0A-4BEB-4972-8303-4EC54FE49566}.Debug|x86.ActiveCfg = Debug|x86
+		{D5979E0A-4BEB-4972-8303-4EC54FE49566}.Debug|x86.Build.0 = Debug|x86
+		{D5979E0A-4BEB-4972-8303-4EC54FE49566}.Release|x86.ActiveCfg = Release|x86
+		{D5979E0A-4BEB-4972-8303-4EC54FE49566}.Release|x86.Build.0 = Release|x86
+		{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}.Debug|x86.ActiveCfg = Debug|x86
+		{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}.Debug|x86.Build.0 = Debug|x86
+		{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}.Release|x86.ActiveCfg = Release|x86
+		{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}.Release|x86.Build.0 = Release|x86
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502}.Debug|x86.ActiveCfg = Debug|x86
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502}.Debug|x86.Build.0 = Debug|x86
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502}.Release|x86.ActiveCfg = Release|x86
+		{C03A86E2-EA46-46A6-8240-D3F6B661A502}.Release|x86.Build.0 = Release|x86
+		{7F268A6A-B6FA-4D7B-8A9B-67E0A8609BE1}.Debug|x86.ActiveCfg = Debug|x86
+		{7F268A6A-B6FA-4D7B-8A9B-67E0A8609BE1}.Debug|x86.Build.0 = Debug|x86
+		{7F268A6A-B6FA-4D7B-8A9B-67E0A8609BE1}.Release|x86.ActiveCfg = Release|x86
+		{7F268A6A-B6FA-4D7B-8A9B-67E0A8609BE1}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Yamster\Yamster.csproj
+	EndGlobalSection
+EndGlobal

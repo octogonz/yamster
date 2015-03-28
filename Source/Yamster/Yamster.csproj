@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{4A5DAE5B-E5CE-4295-A7AA-4F9FED3844CB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Yamster</RootNamespace>
+    <AssemblyName>Yamster</AssemblyName>
+    <ApplicationIcon>Yamster.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Run\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Run\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Run-Mac\</OutputPath>
+    <DefineConstants>DEBUG;YAMSTER_MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Run-Mac\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>YAMSTER_MAC</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
+    <Reference Include="Newtonsoft.Json" />
+    <Reference Include="System.Data.SQLite" />
+    <Reference Include="System.Web" />
+    <Reference Include="Yamster.Native" />
+    <Reference Include="Yamster.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Yamster-16x16.png" />
+    <EmbeddedResource Include="Resources\AnonymousPhoto-33x33.png" />
+    <EmbeddedResource Include="Resources\LikeThumb.png" />
+    <EmbeddedResource Include="Resources\AboutBoxLeft.png" />
+    <EmbeddedResource Include="Resources\AboutBoxTop.png" />
+    <EmbeddedResource Include="Resources\LoadingImage.png" />
+    <EmbeddedResource Include="Resources\Star-OnWhite.png" />
+    <EmbeddedResource Include="Resources\Star-OffWhite.png" />
+    <EmbeddedResource Include="Resources\Search.png" />
+    <EmbeddedResource Include="Resources\CancelX.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Common\ProductAssemblyInfo.cs">
+      <Link>Common\ProductAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\ConversationsScreen.cs" />
+    <Compile Include="Screens\GroupConfigScreen.cs" />
+    <Compile Include="Screens\GroupThreadScreen.cs" />
+    <Compile Include="Screens\SearchScreen.cs" />
+    <Compile Include="Utils\ActionLagger.cs" />
+    <Compile Include="Utils\GtkSettingsEx.cs" />
+    <Compile Include="Utils\Helpers.cs" />
+    <Compile Include="Widgets\Grid.cs" />
+    <Compile Include="Widgets\GridColumn.cs" />
+    <Compile Include="Widgets\GroupGrid.cs" />
+    <Compile Include="Widgets\MessageComposer.cs" />
+    <Compile Include="Widgets\MessageGrid.cs" />
+    <Compile Include="Widgets\ThreadViewer.cs" />
+    <Compile Include="Widgets\ThreadViewerDivider.cs" />
+    <Compile Include="Widgets\ThreadViewerMessageTile.cs" />
+    <Compile Include="Windows\AboutWindow.cs" />
+    <Compile Include="Windows\AddGroupWindow.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
+    <Compile Include="Windows\SyncWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.AboutWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.AddGroupWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.ConversationsScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.Grid.cs" />
+    <Compile Include="gtk-gui\Yamster.GroupConfigScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.GroupGrid.cs" />
+    <Compile Include="gtk-gui\Yamster.GroupThreadScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.MainWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.MessageComposer.cs" />
+    <Compile Include="gtk-gui\Yamster.MessageGrid.cs" />
+    <Compile Include="gtk-gui\Yamster.SearchScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.SyncWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.ThreadViewer.cs" />
+    <Compile Include="gtk-gui\Yamster.ThreadViewerDivider.cs" />
+    <Compile Include="gtk-gui\Yamster.ThreadViewerMessageTile.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="Widgets\ThreadGrid.cs" />
+    <Compile Include="gtk-gui\Yamster.ThreadGrid.cs" />
+    <Compile Include="Screens\ViewsScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.ViewsScreen.cs" />
+    <Compile Include="gtk-gui\Yamster.UserChooserWindow.cs" />
+    <Compile Include="Windows\UserChooserWindow.cs" />
+    <Compile Include="Widgets\UserEntryWidget.cs" />
+    <Compile Include="gtk-gui\Yamster.UserEntryWidget.cs" />
+    <Compile Include="Windows\EditYqlWindow.cs" />
+    <Compile Include="gtk-gui\Yamster.EditYqlWindow.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Yamster-72x72.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+</Project>

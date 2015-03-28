@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C03A86E2-EA46-46A6-8240-D3F6B661A502}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Yamster.Core</RootNamespace>
+    <AssemblyName>Yamster.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Run\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Run\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Run-Mac\</OutputPath>
+    <DefineConstants>DEBUG;YAMSTER_MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Run-Mac\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>YAMSTER_MAC</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.4.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
+    <Reference Include="Newtonsoft.Json">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.SQLite">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Common\ProductAssemblyInfo.cs">
+      <Link>Common\ProductAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Database\MessagePullerRecords.cs" />
+    <Compile Include="Database\YamsterArchiveDb.cs" />
+    <Compile Include="Database\YamsterCoreDb-Upgrade.cs" />
+    <Compile Include="Database\YamsterCoreDb.cs" />
+    <Compile Include="Database\YamsterDbRecords.cs" />
+    <Compile Include="Model\AppContext.cs" />
+    <Compile Include="Model\ImageCache.cs" />
+    <Compile Include="Model\YamsterCache.cs" />
+    <Compile Include="Model\YamsterGroup.cs" />
+    <Compile Include="Model\YamsterMessage.cs" />
+    <Compile Include="Model\YamsterModel.cs" />
+    <Compile Include="Model\YamsterModelEventCollector.cs" />
+    <Compile Include="Model\YamsterNewMessage.cs" />
+    <Compile Include="Model\YamsterApiSettings.cs" />
+    <Compile Include="Model\YamsterApiConfig.cs" />
+    <Compile Include="Model\YamsterThread.cs" />
+    <Compile Include="Model\YamsterUser.cs" />
+    <Compile Include="Model\YamsterUserSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\AsyncRestCaller.cs" />
+    <Compile Include="Protocol\Json\JsonErrorResponse.cs" />
+    <Compile Include="Protocol\Json\AutocompleteJson.cs" />
+    <Compile Include="Protocol\Json\ReferenceJson.cs" />
+    <Compile Include="Protocol\Json\YamsterReferenceJsonConverter.cs" />
+    <Compile Include="Protocol\LightweightUserManager.cs" />
+    <Compile Include="Protocol\Json\JsonMessageEnvelopeUntyped.cs" />
+    <Compile Include="Protocol\Json\JsonMessageEnvelope.cs" />
+    <Compile Include="Protocol\ProtocolExceptions.cs" />
+    <Compile Include="Protocol\YamsterApi.cs" />
+    <Compile Include="Query\YamsterModelView.cs" />
+    <Compile Include="Query\YamsterThreadView.cs" />
+    <Compile Include="Query\YqlTextMatchNode.cs" />
+    <Compile Include="Query\YqlListContainsNode.cs" />
+    <Compile Include="Query\YamsterMessageView.cs" />
+    <Compile Include="Query\YqlCompiler.cs" />
+    <Compile Include="Query\YqlListNode.cs" />
+    <Compile Include="Query\YqlNode.cs" />
+    <Compile Include="Query\YqlObjectActionNode.cs" />
+    <Compile Include="Query\YqlOperationNode.cs" />
+    <Compile Include="Query\YqlPropertyNode.cs" />
+    <Compile Include="Query\YqlValueNode.cs" />
+    <Compile Include="SQLite\MappedColumn.cs" />
+    <Compile Include="SQLite\MappedColumnSet.cs" />
+    <Compile Include="SQLite\MappedTable.cs" />
+    <Compile Include="SQLite\SQLiteDataContext.cs" />
+    <Compile Include="SQLite\SQLiteIdList.cs" />
+    <Compile Include="SQLite\SQLiteJsonConverter.cs" />
+    <Compile Include="SQLite\SQLiteMapper.cs" />
+    <Compile Include="SQLite\SQLiteMapperHelpers.cs" />
+    <Compile Include="Sync\FreshenThreadRequest.cs" />
+    <Compile Include="Sync\JsonSyncingFeed.cs" />
+    <Compile Include="Sync\MessagePuller.cs" />
+    <Compile Include="Sync\SyncHelpers.cs" />
+    <Compile Include="Utils\ForegroundSynchronizationContext.cs" />
+    <Compile Include="Utils\FreezableObject.cs" />
+    <Compile Include="Utils\Utilities.cs" />
+    <Compile Include="Utils\XmlUtilities.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

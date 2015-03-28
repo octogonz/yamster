@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../../../Run-Mac/Yamster.Native.dll" internal="true" />
+  </import>
+  <widget class="Gtk.Dialog" id="Yamster.Native.YammerLogonDialog" design-size="455 257">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes"> Login To Yammer</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="BorderWidth">10</property>
+    <property name="Resizable">False</property>
+    <property name="AllowGrow">False</property>
+    <property name="Buttons">1</property>
+    <property name="HelpButton">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">15</property>
+            <child>
+              <widget class="Gtk.Image" id="image1">
+                <property name="MemberName" />
+                <property name="Yalign">0</property>
+                <property name="Pixbuf">stock:gtk-dialog-warning Dialog</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="lblMessage">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Single-Sign-On login is not yet implemented for Mac.  You can work around this problem by running Yamster! on a Windows computer, completing the login, and then copying the file "settings.json" to your Mac's settings folder:
+
+~/Documents/Yamster/
+
+You only need to do this once.
+See Yamster-ReadMe-Mac.txt for details.</property>
+                <property name="UseMarkup">True</property>
+                <property name="Wrap">True</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">10</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">1</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="btnOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-ok</property>
+            <property name="ResponseId">-5</property>
+            <signal name="Clicked" handler="btnOk_Clicked" />
+            <property name="label">gtk-ok</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

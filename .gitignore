@@ -1,0 +1,23 @@
+syntax: glob
+**.7z
+**.db
+**.pdb
+**.suo
+**.user
+**.vshost.exe
+**.userprefs
+**/bin/**
+**/obj/**
+/Dev/**
+/Build/Installer/**
+/Build/Release/**
+/Build/Run-Mac/**
+/Build/Run/*.dll
+/Build/Run/*.exe
+/Build/Run/*.json
+/Build/Run/*.manifest
+/Build/Run/*.xml
+/Build/Run/Yamster.exe.config
+/Build/Run/Yamster.vshost.exe.config
+/Build/Run/YamsterCmd.exe.config
+sd.ini
