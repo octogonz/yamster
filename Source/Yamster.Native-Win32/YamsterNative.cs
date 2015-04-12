@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -66,9 +67,11 @@ namespace Yamster
             if (errorMessage != null)
             {
                 MessageBox.Show(errorMessage
-                    + "\r\n\r\nFollow the installation steps in the Yamster-Help.html documentation."
+                    + "\r\n\r\nFollow the installation steps in the Yamster documentation."
                     + "  If that doesn't help, please report your issue so we can fix it!",
                     "Yamster!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+
+                Process.Start("https://yamster.codeplex.com/documentation");
             }
         }
     }
