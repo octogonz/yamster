@@ -29,7 +29,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
     <Product Id="*" Name="Yamster!" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Yamster!" UpgradeCode="$(var.ProductUpgradeCode)" >
         <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package" InstallScope="perMachine" />
       
-        <MediaTemplate />
+        <MediaTemplate EmbedCab="yes" />
       
         <Icon Id="ProductIcon" SourceFile="Yamster.ico"/>
 
