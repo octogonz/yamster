@@ -103,7 +103,7 @@ namespace Yamster.Core
         public DateTime LastCheckNewUtc = DateTime.MinValue;
 
         // Whether we have closed all the span gaps for this group,
-        // i.e. if MessagePullerGroupState.Spans.Count <= 1
+        // i.e. if JsonSyncingFeed.Spans.Count <= 1
         public bool HasSpanGaps
         {
             get { return this.Spans.Count > 1; }
