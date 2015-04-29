@@ -9,6 +9,7 @@ syntax: glob
 **/bin/**
 **/obj/**
 /Dev/**
+/Build/Binaries/**
 /Build/Installer/**
 /Build/Release/**
 /Build/Run-Mac/**

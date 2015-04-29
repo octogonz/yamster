@@ -396,6 +396,40 @@ namespace Yamster.Core
                 OnError(ex);
                 return;
             }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = ex.Response as HttpWebResponse;
+                if (response != null && response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    using (var transaction = yamsterArchiveDb.BeginTransaction())
+                    {
+                        // A 404 error indicates that the thread does not exist, i.e. it was deleted
+                        // from Yammer after we started syncing it.  We need to skip it, otherwise
+                        // we'll get stuck in a loop retrying this request.
+                        yamsterCoreDb.SyncingThreads.DeleteRecords("WHERE ThreadId = " + syncingThread.ThreadId);
+
+                        // NOTE: We should also delete the partially synced messages from YamsterCoreDb,
+                        // however this is problematic for YamsterCache, which currently isn't able 
+                        // to flush items (or even to flush everything in a way that wouldn't
+                        // break certain views).  That's only worth implementing if we wanted to
+                        // support deletion in general (either for syncing Yammer deletions, or maybe
+                        // for a user command to clean up the Yamster database), but these scenarios are
+                        // not currently a priority.  Nobody has asked about it.
+                        transaction.Commit();
+                    }
+
+                    // This is rare, so for now just report it to the user as an error.
+                    OnError(new Exception("Failed to sync thread #" + syncingThread.ThreadId 
+                        + " because it appears to have been deleted from Yammer.  (404 error)"));
+
+                    return;
+                }
+                else
+                {
+                    // For all other exception types, keep retrying until successful
+                    throw;
+                }
+            }
 
             using (var transaction = yamsterArchiveDb.BeginTransaction())
             {
