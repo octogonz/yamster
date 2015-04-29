@@ -42,6 +42,8 @@ namespace Yamster.Core
         const string UnprotectedPrefix = "(Unprotected)";
 
         AppContext appContext;
+        string yammerServiceUrl;
+        string appClientId;
         string oAuthToken;
         bool protectTokenWhenSaving;
 
@@ -52,6 +54,34 @@ namespace Yamster.Core
         }
 
         #region Properties
+
+        public string YammerServiceUrl
+        {
+            get { return this.yammerServiceUrl; }
+            set {
+                if (value == null)
+                    throw new ArgumentNullException("AppClientId");
+                Uri parsed = new Uri(value);
+                if (parsed.Scheme != "http" && parsed.Scheme != "https")
+                    throw new ArgumentException("Invalid YammerServiceUrl");
+
+                this.yammerServiceUrl = value.TrimEnd('/');
+            }
+        }
+
+        /// <summary>
+        /// The Yammer ClientId that the application uses for authentication.
+        /// </summary>
+        public string AppClientId
+        {
+            get { return this.appClientId; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("AppClientId");
+                this.appClientId = value;
+            }
+        }
 
         /// <summary>
         /// The session token for accessing the Yammer REST service.
@@ -90,6 +120,8 @@ namespace Yamster.Core
 
         public void ResetDefaults()
         {
+            yammerServiceUrl = "https://www.yammer.com";
+            appClientId = "";
             oAuthToken = "";
             protectTokenWhenSaving = true;
         }
@@ -115,7 +147,11 @@ namespace Yamster.Core
                 {
                     XDocument document = XDocument.Load(streamReader, LoadOptions.SetLineInfo);
 
-                    ReadAuthenticationProperties(document.Root);
+                    var rootElement = document.Root;
+
+                    Version version = new Version(XmlUtilities.GetStringAttribute(rootElement, "Version"));
+
+                    ReadAuthenticationProperties(rootElement, version);
                 }
                 succeeded = true;
             }
@@ -126,9 +162,18 @@ namespace Yamster.Core
             }
         }
 
-        private void ReadAuthenticationProperties(XElement rootElement)
+        private void ReadAuthenticationProperties(XElement rootElement, Version version)
         {
             var authenticationElement = XmlUtilities.GetChildElement(rootElement, "Authentication");
+
+            if (version >= new Version(1,1))
+            {
+                var yammerServiceUrlElement = XmlUtilities.GetChildElement(rootElement, "YammerServiceUrl");
+                this.YammerServiceUrl = yammerServiceUrlElement.Value;
+
+                var appClientIdElement = XmlUtilities.GetChildElement(authenticationElement, "AppClientId");
+                this.AppClientId = appClientIdElement.Value;
+            }
 
             var oAuthTokenElement = XmlUtilities.GetChildElement(authenticationElement, "OAuthToken");
             string unprocessedToken = oAuthTokenElement.Value ?? "";
@@ -173,7 +218,7 @@ namespace Yamster.Core
                     rootElement
                 );
 
-                rootElement.Add(new XAttribute("Version", "1.0"));
+                rootElement.Add(new XAttribute("Version", "1.1"));
                 WriteAuthenticationProperties(rootElement);
 
                 var xmlWriterSettings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
@@ -188,7 +233,11 @@ namespace Yamster.Core
         private void WriteAuthenticationProperties(XElement rootElement)
         {
             var authenticationElement = new XElement("Authentication");
+
+            rootElement.Add(new XElement("YammerServiceUrl", this.YammerServiceUrl));
+
             rootElement.Add(authenticationElement);
+            authenticationElement.Add(new XElement("AppClientId", this.AppClientId));
 
             string processedToken;
             if (string.IsNullOrWhiteSpace(this.OAuthToken))

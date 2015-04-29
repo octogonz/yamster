@@ -80,10 +80,7 @@ namespace Yamster
                 };
 #endif
 
-                AppContext.InitializeDefaultInstance(
-                    consumerKey: "gilIFuo4TQlHm8UJXjek4A",
-                    consumerSecret: "gM7ZAvYQFxQxvaAHITAshabCxLZsEenk4Yjnt9izo"
-                );
+                AppContext.InitializeDefaultInstance();
                 var appContext = AppContext.Default;
                 appContext.ConnectDatabase(
                     (sender, eventArgs) => {

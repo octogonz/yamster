@@ -33,20 +33,16 @@ namespace Yamster.Native
 {
     public class YammerLogonManager
     {
-        public string ConsumerKey { get; private set; }
-        public string ConsumerSecret { get; private set; }
         public string YammerServiceUrl { get; private set; }
+        public string AppClientId { get; private set; }
 
-        public string UserName { get; set; }
         public string AccessToken { get; set; }
 
-        public YammerLogonManager(string consumerKey, string consumerSecret, string yammerServiceUrl)
+        public YammerLogonManager(string yammerServiceUrl, string appClientId)
         {
-            this.ConsumerKey = consumerKey;
-            this.ConsumerSecret = consumerSecret;
             this.YammerServiceUrl = yammerServiceUrl;
+            this.AppClientId = appClientId;
 
-            UserName = "";
             AccessToken = "";
         }
 

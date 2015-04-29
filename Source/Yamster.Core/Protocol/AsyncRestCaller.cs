@@ -290,7 +290,7 @@ namespace Yamster.Core
                     return url;
             }
 
-            return this.appContext.Configuration.WebApiUrl + url;
+            return this.appContext.Settings.YammerServiceUrl + url;
         }
 
         private string getFinalUrl(string method, Dictionary<string, string> parameters, string part)

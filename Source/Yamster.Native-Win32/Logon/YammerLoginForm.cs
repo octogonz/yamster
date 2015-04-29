@@ -24,153 +24,206 @@
 #endregion
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Web;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
 
 namespace Yamster.Native
 {
     internal partial class YammerLoginForm : Form
     {
+        const string oAuthKey = "oauth_token";
+        
+        // The Yammer application should be configured to redirect to this URL.  Because
+        // the OAuth token is appended to this URL as a fragment, it will not be transmitted
+        // over the internet.
+        const string oAuthRedirectUri = "https://www.yammer.com/";
+
         YammerLogonManager yammerLogonManager;
-        bool clearedExampleText = false;
-        bool waitingForLogin = false;
+
+        readonly bool appId;
 
         public YammerLoginForm(YammerLogonManager yammerLogonManager)
         {
-            InitializeComponent();
+            Application.EnableVisualStyles();
 
-            ctlWebBrowser.StatusTextChanged += ctlWebBrowser_StatusTextChanged;
+            InitializeComponent();
 
             this.yammerLogonManager = yammerLogonManager;
 
-            if (!string.IsNullOrWhiteSpace(yammerLogonManager.UserName))
-            {
-                ClearExampleText();
-                txtLoginUser.Text = yammerLogonManager.UserName;
-            }                
-            txtLoginUser.SelectionStart = 0;
-            txtLoginUser.SelectionLength = 0;
+            ctlWebBrowser.StatusTextChanged += ctlWebBrowser_StatusTextChanged;
 
-            UpdateUI();
-        }
+            appId = yammerLogonManager.AppClientId != "";
 
-        protected override void OnShown(EventArgs e)
-        {
-            base.OnShown(e);
+            StartNavigation();
         }
 
         public bool Success { get; private set; }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        string YammerServiceUrl
         {
-            ClearExampleText();
-            
-            waitingForLogin = true;
-            UpdateUI();
-
-            var queryParams = new Dictionary<string, string>
-                {
-                    {"client_id", yammerLogonManager.ConsumerKey},
-                    {"client_secret", yammerLogonManager.ConsumerSecret},
-                    {"login", txtLoginUser.Text},
-                };
-
-            string[] items = queryParams.Keys
-                .Select(key => String.Format("{0}={1}", key, HttpUtility.UrlEncode(queryParams[key])))
-                .ToArray();
-
-            var query = String.Join("&", items);
-
-            string loginUrl = string.Format("{0}/sso_session/access_token?{1}", yammerLogonManager.YammerServiceUrl, query);
-
-            ctlWebBrowser.Navigate(loginUrl);
+            get { return this.yammerLogonManager.YammerServiceUrl; }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        void StartNavigation()
         {
-            CancelLogin();
-        }
-
-        void CancelLogin()
-        {
-            waitingForLogin = false;
-            UpdateUI();
-            ctlWebBrowser.Stop();
             ctlWebBrowser.Navigate("about:blank");
+            Application.DoEvents();
+            txtAddress.Text = "";
+
+            ClearCookies();
+
+            if (appId)
+            {
+                string url = string.Format("{0}/dialog/oauth?response_type=token&client_id={1}&redirect_uri={2}",
+                    this.YammerServiceUrl,
+                    this.yammerLogonManager.AppClientId,
+                    oAuthRedirectUri);
+
+                ctlWebBrowser.Navigate(url);
+            }
+            else
+            {
+                ctlWebBrowser.Navigate(this.YammerServiceUrl + "/login");
+            }
         }
 
-        void UpdateUI()
+        // Reset the browser session and clear cookies (for the current process only).
+        // This ensures that the login starts with a clean slate.
+        void ClearCookies()
         {
-            txtLoginUser.Enabled = !waitingForLogin;
-            btnLogin.Enabled = !waitingForLogin;
-            btnCancel.Enabled = waitingForLogin;
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_END_BROWSER_SESSION, IntPtr.Zero, 0);
+            IntPtr buffer = Marshal.AllocCoTaskMem(4);
+            Marshal.StructureToPtr(INTERNET_SUPPRESS_COOKIE_PERSIST, buffer, true);
+            try
+            {
+                if (!InternetSetOption(IntPtr.Zero, INTERNET_OPTION_SUPPRESS_BEHAVIOR, buffer, 4))
+                {
+                    Debug.WriteLine("InternetSetOption failed");
+                }
+            }
+            finally
+            {
+                Marshal.FreeCoTaskMem(buffer);
+            }
+        }
+
+        #region DllImports
+
+        const int ERROR_INSUFFICIENT_BUFFER = 122;
+        const int INTERNET_COOKIE_HTTPONLY = 0x2000;
+        const int INTERNET_OPTION_END_BROWSER_SESSION = 42;
+        const int INTERNET_OPTION_SUPPRESS_BEHAVIOR = 81;
+        const int INTERNET_SUPPRESS_COOKIE_PERSIST = 3;
+
+        [DllImport("wininet.dll", SetLastError = true)]
+        static extern bool InternetGetCookieEx(string url, string cookieName, StringBuilder cookieData,
+            ref int size, Int32 dwFlags, IntPtr lpReserved);
+
+
+        [DllImport("wininet.dll", SetLastError = true)]
+        private static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int lpdwBufferLength);
+
+        #endregion
+
+
+        private string GetOAuthCookie()
+        {
+            // Determine the size of the cookie
+            int requiredSize = 0;
+
+            if (!InternetGetCookieEx(this.YammerServiceUrl, oAuthKey, null, 
+                ref requiredSize, INTERNET_COOKIE_HTTPONLY, IntPtr.Zero))
+                return null;
+
+            if (requiredSize <= 0)
+                return null;
+
+            StringBuilder builder = new StringBuilder(requiredSize);
+
+            if (!InternetGetCookieEx(this.YammerServiceUrl, oAuthKey, builder,
+                ref requiredSize, INTERNET_COOKIE_HTTPONLY, IntPtr.Zero))
+                return null;
+
+            // "oauth_token=xxx"
+            string pair = builder.ToString();
+            int equalsIndex = pair.IndexOf('=');
+            if (equalsIndex < 0)
+                return null;
+
+            return pair.Substring(equalsIndex+1);
+        }
+
+        private void ctlWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            Debug.WriteLine("Navigating: " + e.Url);
+
+            OnNavigate(e.Url);
         }
 
         private void ctlWebBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            var ssoUrlParser = new SsoUrlParser(e.Url);
-            if (ssoUrlParser.Status == SsoUrlParser.CompleteStatus.Success)
+            Debug.WriteLine("Navigated: " + e.Url);
+
+            txtAddress.Text = e.Url.ToString();
+
+            OnNavigate(e.Url);
+        }
+
+        void OnNavigate(Uri url)
+        {
+            string token = null;
+
+            if (appId)
             {
-                // Delegate.Succeeded(ssoUrlParser.AccessToken, ssoUrlParser.RefreshToken);
-                yammerLogonManager.AccessToken = ssoUrlParser.AccessToken;
-                Success = true;
-                Close();
+                Match match = Regex.Match(url.Fragment, "#access_token=([^=#? ]+)");
+                if (match.Success)
+                {
+                    token = match.Groups[1].Value;
+                }
             }
-            else if (ssoUrlParser.Status == SsoUrlParser.CompleteStatus.Error)
+            else
             {
-                // Delegate.Failed(ssoUrlParser.ErrorMessage);
+                token = GetOAuthCookie();
+            }
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                // Successfully logged in
+                this.yammerLogonManager.AccessToken = token;
+                this.Success = true;
                 ctlWebBrowser.Stop();
-                string error = (ssoUrlParser.ErrorMessage ?? "").Trim();
-                if (error == "")
-                    error = "A general error occurred";
-                string message = "Login failed: " + error
-                    + "\r\n\r\nTroubleshooting hints:"
-                    + "\r\n- Check that your login/password were typed correctly"
-                    + "\r\n- Sometimes SSO login fails due to intermittent network issues; try logging in again"
-                    + "\r\n- Make sure you can successfully login into the Yammer.com web site using Internet Explorer"
-                    + "\r\n- Yammer networks requiring non-SSO authentication are not supported yet"
-                    + "\r\n- If you recently installed GTK#, you may need to reboot your PC";
-                MessageBox.Show(message, "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                CancelLogin();
-            }
-            else if (ssoUrlParser.Status == SsoUrlParser.CompleteStatus.Redirect)
-            {
-                //Delegate.Redirected(ssoUrlParser.RedirectUrl);
-            }
-        }
-
-        private void txtLoginUser_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (waitingForLogin)
-                return;
-            if (e.KeyChar == '\r')
-                btnLogin_Click(sender, e);
-
-            ClearExampleText();
-        }
-
-        private void txtLoginUser_MouseDown(object sender, MouseEventArgs e)
-        {
-            ClearExampleText();
-        }
-
-        void ClearExampleText()
-        {
-            if (!clearedExampleText)
-            {
-                clearedExampleText = true;
-                txtLoginUser.Text = "";
-                txtLoginUser.ForeColor = SystemColors.WindowText;
+                ctlCloseTimer.Enabled = true;
             }
         }
 
         void ctlWebBrowser_StatusTextChanged(object sender, EventArgs e)
         {
             txtStatus.Text = ctlWebBrowser.StatusText;
+        }
+
+        private void btnRetry_Click(object sender, EventArgs e)
+        {
+            StartNavigation();
+        }
+
+        private void ctlCloseTimer_Tick(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            string message = "Troubleshooting hints:"
+                + "\r\n- Check that your login/password were typed correctly"
+                + "\r\n- Sometimes SSO login fails due to intermittent network issues; try logging in again"
+                + "\r\n- Make sure you can successfully login into the Yammer.com web site using Internet Explorer"
+                + "\r\n- If you recently installed GTK#, you may need to reboot your PC";
+            MessageBox.Show(message, "Yamster Login Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

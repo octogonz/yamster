@@ -107,7 +107,6 @@
     <Compile Include="Model\YamsterModelEventCollector.cs" />
     <Compile Include="Model\YamsterNewMessage.cs" />
     <Compile Include="Model\YamsterApiSettings.cs" />
-    <Compile Include="Model\YamsterApiConfig.cs" />
     <Compile Include="Model\YamsterThread.cs" />
     <Compile Include="Model\YamsterUser.cs" />
     <Compile Include="Model\YamsterUserSet.cs" />

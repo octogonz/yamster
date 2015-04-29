@@ -52,7 +52,6 @@
     <Compile Include="..\Common\ProductAssemblyInfo.cs">
       <Link>Common\ProductAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Logon\SsoUrlParser.cs" />
     <Compile Include="Logon\YammerLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>

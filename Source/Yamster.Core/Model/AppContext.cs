@@ -49,20 +49,17 @@ namespace Yamster.Core
 
         AsyncRestCaller asyncRestCaller;
         YamsterApi yamsterApi;
-        YamsterApiConfiguration configuration;
         MessagePuller messagePuller;
         LightweightUserManager userManager;
         ImageCache imageCache;
 
         static AppContext defaultInstance = null;
 
-        public AppContext(YamsterApiConfiguration configuration)
+        public AppContext()
         {
             this.ValidateOsEnvironment();
 
             this.foregroundThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
-
-            this.configuration = configuration;
 
             this.settings = new YamsterApiSettings(this);
             this.settings.Load();
@@ -145,10 +142,9 @@ namespace Yamster.Core
             AppContext.defaultInstance = defaultInstance;
         }
 
-        public static void InitializeDefaultInstance(string consumerKey, string consumerSecret)
+        public static void InitializeDefaultInstance()
         {
-            var config = new YamsterApiConfiguration(consumerKey, consumerSecret);
-            InitializeDefaultInstance(new AppContext(config));
+            InitializeDefaultInstance(new AppContext());
         }
 
         public static void UninitializeDefaultInstance()
@@ -170,7 +166,6 @@ namespace Yamster.Core
             }
         }
 
-        public YamsterApiConfiguration Configuration { get { return this.configuration; } }
         public YamsterApiSettings Settings { get { return this.settings; } }
 
         public AsyncRestCaller AsyncRestCaller { get { return this.asyncRestCaller; } }

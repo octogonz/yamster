@@ -98,10 +98,7 @@ namespace YamsterCmd
 
                 Utils.Log("");
 
-                AppContext.InitializeDefaultInstance(
-                    consumerKey: "gilIFuo4TQlHm8UJXjek4A",
-                    consumerSecret: "gM7ZAvYQFxQxvaAHITAshabCxLZsEenk4Yjnt9izo"
-                );
+                AppContext.InitializeDefaultInstance();
 
                 AppContext.Default.ConnectDatabase(
                     (sender, eventArgs) => {

@@ -145,9 +145,8 @@ namespace Yamster
             }
 
             var yammerLogonManager = new Yamster.Native.YammerLogonManager(
-                appContext.Configuration.ConsumerKey,
-                appContext.Configuration.ConsumerSecret,
-                appContext.Configuration.WebApiUrl);
+                appContext.Settings.YammerServiceUrl,
+                appContext.Settings.AppClientId);
 
             if (!yammerLogonManager.ShowLoginForm())
                 return false;
