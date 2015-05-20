@@ -32,6 +32,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Gdk;
+using Gtk;
 using Yamster.Core;
 
 namespace Yamster
@@ -51,6 +52,13 @@ namespace Yamster
         public ThreadViewerMessageTile(ThreadViewer ownerThreadView = null)
         {
             this.Build();
+
+#if DEBUG
+            // This feature is experimental
+            lblDelete.Visible = true;
+#else
+            lblDelete.Visible = false;
+#endif
 
             this.OwnerThreadView = ownerThreadView;
 
@@ -382,6 +390,15 @@ namespace Yamster
             finally
             {
                 UpdateUI();
+            }
+        }
+
+        protected void lblDelete_ButtonPress(object o, Gtk.ButtonPressEventArgs args)
+        {
+            if (this.LoadedMessage != null)
+            {
+                this.LoadedMessage.Delete();
+                this.lblBody.Text = this.LoadedMessage.Body;
             }
         }
     }

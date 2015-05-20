@@ -5,7 +5,7 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../../../Run/Yamster.exe" internal="true" />
+    <widget-library name="../../../Build/Run/Yamster.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="Yamster.MainWindow" design-size="985 649">
     <action-group name="Default">
@@ -1376,6 +1376,20 @@
                       </packing>
                     </child>
                     <child>
+                      <widget class="Gtk.Label" id="lblDelete">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Delete&lt;/a&gt;</property>
+                        <property name="UseMarkup">True</property>
+                        <signal name="ButtonPressEvent" handler="lblDelete_ButtonPress" />
+                      </widget>
+                      <packing>
+                        <property name="Position">3</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
                       <placeholder />
                     </child>
                     <child>
@@ -1386,7 +1400,7 @@
                       </widget>
                       <packing>
                         <property name="PackType">End</property>
-                        <property name="Position">4</property>
+                        <property name="Position">5</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1429,7 +1443,7 @@
                       </widget>
                       <packing>
                         <property name="PackType">End</property>
-                        <property name="Position">5</property>
+                        <property name="Position">6</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>

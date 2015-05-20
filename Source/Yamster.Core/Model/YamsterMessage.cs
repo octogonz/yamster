@@ -389,6 +389,18 @@ AND [Starred] <> ?",
             }
         }
 
+        public void Delete()
+        {
+            this.YamsterCache.AppContext.YamsterApi.DeleteMessage(this.MessageId);
+
+            // The eventing system doesn't handle deletes yet, so for now just alter
+            // the message body to indicate that it was deleted.
+            var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
+            this.dbMessage.Body = "[DELETED]";
+            yamsterCoreDb.Messages.InsertRecord(this.dbMessage,
+                SQLiteConflictResolution.Replace);
+        }
+
         public override string ToString()
         {
             return GetNotLoadedPrefix() + "Message #" + this.MessageId;

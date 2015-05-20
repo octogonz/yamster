@@ -199,6 +199,28 @@ namespace Yamster.Core
             }
         }
 
+        internal void DeleteMessage(long messageId)
+        {
+            var parameters = new NameValueCollection();
+            parameters["_method"] = "DELETE";
+            string url = string.Format("/api/v1/messages/{0}.json", messageId);
+
+            try
+            {
+                var task = this.asyncRestCaller.PostFormAsync(url, parameters);
+                ForegroundSynchronizationContext.RunSynchronously(task);
+            }
+            catch (WebException ex)
+            {
+                var response = (HttpWebResponse)ex.Response;
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new InvalidOperationException("Unable to delete the message because it was not found on the server");
+                }
+                throw;
+            }
+        }
+
         internal async Task SetMessageLikeStatusAsync(long messageId, bool liked)
         {
             // TODO: Need to schedule this request rather than executing it immediately
@@ -367,6 +389,5 @@ namespace Yamster.Core
         }
 
         #endregion
-
     }
 }
