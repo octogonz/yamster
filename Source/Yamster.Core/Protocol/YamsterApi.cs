@@ -215,7 +215,7 @@ namespace Yamster.Core
                 var response = (HttpWebResponse)ex.Response;
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new InvalidOperationException("Unable to delete the message because it was not found on the server");
+                    throw new InvalidOperationException("Unable to delete the message.  It could have been deleted already, or you might not have permissions.");
                 }
                 throw;
             }
