@@ -39,7 +39,8 @@ namespace YamsterCmd
         None,
         Sync,
         SetGroupSync,
-        PostMessage
+        PostMessage,
+        DeleteSyncedThreads
     }
 
     abstract class Command
@@ -184,10 +185,11 @@ namespace YamsterCmd
     Perform a single REST service call; otherwise, the syncing runs until
     all groups are up to date.
   
-  Attempt to download some messages for the Yammer Groups that were subscribed
-  using the -SetGroupSync command.
+  Examples:
+    YamsterCmd -Sync
+    YamsterCmd -Sync -Continuous -HistoryLimitDays 0
 ");
-                //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
             }
         }
 
@@ -316,14 +318,15 @@ namespace YamsterCmd
     The message body.
 
   -GroupId
-    The integer identifier of the Yammer Group where the message will be posted.
-    If omitted or 0, the message will be posted to the ""All Company"" group.
+    The integer identifier of the Yammer Group where the message will be 
+    posted. If omitted or 0, the message will be posted to 
+    the ""All Company"" group.
 
   Examples:
     YamsterCmd -PostMessage -Body ""Hello to All Company!""
     YamsterCmd -PostMessage -Body ""Hello to private group!"" -GroupId 12345
 ");
-                //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
             }
         }
 
@@ -386,4 +389,196 @@ namespace YamsterCmd
         }
     }
 
+    class DeleteSyncedThreadsCommand : Command
+    {
+        public int GroupId = YamsterGroup.AllCompanyGroupId;
+        public int OlderThanDays;
+        public bool WhatIf;
+
+        public override CommandId CommandId
+        {
+            get { return CommandId.DeleteSyncedThreads; }
+        }
+
+        public override void ShowHelp(bool detailed)
+        {
+            Utils.Log(
+@"YamsterCmd -DeleteSyncedThreads [-GroupId <int>] [-OlderThanDays <int>]
+           [-WhatIf]
+");
+            if (detailed)
+            {
+                Utils.Log(
+@"Permanently deletes discussion threads from Yammer's server.  This command
+only considers messages belonging to a single Yammer group.  It will only
+find messages that have been synced to in Yamster's local database, so you
+should run ""YamsterCmd -Sync"" beforehand.  
+
+  -GroupId <int>
+    Specifies the group whose threads will be deleted.  If omitted, then the
+    ""All Company"" group is used by default.  To find the group id, visit
+    the Group's page on the Yammer web site, and then examine the feedId
+    query parameter from the URL.
+
+  -OlderThanDays
+    If specified, then the command will only delete threads whose most 
+    recent update was older than the given number of days.  Otherwise, it 
+    will delete every thread in the group.
+
+  -WhatIf
+    If specified, then the command will display a report of threads that 
+    would have been deleted, without actually deleting anything.
+
+  Examples:
+    YamsterCmd -DeleteSyncedThreads -GroupId 12345
+    YamsterCmd -DeleteSyncedThreads -OlderThanDays 90 -WhatIf
+");
+//---------------------------------------------------------------------------
+            }
+        }
+
+        public override string Parse(IList<string> args)
+        {
+            for (int i = 0; i < args.Count; ++i)
+            {
+                string flag = args[i];
+
+                string nextArg = null;
+                if (i + 1 < args.Count)
+                    nextArg = args[i + 1];
+
+                switch (flag.ToUpperInvariant())
+                {
+                    case "-GROUPID":
+                        if (!int.TryParse(nextArg, out GroupId)
+                            || GroupId < 1)
+                        {
+                            return "Invalid group ID \"" + nextArg + "\"";
+                        }
+                        ++i; // consume nextArg
+                        break;
+                    case "-OLDERTHANDAYS":
+                        if (!int.TryParse(nextArg, out OlderThanDays)
+                            || OlderThanDays <= 0)
+                        {
+                            return "Invalid OlderThanDays amount \"" + nextArg + "\"";
+                        }
+                        ++i; // consume nextArg
+                        break;
+                    case "-WHATIF":
+                        WhatIf = true;
+                        break;
+                    default:
+                        return "Unrecognized flag \"" + flag + "\"";
+                }
+            }
+            return null;
+        }
+
+        public override void Run()
+        {
+            var appContext = AppContext.Default;
+
+            YamsterGroup group = appContext.YamsterCache.GetGroupById(GroupId);
+
+            Utils.Log("Group Name: \"{0}\"", group.GroupName);
+
+            DateTime? olderThanCutoff = null;
+            if (this.OlderThanDays > 0)
+            {
+                olderThanCutoff = DateTime.Now.Date.AddDays(-OlderThanDays);
+                Utils.Log("Only deleting threads older than {0:yyyy-MM-dd}", olderThanCutoff.Value);
+                Utils.Log("");
+            }
+
+            if (WhatIf)
+            {
+                Utils.Log("Messages that would be deleted:");
+                Utils.Log("");
+
+                ProcessThreads(group, olderThanCutoff, (thread) => {});
+
+                Utils.Log("");
+                Utils.Log("No messages were actually deleted because -WhatIf was specified.");
+            }
+            else
+            {
+                Console.WriteLine("THIS COMMAND WILL PERMANENTLY DELETE MESSAGES FROM YAMMER.\r\n");
+                Console.Write("Are you SURE you want to proceed? [Y/N] ");
+
+                ConsoleKeyInfo reply = Console.ReadKey(intercept: true);
+                if (char.ToUpper(reply.KeyChar) != 'Y')
+                {
+                    Console.WriteLine("N\r\n");
+                    return;
+                }
+                Console.WriteLine("Y\r\n");
+
+                Utils.Log("Connecting to Yammer...");
+                Utils.VerifyLogin(appContext);
+
+                int threadCount = 0;
+                int messageCount = 0;
+
+                ProcessThreads(group, olderThanCutoff, (thread) => 
+                    {
+                        ++threadCount;
+
+                        foreach (YamsterMessage message in thread.Messages.Reverse())
+                        {
+                            Console.Write(".");
+
+                            try
+                            {
+                                message.Delete();
+                            }
+                            catch (YammerObjectNotFoundException ex)
+                            {
+                                Console.Write("X");
+                            }
+                            catch (Exception ex)
+                            {
+                                Utils.Log("");
+                                Utils.Log("ERROR: " + ex.Message);
+                                break;
+                            }
+
+                            ++messageCount;
+                        }
+                        Console.WriteLine();
+                    }
+                );
+
+                Utils.Log("");
+                Utils.Log("Deleted {0} messages from {1} threads", messageCount, threadCount);
+            }
+        }
+
+        void ProcessThreads(YamsterGroup group, DateTime? olderThanCutoff, Action<YamsterThread> action)
+        {
+            // Id         LastUpdate              # Msgs  Message
+            // 187041710  2014-05-23 01:16:04 AM  1       has created the Test Group group.
+            Utils.Log("Id         LastUpdate              # Msgs  Message");
+            Utils.Log("---------- ----------------------- ------- ----------------------------------");
+
+            foreach (YamsterThread thread in group.Threads.OrderBy(x => x.LastUpdate))
+            {
+                if (olderThanCutoff != null)
+                {
+                    if (thread.LastUpdate > olderThanCutoff.Value)
+                        continue;
+                }
+
+                Utils.Log("{0,-10} {1:yyyy-MM-dd hh:mm:ss tt}  {2,-7} {3}",
+                    thread.ThreadId,
+                    thread.LastUpdate,
+                    thread.Messages.Count,
+                    Utilities.TruncateWithEllipsis(
+                        thread.ThreadStarterMessage.GetPreviewText(), 34));
+
+                action(thread);
+            }
+
+        }
+    }
 }

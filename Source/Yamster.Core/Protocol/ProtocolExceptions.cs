@@ -36,6 +36,14 @@ namespace Yamster.Core
 
     }
 
+    public class YammerObjectNotFoundException : Exception
+    {
+        public YammerObjectNotFoundException(string message, Exception innerException = null)
+            : base(message, innerException)
+        {
+        }
+    }
+
     // Indicates that the token has expired or is revoked
     public class TokenNotFoundException : Exception
     {

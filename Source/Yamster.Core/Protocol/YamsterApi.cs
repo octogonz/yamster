@@ -213,9 +213,10 @@ namespace Yamster.Core
             catch (WebException ex)
             {
                 var response = (HttpWebResponse)ex.Response;
-                if (response.StatusCode == HttpStatusCode.BadRequest)
+                if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new InvalidOperationException("Unable to delete the message.  It could have been deleted already, or you might not have permissions.");
+                    throw new YammerObjectNotFoundException("Unable to delete the message.  It could have been deleted already, or you might not have permissions.",
+                        ex);
                 }
                 throw;
             }

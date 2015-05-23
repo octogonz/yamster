@@ -562,7 +562,7 @@ namespace Yamster.Core
             if (!this.groupsById.TryGetValue(groupId, out group))
             {
                 if (!nullIfMissing)
-                    throw new KeyNotFoundException("The group ID " + groupId + " was not found");
+                    throw new KeyNotFoundException("The group ID " + groupId + " was not found in Yamster's local database. (Has it been synced yet?)");
             }
             return group;
         }

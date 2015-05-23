@@ -42,7 +42,8 @@ namespace YamsterCmd
             Commands = new Command[] {
                 new PostMessageCommand(),
                 new SetGroupSyncCommand(),
-                new SyncCommand()
+                new SyncCommand(),
+                new DeleteSyncedThreadsCommand()
             };
 
             try
