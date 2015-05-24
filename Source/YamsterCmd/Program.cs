@@ -24,11 +24,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using Yamster.Core.SQLite;
 using Yamster.Core;
 
 namespace YamsterCmd

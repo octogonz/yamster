@@ -67,8 +67,12 @@
       <Link>Common\ProductAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CommandLine.cs" />
+    <Compile Include="DeleteSyncedThreadsCommand.cs" />
+    <Compile Include="PostMessageCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetGroupSyncCommand.cs" />
+    <Compile Include="SyncCommand.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
