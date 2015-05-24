@@ -76,6 +76,42 @@ namespace Yamster.Core
         // NOTE: Once assigned, this cannot change during the duration of the session.
         public long CurrentNetworkId { get; private set; }
 
+        /// <summary>
+        /// Returns the Yammer user alias that Yamster is using to log in.
+        /// </summary>
+        public string CurrentUserAlias
+        {
+            get
+            {
+                if (this.CurrentUserId == 0)
+                    return "[Unknown]";
+
+                YamsterUser user = this.GetUserById(this.CurrentUserId, nullIfMissing: true);
+                if (user == null)
+                {
+                    return "[User #" + this.CurrentUserId + "]";
+                }
+                return user.Alias;
+            }
+        }
+
+        /// <summary>
+        /// Returns the URL for the currently connected Yammer network.
+        /// Example: "https://www.yammer.com/example.com"
+        /// </summary>
+        public string CurrentNetworkUrl
+        {
+            get
+            {
+                YamsterUser serviceUser = this.GetUserByAlias("yammer", nullIfMissing: true);
+                if (serviceUser == null)
+                    return "";
+                if (serviceUser.WebUrl.StartsWith("http"))
+                    return serviceUser.WebUrl;
+                return "";
+            }
+        }
+
         public YamsterCache(AppContext appContext)
         {
             this.AppContext = appContext;
@@ -612,7 +648,7 @@ namespace Yamster.Core
             return user;
         }
 
-        public YamsterUser GetUserByAlias(string alias)
+        public YamsterUser GetUserByAlias(string alias, bool nullIfMissing = false)
         {
             if (alias == null)
                 throw new ArgumentNullException("alias");
@@ -639,6 +675,8 @@ namespace Yamster.Core
                     throw new InvalidOperationException("The alias \"" + alias + "\" matched more than one user record");
                 }
             }
+            if (nullIfMissing)
+                return null;
             throw new InvalidOperationException("The user alias \"" + alias + "\" was not found in the database");
         }
 

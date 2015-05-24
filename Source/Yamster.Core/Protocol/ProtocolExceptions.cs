@@ -36,9 +36,9 @@ namespace Yamster.Core
 
     }
 
-    public class YammerObjectNotFoundException : Exception
+    public class ServerObjectNotFoundException : Exception
     {
-        public YammerObjectNotFoundException(string message, Exception innerException = null)
+        public ServerObjectNotFoundException(string message, Exception innerException = null)
             : base(message, innerException)
         {
         }

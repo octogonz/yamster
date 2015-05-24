@@ -199,23 +199,25 @@ namespace Yamster.Core
             }
         }
 
-        internal void DeleteMessage(long messageId)
+        internal async Task DeleteMessageAsync(long messageId)
         {
+            // TODO: Need to schedule this request rather than executing it immediately
+            TallyRequest();
+
             var parameters = new NameValueCollection();
             parameters["_method"] = "DELETE";
             string url = string.Format("/api/v1/messages/{0}.json", messageId);
-
             try
             {
-                var task = this.asyncRestCaller.PostFormAsync(url, parameters);
-                ForegroundSynchronizationContext.RunSynchronously(task);
+                await this.asyncRestCaller.PostFormAsync(url, parameters);
             }
             catch (WebException ex)
             {
-                var response = (HttpWebResponse)ex.Response;
+                var response = (HttpWebResponse) ex.Response;
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new YammerObjectNotFoundException("Unable to delete the message.  It could have been deleted already, or you might not have permissions.",
+                    throw new ServerObjectNotFoundException("Unable to delete the message."
+                        + "  It could have been deleted already, or you might not have permissions.",
                         ex);
                 }
                 throw;

@@ -336,6 +336,7 @@ AND [Starred] <> ?",
 
             if (this.busyProcessingServiceCall)
             {
+                // Prevent the UI from queueing multiple requests for the same message
                 throw new InvalidOperationException(
                     "The service is still waiting for a previous operation to complete.  Please try again later.");
             }
@@ -389,9 +390,15 @@ AND [Starred] <> ?",
             }
         }
 
-        public void Delete()
+        public void DeleteFromServer()
         {
-            this.YamsterCache.AppContext.YamsterApi.DeleteMessage(this.MessageId);
+            var task = DeleteFromServerAsync();
+            ForegroundSynchronizationContext.RunSynchronously(task);
+        }
+
+        public async Task DeleteFromServerAsync()
+        {
+            await this.YamsterCache.AppContext.YamsterApi.DeleteMessageAsync(this.MessageId);
 
             // The eventing system doesn't handle deletes yet, so for now just alter
             // the message body to indicate that it was deleted.

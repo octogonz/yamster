@@ -409,15 +409,18 @@ namespace YamsterCmd
             if (detailed)
             {
                 Utils.Log(
-@"Permanently deletes discussion threads from Yammer's server.  This command
-only considers messages belonging to a single Yammer group.  It will only
-find messages that have been synced to in Yamster's local database, so you
-should run ""YamsterCmd -Sync"" beforehand.  
+@"Permanently deletes discussion threads from Yammer's server.  This 
+command deletes all messages belonging to a single Yammer group only.
+It will only find messages that have been synced to in Yamster's local 
+database, so you should run ""YamsterCmd -Sync"" beforehand.
+
+NOTE: In order to delete messages posted by other users, your Yammer
+account must have administrator permissions.
 
   -GroupId <int>
     Specifies the group whose threads will be deleted.  If omitted, then the
-    ""All Company"" group is used by default.  To find the group id, visit
-    the Group's page on the Yammer web site, and then examine the feedId
+    ""All Company"" group is used by default.  To find a group's id, visit
+    the group's page on the Yammer web site, and then take the ""feedId""
     query parameter from the URL.
 
   -OlderThanDays
@@ -481,7 +484,9 @@ should run ""YamsterCmd -Sync"" beforehand.
 
             YamsterGroup group = appContext.YamsterCache.GetGroupById(GroupId);
 
-            Utils.Log("Group Name: \"{0}\"", group.GroupName);
+            Utils.Log("Yammer Network: {0}", appContext.YamsterCache.CurrentNetworkUrl);
+            Utils.Log("Login user: {0}", appContext.YamsterCache.CurrentUserAlias);
+            Utils.Log("Group to delete: \"{0}\"", group.GroupName);
 
             DateTime? olderThanCutoff = null;
             if (this.OlderThanDays > 0)
@@ -490,6 +495,7 @@ should run ""YamsterCmd -Sync"" beforehand.
                 Utils.Log("Only deleting threads older than {0:yyyy-MM-dd}", olderThanCutoff.Value);
                 Utils.Log("");
             }
+            Utils.Log("");
 
             if (WhatIf)
             {
@@ -503,38 +509,57 @@ should run ""YamsterCmd -Sync"" beforehand.
             }
             else
             {
-                Console.WriteLine("THIS COMMAND WILL PERMANENTLY DELETE MESSAGES FROM YAMMER.\r\n");
-                Console.Write("Are you SURE you want to proceed? [Y/N] ");
+                Console.Write(
+@"THIS COMMAND WILL *PERMANENTLY* DELETE MESSAGES FROM YOUR YAMMER NETWORK!
 
-                ConsoleKeyInfo reply = Console.ReadKey(intercept: true);
-                if (char.ToUpper(reply.KeyChar) != 'Y')
+Yamster cannot guarantee that this command will work as expected.  In no event
+shall the authors or copyright holders be liable for any accidental data loss
+or other damages that may result.  Proceed at your own risk!
+
+If accept the risks involved with bulk deleting, and have read the Yamster
+license agreement and accept those terms, then type ""I AGREE"": ");
+
+                string reply = Console.ReadLine();
+                Utils.Log("");
+
+                if (reply.ToUpper().Trim().TrimEnd('.') != "I AGREE")
                 {
-                    Console.WriteLine("N\r\n");
+                    Utils.Log("ERROR: Aborting because you did not agree to the terms.");
                     return;
                 }
-                Console.WriteLine("Y\r\n");
 
                 Utils.Log("Connecting to Yammer...");
                 Utils.VerifyLogin(appContext);
 
                 int threadCount = 0;
-                int messageCount = 0;
+                int deletedMessageCount = 0;
 
                 ProcessThreads(group, olderThanCutoff, (thread) => 
                     {
                         ++threadCount;
 
+                        int messageNumber = 1;
                         foreach (YamsterMessage message in thread.Messages.Reverse())
                         {
-                            Console.Write(".");
+                            bool wroteDot = false;
+                            while (!AppContext.Default.YamsterApi.IsSafeToRequest(increasedPriority: false))
+                            {
+                                if (!wroteDot)
+                                    Console.Write(" ");
+                                Console.Write(".");
+                                wroteDot = true;
+                                Thread.Sleep(2000);
+                            }
 
                             try
                             {
-                                message.Delete();
+                                message.DeleteFromServer();
+                                Console.Write(" " + messageNumber);
+                                ++deletedMessageCount;
                             }
-                            catch (YammerObjectNotFoundException ex)
+                            catch (ServerObjectNotFoundException)
                             {
-                                Console.Write("X");
+                                Console.Write(" E");
                             }
                             catch (Exception ex)
                             {
@@ -542,15 +567,14 @@ should run ""YamsterCmd -Sync"" beforehand.
                                 Utils.Log("ERROR: " + ex.Message);
                                 break;
                             }
-
-                            ++messageCount;
+                            ++messageNumber;
                         }
                         Console.WriteLine();
                     }
                 );
 
                 Utils.Log("");
-                Utils.Log("Deleted {0} messages from {1} threads", messageCount, threadCount);
+                Utils.Log("Deleted {0} messages from {1} threads", deletedMessageCount, threadCount);
             }
         }
 
