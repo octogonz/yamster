@@ -182,6 +182,10 @@ AND [Starred] <> ?",
                 this.YamsterCache.ProcessDbMessageState(newState);
             }
         }
+        public bool Deleted
+        {
+            get { return this.DbMessageState.Deleted; }
+        }
         static internal PropertyInfo Info_Starred = Utilities.GetPropertyInfo(typeof(YamsterMessage), "Starred");
         #endregion
 
@@ -403,9 +407,31 @@ AND [Starred] <> ?",
             // The eventing system doesn't handle deletes yet, so for now just alter
             // the message body to indicate that it was deleted.
             var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
-            this.dbMessage.Body = "[DELETED]";
-            yamsterCoreDb.Messages.InsertRecord(this.dbMessage,
-                SQLiteConflictResolution.Replace);
+            
+            this.MarkAsDeleted();
+        }
+
+        internal void MarkAsDeleted()
+        {
+            if (this.Deleted)
+                return;
+
+            this.Starred = false;
+
+            var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
+
+            yamsterCoreDb.Mapper.ExecuteNonQuery(@"
+UPDATE " + yamsterCoreDb.MessageStates.TableName + @"
+SET [Deleted] = 1
+WHERE [MessageId] = ?",
+                this.messageId
+            );
+
+            // This is correct, but not very elegant
+            var newState = new DbMessageState();
+            newState.CopyFrom(this.dbMessageState);
+            newState.Deleted = true;
+            this.YamsterCache.ProcessDbMessageState(newState);
         }
 
         public override string ToString()

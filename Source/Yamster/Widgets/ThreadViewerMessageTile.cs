@@ -157,6 +157,9 @@ namespace Yamster
                 {
                     ctlLikesHbox.Visible = false;
                 }
+
+                if (this.loadedMessage.Deleted)
+                    this.ShowAsDeleted();
             }
         }
 
@@ -397,9 +400,19 @@ namespace Yamster
         {
             if (this.LoadedMessage != null)
             {
-                this.LoadedMessage.Delete();
-                this.lblBody.Text = this.LoadedMessage.Body;
+                this.LoadedMessage.DeleteFromServer();
+                this.ShowAsDeleted();
             }
+        }
+
+        void ShowAsDeleted()
+        {
+            ctlStarEventBox.Visible = false;
+            lblDelete.Visible = false;
+            lblReply.Visible = false;
+            lblUnlike.Visible = false;
+            lblLike.Visible = false;
+            lblDeleted.Visible = true;
         }
     }
 }

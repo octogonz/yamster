@@ -30,6 +30,8 @@ namespace Yamster
 		
 		private global::Gtk.HBox hbox3;
 		
+		private global::Gtk.Label lblDeleted;
+		
 		private global::Gtk.Label lblLike;
 		
 		private global::Gtk.Label lblUnlike;
@@ -171,56 +173,67 @@ namespace Yamster
 			this.hbox3.Name = "hbox3";
 			this.hbox3.Spacing = 6;
 			// Container child hbox3.Gtk.Box+BoxChild
+			this.lblDeleted = new global::Gtk.Label ();
+			this.lblDeleted.Name = "lblDeleted";
+			this.lblDeleted.Xalign = 0F;
+			this.lblDeleted.LabelProp = global::Mono.Unix.Catalog.GetString ("<i>(Deleted)</i>");
+			this.lblDeleted.UseMarkup = true;
+			this.hbox3.Add (this.lblDeleted);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblDeleted]));
+			w10.Position = 0;
+			w10.Expand = false;
+			w10.Fill = false;
+			// Container child hbox3.Gtk.Box+BoxChild
 			this.lblLike = new global::Gtk.Label ();
 			this.lblLike.Name = "lblLike";
 			this.lblLike.LabelProp = global::Mono.Unix.Catalog.GetString ("<a href=\"\">Like</a>");
 			this.lblLike.UseMarkup = true;
 			this.hbox3.Add (this.lblLike);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblLike]));
-			w10.Position = 0;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblLike]));
+			w11.Position = 1;
+			w11.Expand = false;
+			w11.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.lblUnlike = new global::Gtk.Label ();
 			this.lblUnlike.Name = "lblUnlike";
 			this.lblUnlike.LabelProp = global::Mono.Unix.Catalog.GetString ("<a href=\"\">Unlike</a>");
 			this.lblUnlike.UseMarkup = true;
 			this.hbox3.Add (this.lblUnlike);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblUnlike]));
-			w11.Position = 1;
-			w11.Expand = false;
-			w11.Fill = false;
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblUnlike]));
+			w12.Position = 2;
+			w12.Expand = false;
+			w12.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.lblReply = new global::Gtk.Label ();
 			this.lblReply.Name = "lblReply";
 			this.lblReply.LabelProp = global::Mono.Unix.Catalog.GetString ("<a href=\"\">Reply</a>");
 			this.lblReply.UseMarkup = true;
 			this.hbox3.Add (this.lblReply);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblReply]));
-			w12.Position = 2;
-			w12.Expand = false;
-			w12.Fill = false;
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblReply]));
+			w13.Position = 3;
+			w13.Expand = false;
+			w13.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.lblDelete = new global::Gtk.Label ();
 			this.lblDelete.Name = "lblDelete";
 			this.lblDelete.LabelProp = global::Mono.Unix.Catalog.GetString ("<a href=\"\">Delete</a>");
 			this.lblDelete.UseMarkup = true;
 			this.hbox3.Add (this.lblDelete);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblDelete]));
-			w13.Position = 3;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblDelete]));
+			w14.Position = 4;
+			w14.Expand = false;
+			w14.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.lblTimestamp = new global::Gtk.Label ();
 			this.lblTimestamp.Name = "lblTimestamp";
 			this.lblTimestamp.LabelProp = global::Mono.Unix.Catalog.GetString ("1:20pm 1/2/2013");
 			this.lblTimestamp.Selectable = true;
 			this.hbox3.Add (this.lblTimestamp);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblTimestamp]));
-			w14.PackType = ((global::Gtk.PackType)(1));
-			w14.Position = 5;
-			w14.Expand = false;
-			w14.Fill = false;
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.lblTimestamp]));
+			w15.PackType = ((global::Gtk.PackType)(1));
+			w15.Position = 6;
+			w15.Expand = false;
+			w15.Fill = false;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.ctlStarEventBox = new global::Gtk.EventBox ();
 			this.ctlStarEventBox.Name = "ctlStarEventBox";
@@ -233,31 +246,31 @@ namespace Yamster
 			this.ctlImageStarOn.Name = "ctlImageStarOn";
 			this.ctlImageStarOn.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("Yamster.Resources.Star-OnWhite.png");
 			this.ctlStarHBox.Add (this.ctlImageStarOn);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.ctlStarHBox [this.ctlImageStarOn]));
-			w15.Position = 0;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.ctlStarHBox [this.ctlImageStarOn]));
+			w16.Position = 0;
+			w16.Expand = false;
+			w16.Fill = false;
 			// Container child ctlStarHBox.Gtk.Box+BoxChild
 			this.ctlImageStarOff = new global::Gtk.Image ();
 			this.ctlImageStarOff.Name = "ctlImageStarOff";
 			this.ctlImageStarOff.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("Yamster.Resources.Star-OffWhite.png");
 			this.ctlStarHBox.Add (this.ctlImageStarOff);
-			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.ctlStarHBox [this.ctlImageStarOff]));
-			w16.Position = 1;
-			w16.Expand = false;
-			w16.Fill = false;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.ctlStarHBox [this.ctlImageStarOff]));
+			w17.Position = 1;
+			w17.Expand = false;
+			w17.Fill = false;
 			this.ctlStarEventBox.Add (this.ctlStarHBox);
 			this.hbox3.Add (this.ctlStarEventBox);
-			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.ctlStarEventBox]));
-			w18.PackType = ((global::Gtk.PackType)(1));
-			w18.Position = 6;
-			w18.Expand = false;
-			w18.Fill = false;
-			this.vbox2.Add (this.hbox3);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox3]));
-			w19.Position = 2;
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.ctlStarEventBox]));
+			w19.PackType = ((global::Gtk.PackType)(1));
+			w19.Position = 7;
 			w19.Expand = false;
 			w19.Fill = false;
+			this.vbox2.Add (this.hbox3);
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox3]));
+			w20.Position = 2;
+			w20.Expand = false;
+			w20.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.ctlAttachmentBox = new global::Gtk.EventBox ();
 			this.ctlAttachmentBox.Name = "ctlAttachmentBox";
@@ -267,29 +280,30 @@ namespace Yamster
 			this.ctlAttachmentImage.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("Yamster.Resources.LoadingImage.png");
 			this.ctlAttachmentBox.Add (this.ctlAttachmentImage);
 			this.vbox2.Add (this.ctlAttachmentBox);
-			global::Gtk.Box.BoxChild w21 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.ctlAttachmentBox]));
-			w21.Position = 3;
-			w21.Expand = false;
-			w21.Fill = false;
+			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.ctlAttachmentBox]));
+			w22.Position = 3;
+			w22.Expand = false;
+			w22.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.ctlSeparator = new global::Gtk.HSeparator ();
 			this.ctlSeparator.Name = "ctlSeparator";
 			this.vbox2.Add (this.ctlSeparator);
-			global::Gtk.Box.BoxChild w22 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.ctlSeparator]));
-			w22.PackType = ((global::Gtk.PackType)(1));
-			w22.Position = 4;
-			w22.Expand = false;
-			w22.Fill = false;
-			this.hbox1.Add (this.vbox2);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
-			w23.Position = 1;
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.ctlSeparator]));
+			w23.PackType = ((global::Gtk.PackType)(1));
+			w23.Position = 4;
 			w23.Expand = false;
 			w23.Fill = false;
+			this.hbox1.Add (this.vbox2);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.vbox2]));
+			w24.Position = 1;
+			w24.Expand = false;
+			w24.Fill = false;
 			this.ctlWidgetBox.Add (this.hbox1);
 			this.Add (this.ctlWidgetBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
+			this.lblDeleted.Hide ();
 			this.ctlAttachmentBox.Hide ();
 			this.Hide ();
 			this.lblLike.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.lblLike_ButtonPress);

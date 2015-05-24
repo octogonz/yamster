@@ -1334,6 +1334,21 @@
                     <property name="MemberName" />
                     <property name="Spacing">6</property>
                     <child>
+                      <widget class="Gtk.Label" id="lblDeleted">
+                        <property name="MemberName" />
+                        <property name="Visible">False</property>
+                        <property name="Xalign">0</property>
+                        <property name="LabelProp" translatable="yes">&lt;i&gt;(Deleted)&lt;/i&gt;</property>
+                        <property name="UseMarkup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="Position">0</property>
+                        <property name="AutoSize">True</property>
+                        <property name="Expand">False</property>
+                        <property name="Fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="Gtk.Label" id="lblLike">
                         <property name="MemberName" />
                         <property name="LabelProp" translatable="yes">&lt;a href=""&gt;Like&lt;/a&gt;</property>
@@ -1341,7 +1356,7 @@
                         <signal name="ButtonPressEvent" handler="lblLike_ButtonPress" />
                       </widget>
                       <packing>
-                        <property name="Position">0</property>
+                        <property name="Position">1</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1355,7 +1370,7 @@
                         <signal name="ButtonPressEvent" handler="lblUnlike_ButtonPress" />
                       </widget>
                       <packing>
-                        <property name="Position">1</property>
+                        <property name="Position">2</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1369,7 +1384,7 @@
                         <signal name="ButtonPressEvent" handler="lblReply_ButtonPress" />
                       </widget>
                       <packing>
-                        <property name="Position">2</property>
+                        <property name="Position">3</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1383,7 +1398,7 @@
                         <signal name="ButtonPressEvent" handler="lblDelete_ButtonPress" />
                       </widget>
                       <packing>
-                        <property name="Position">3</property>
+                        <property name="Position">4</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1400,7 +1415,7 @@
                       </widget>
                       <packing>
                         <property name="PackType">End</property>
-                        <property name="Position">5</property>
+                        <property name="Position">6</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
@@ -1443,7 +1458,7 @@
                       </widget>
                       <packing>
                         <property name="PackType">End</property>
-                        <property name="Position">6</property>
+                        <property name="Position">7</property>
                         <property name="AutoSize">True</property>
                         <property name="Expand">False</property>
                         <property name="Fill">False</property>
