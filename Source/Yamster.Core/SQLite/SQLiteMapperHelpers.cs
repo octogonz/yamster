@@ -59,7 +59,7 @@ namespace Yamster.Core.SQLite
 
     public abstract class MappedRecordWithChangeTracking : IMappedRecordWithChangeTracking
     {
-        [SQLiteMapperProperty(Nullable = OptionalBool.False)]
+        [SQLiteMapperProperty(Nullable = OptionalBool.False, SqlDefaultValue = -1)]
         public long ChangeNumber { get; set; }
 
         public void CopyFrom(MappedRecordWithChangeTracking source)
@@ -198,6 +198,8 @@ namespace Yamster.Core.SQLite
                 }
 
                 column.Nullable = nullable;
+                column.SqlDefaultValue = attribute.SqlDefaultValue;
+
                 columnSet.Columns.Add(column);
             }
             return columnSet;
@@ -354,12 +356,10 @@ namespace Yamster.Core.SQLite
                 if (!column.Nullable)
                     builder.Append(" NOT NULL");
 
-                if (mappedTable.TrackChanges)
+                if (column.SqlDefaultValue != null)
                 {
-                    if (StringComparer.OrdinalIgnoreCase.Equals(column.Name, SQLiteMapper.ChangeNumberColumnName))
-                    {
-                        builder.Append(" DEFAULT -1");
-                    }
+                    string literal = SQLiteMapperHelpers.GetSqlLiteralForValue(column.SqlDefaultValue, column);
+                    builder.Append(" DEFAULT " + literal);
                 }
             }
 
@@ -494,6 +494,30 @@ namespace Yamster.Core.SQLite
                     return "REAL";
                 default:
                     throw new ArgumentException("Invalid affinity: " + affinity.ToString());
+            }
+        }
+
+        private static string GetSqlLiteralForValue(object value, MappedColumn column)
+        {
+            object sqlValue = ConvertObjectToSql(column.FieldType, value);
+
+            if (sqlValue == null)
+                return "NULL";
+
+            switch (column.Affinity)
+            {
+                case TypeAffinity.Text:
+                case TypeAffinity.DateTime:
+                    string stringValue = (string)sqlValue;
+                    return "'" + stringValue.Replace("'", "''") + "'";
+                case TypeAffinity.Int64:
+                    long longValue = Convert.ToInt64(sqlValue);
+                    return longValue.ToString();
+                case TypeAffinity.Double:
+                    double doubleValue = Convert.ToDouble(sqlValue);
+                    return doubleValue.ToString();
+                default:
+                    throw new NotImplementedException();
             }
         }
     }

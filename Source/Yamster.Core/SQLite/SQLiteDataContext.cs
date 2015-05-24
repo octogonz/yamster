@@ -153,6 +153,23 @@ namespace Yamster.Core.SQLite
                                 + "The " + SQLiteMapper.ChangeNumberColumnName + " column cannot be nullable");
                         }
 
+                        bool defaultValueOkay = false;                        
+                        try
+                        {
+                            long value = (long)SQLiteMapperHelpers.ConvertObjectToSql(typeof(long), column.SqlDefaultValue);
+                            if (value == -1)
+                                defaultValueOkay = true;
+                        }
+                        catch
+                        {
+                        }
+                        
+                        if (!defaultValueOkay)
+                        {
+                            throw new InvalidOperationException(errorPrefix
+                                + "The " + SQLiteMapper.ChangeNumberColumnName + " column must have -1 as its default value");
+                        }
+
                     }
                 }
 

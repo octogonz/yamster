@@ -268,12 +268,18 @@ namespace Yamster.Core
         [SQLiteMapperProperty]
         public bool Starred = false;
 
+        // Specify a default value because the upgrader can't add a column without
+        // providing a default value.
+        [SQLiteMapperProperty(SqlDefaultValue = false)]
+        public bool Deleted = false;
+
         public void CopyFrom(DbMessageState source)
         {
             base.CopyFrom(source);
             this.MessageId = source.MessageId;
             this.Read = source.Read;
             this.Starred = source.Starred;
+            this.Deleted = source.Deleted;
         }
     }
 

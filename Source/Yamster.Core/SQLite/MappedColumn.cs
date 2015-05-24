@@ -42,6 +42,13 @@ namespace Yamster.Core.SQLite
 
         public bool PrimaryKey { get; set; }
         public OptionalBool Nullable { get; set; }
+
+        /// <summary>
+        /// This is the default value for the underlying SQL table.
+        /// The SQLiteMapper will not necessarily recognize it, since C# properties
+        /// can have their own defaults.
+        /// </summary>
+        public object SqlDefaultValue { get; set; }
     }
 
     public class MappedColumn : FreezableObject
@@ -50,8 +57,9 @@ namespace Yamster.Core.SQLite
         Type fieldType;
         TypeAffinity affinity;
 
-        bool nullable;
-        bool primaryKey;
+        bool nullable = false;
+        object sqlDefaultValue = null;
+        bool primaryKey = false;
 
         public MappedColumn(string name, Type fieldType, TypeAffinity affinity)
         {
@@ -71,6 +79,36 @@ namespace Yamster.Core.SQLite
             {
                 base.RequireNotFrozen();
                 this.nullable = value;
+            }
+        }
+
+        /// <summary>
+        /// This is the default value for the underlying SQL table.
+        /// The SQLiteMapper will not necessarily recognize it, since C# properties
+        /// can have their own defaults.
+        /// </summary>
+        public object SqlDefaultValue
+        {
+            get { return this.sqlDefaultValue; }
+            set
+            {
+                base.RequireNotFrozen();
+
+                if (value == null)
+                {
+                    // It is legal for a non-nullable field to have null as its default value,
+                    // since this merely asserts that the INSERT statement should provide it.
+                    // However for this case, we need to skip the validation.
+                    this.sqlDefaultValue = value;
+                }
+                else
+                {
+                    // Make sure the provided type is convertible
+                    object sqlValue = SQLiteMapperHelpers.ConvertObjectToSql(this.fieldType, value);
+                    object normalizedValue = SQLiteMapperHelpers.ConvertSqlToObject(this.fieldType, sqlValue);
+
+                    this.sqlDefaultValue = normalizedValue;
+                }
             }
         }
 
