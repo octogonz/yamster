@@ -279,7 +279,7 @@ namespace Yamster.Core
                     thread = new YamsterThread(threadId, message.Group, this);
                     threadsById.Add(threadId, thread);
                     eventCollector.NotifyAfterAdd(thread);
-                    message.Group.AddThread(thread);
+                    message.Group.AddThread(thread, eventCollector);
 
                     thread.AddMessage(message, eventCollector);
 
@@ -497,20 +497,22 @@ namespace Yamster.Core
         public IEnumerable<YamsterGroup> GetAllGroups()
         {
             return groupsById.Values
-                    .Where(x => x.ShowInYamster)
-                    .OrderBy(x => x.GroupName);
+                .Where(x => x.ShowInYamster)
+                .OrderBy(x => x.GroupName);
         }
 
-        public IEnumerable<YamsterThread> GetAllThreads()
+        public IEnumerable<YamsterThread> GetAllThreads(bool includeDeleted = false)
         {
             return threadsById.Values
-                    .Where(x => x.Group.ShowInYamster);
+                .Where(x => x.Group.ShowInYamster 
+                    && (includeDeleted || !x.AllMessagesDeleted));
         }
 
-        public IEnumerable<YamsterMessage> GetAllMessages()
+        public IEnumerable<YamsterMessage> GetAllMessages(bool includeDeleted = false)
         {
             return messagesById.Values
-                    .Where(x => x.Group.ShowInYamster);
+                .Where(x => x.Group.ShowInYamster 
+                    && (includeDeleted || !x.Deleted));
         }
 
         public IEnumerable<YamsterUser> GetAllUsers()

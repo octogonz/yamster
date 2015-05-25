@@ -24,14 +24,12 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Yamster.Core.SQLite;
-using System.Reflection;
 
 namespace Yamster.Core
 {
@@ -162,6 +160,7 @@ namespace Yamster.Core
             set
             {
                 this.RequireLoaded();
+                this.RequireNotDeleted();
 
                 var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
 
@@ -182,10 +181,20 @@ AND [Starred] <> ?",
                 this.YamsterCache.ProcessDbMessageState(newState);
             }
         }
+        
+        /// <summary>
+        /// If true, then this message was seen by Yamster at one time, but was later deleted from the Yammer
+        /// service.
+        /// </summary>
+        /// <remarks>
+        /// Due to limitations of the protocol, currently Yamster generally doesn't detect 
+        /// deleted messages unless they were deleted using Yamster.
+        /// </remarks>
         public bool Deleted
         {
             get { return this.DbMessageState.Deleted; }
         }
+
         static internal PropertyInfo Info_Starred = Utilities.GetPropertyInfo(typeof(YamsterMessage), "Starred");
         #endregion
 
@@ -300,9 +309,22 @@ AND [Starred] <> ?",
                 throw new ArgumentException("Cannot change ID");
 
             bool oldRead = this.Read;
+            bool oldDeleted = this.Deleted;
             this.dbMessageState = newValue;
 
-            if (this.Read != oldRead)
+            if (this.Deleted != oldDeleted)
+            {
+                // Remove and re-add the message so it moves to the appropriate
+                // collection (YamsterThread.Messages or DeletedMessages).
+                // (Note that NotifyMessageReadChanged() assumes that the message
+                // is in the right collection.)
+                this.Thread.RemoveMessage(this, eventCollector);
+                this.Thread.AddMessage(this, eventCollector);
+
+                this.cachedPreviewText = null;
+            }
+
+            if (this.Read != oldRead && !this.Deleted)
             {
                 this.Thread.NotifyMessageReadChanged(this.Read, eventCollector);
             }
@@ -322,6 +344,8 @@ AND [Starred] <> ?",
             if (cachedPreviewText == null)
             {
                 string text = this.Body;
+                if (this.Deleted) 
+                    text = "[Deleted] " + text;
                 if (!string.IsNullOrWhiteSpace(this.AttachmentWebUrl))
                     text += " (image)";
                 text = Regex.Replace(text, "[\r\n\t ]+", " ").Trim();
@@ -335,6 +359,9 @@ AND [Starred] <> ?",
         /// </summary>
         public async Task SetLikeStatusAsync(bool liked, bool forceUpdate=false)
         {
+            this.RequireLoaded();
+            this.RequireNotDeleted();
+
             if (this.LikedByCurrentUser == liked && !forceUpdate)
                 return;
 
@@ -416,8 +443,6 @@ AND [Starred] <> ?",
             if (this.Deleted)
                 return;
 
-            this.Starred = false;
-
             var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
 
             yamsterCoreDb.Mapper.ExecuteNonQuery(@"
@@ -432,6 +457,16 @@ WHERE [MessageId] = ?",
             newState.CopyFrom(this.dbMessageState);
             newState.Deleted = true;
             this.YamsterCache.ProcessDbMessageState(newState);
+
+            Debug.Assert(this.Deleted);
+        }
+
+        void RequireNotDeleted()
+        {
+            if (this.Deleted)
+            {
+                throw new InvalidOperationException("This operation cannot be performed because message has been deleted.");
+            }
         }
 
         public override string ToString()

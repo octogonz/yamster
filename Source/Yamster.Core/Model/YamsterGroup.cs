@@ -44,7 +44,8 @@ namespace Yamster.Core
         DbGroup dbGroup;
         DbGroupState dbGroupState;
 
-        List<YamsterThread> threadsInternal = new List<YamsterThread>();
+        readonly List<YamsterThread> threadsInternal = new List<YamsterThread>();
+        readonly List<YamsterThread> deletedThreadsInternal = new List<YamsterThread>();
         int readThreadCount = 0;
 
         internal YamsterGroup(long groupId, YamsterCache yamsterCache)
@@ -73,6 +74,16 @@ namespace Yamster.Core
             {
                 return new ReadOnlyCollection<YamsterThread>(
                     this.threadsInternal
+                );
+            }
+        }
+
+        public ReadOnlyCollection<YamsterThread> DeletedThreads
+        {
+            get
+            {
+                return new ReadOnlyCollection<YamsterThread>(
+                    this.deletedThreadsInternal
                 );
             }
         }
@@ -111,10 +122,6 @@ namespace Yamster.Core
         public bool ShowInYamster
         {
             get { return this.DbGroupState.ShowInYamster; }
-            set
-            {
-                this.DbGroupState.ShowInYamster = value;
-            }
         }
 
         public bool ShouldSync
@@ -122,6 +129,8 @@ namespace Yamster.Core
             get { return this.DbGroupState.ShouldSync; }
             set
             {
+                this.RequireLoaded();
+
                 var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
 
                 yamsterCoreDb.Mapper.ExecuteNonQuery(@"
@@ -150,6 +159,8 @@ AND [ShouldSync] <> ?",
             get { return this.DbGroupState.TrackRead; }
             set
             {
+                this.RequireLoaded();
+
                 var yamsterCoreDb = this.YamsterCache.AppContext.YamsterCoreDb;
 
                 yamsterCoreDb.Mapper.ExecuteNonQuery(@"
@@ -209,11 +220,59 @@ AND [TrackRead] <> ?",
             eventCollector.NotifyAfterUpdate(this);
         }
 
-        internal void AddThread(YamsterThread thread)
+        internal void AddThread(YamsterThread thread, YamsterModelEventCollector eventCollector)
         {
-            this.threadsInternal.Add(thread);
-            if (thread.Read)
-                ++readThreadCount;
+            int index = this.threadsInternal.BinarySearch(thread,
+                Comparer<YamsterThread>.Create((x, y) => Math.Sign(x.ThreadId - y.ThreadId)));
+            int deletedIndex = this.deletedThreadsInternal.BinarySearch(thread,
+                Comparer<YamsterThread>.Create((x, y) => Math.Sign(x.ThreadId - y.ThreadId)));
+
+            if (index >= 0 || deletedIndex >= 0)
+            {
+                throw new InvalidOperationException("Program Bug: The message was already added to this thread");
+            }
+
+            if (!thread.AllMessagesDeleted)
+            {
+                this.threadsInternal.Insert(~index, thread);
+
+                if (thread.Read)
+                {
+                    this.NotifyThreadReadChanged(newReadValue: true, eventCollector: eventCollector);
+                }
+            }
+            else
+            {
+                this.deletedThreadsInternal.Insert(~deletedIndex, thread);
+            }
+        }
+
+        internal void RemoveThread(YamsterThread thread, YamsterModelEventCollector eventCollector)
+        {
+            int index = this.threadsInternal.BinarySearch(thread,
+                Comparer<YamsterThread>.Create((x, y) => Math.Sign(x.ThreadId - y.ThreadId)));
+            int deletedIndex = this.deletedThreadsInternal.BinarySearch(thread,
+                Comparer<YamsterThread>.Create((x, y) => Math.Sign(x.ThreadId - y.ThreadId)));
+
+            if (index < 0 && deletedIndex < 0)
+            {
+                Debug.Assert(false, "RemoveThread() called on thread that doesn't belong to this group");
+                return;
+            }
+
+            if (index >= 0)
+            {
+                this.threadsInternal.RemoveAt(index);
+
+                if (thread.Read)
+                {
+                    this.NotifyThreadReadChanged(newReadValue: false, eventCollector: eventCollector);
+                }
+            }
+            else
+            {
+                this.deletedThreadsInternal.RemoveAt(deletedIndex);
+            }
         }
         
         internal void NotifyThreadReadChanged(bool newReadValue, YamsterModelEventCollector eventCollector)

@@ -106,8 +106,8 @@ namespace Yamster
             col_NewThread.GtkColumn.Alignment = 0.5f;
             col_NewThread.CellRenderer.Xalign = 0.5f;
 
-            ctlGrid.AddTextColumn("Started By", 100, (YamsterThread thread) => thread.Messages.First().SenderName);
-            ctlGrid.AddTextColumn("Preview", 100, (YamsterThread thread) => thread.Messages.First().GetPreviewText());
+            ctlGrid.AddTextColumn("Started By", 100, (YamsterThread thread) => thread.ThreadStarterMessage.SenderName);
+            ctlGrid.AddTextColumn("Preview", 100, (YamsterThread thread) => thread.ThreadStarterMessage.GetPreviewText());
             ctlGrid.AddDateColumn("Last Update", 150, (YamsterThread thread) => thread.LastUpdate);
             ctlGrid.AddTextColumn("Group", 100, (YamsterThread thread) => thread.Group.GroupName);
             ctlGrid.AddInt32Column("# Yams", 100, (YamsterThread thread) => thread.Messages.Count);

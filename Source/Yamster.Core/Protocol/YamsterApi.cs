@@ -213,12 +213,15 @@ namespace Yamster.Core
             }
             catch (WebException ex)
             {
-                var response = (HttpWebResponse) ex.Response;
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                if (ex.Response != null)
                 {
-                    throw new ServerObjectNotFoundException("Unable to delete the message."
-                        + "  It could have been deleted already, or you might not have permissions.",
-                        ex);
+                    var response = (HttpWebResponse) ex.Response;
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        throw new ServerObjectNotFoundException("Unable to delete the message."
+                            + "  It could have been deleted already, or you might not have permissions.",
+                            ex);
+                    }
                 }
                 throw;
             }

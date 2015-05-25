@@ -42,7 +42,8 @@ namespace Yamster.Core
 
         DbThreadState dbThreadState;
 
-        List<YamsterMessage> messagesInternal = new List<YamsterMessage>();
+        readonly List<YamsterMessage> messagesInternal = new List<YamsterMessage>();
+        readonly List<YamsterMessage> deletedMessagesInternal = new List<YamsterMessage>();
         int readMessageCount = 0;
         YamsterUserSet participants;
         int totalLikesCount = 0;
@@ -80,6 +81,37 @@ namespace Yamster.Core
         }
 
         /// <summary>
+        /// Returns messages that were deleted from this thread, i.e. where
+        /// YamsterMessage.Deleted = true.
+        /// </summary>
+        /// <remarks>
+        /// Due to limitations of the protocol, currently Yamster generally doesn't detect 
+        /// deleted messages unless they were deleted using Yamster.
+        /// </remarks>
+        public ReadOnlyCollection<YamsterMessage> DeletedMessages
+        {
+            get
+            {
+                return new ReadOnlyCollection<YamsterMessage>(
+                    this.deletedMessagesInternal
+                );
+            }
+        }
+
+        /// <summary>
+        /// Returns true if all the messages in the thread have been deleted.
+        /// Note that this status can change if there are non-deleted messages that
+        /// Yamster has not discovered yet (e.g. via syncing or database change detection).
+        /// </summary>
+        public bool AllMessagesDeleted
+        {
+            get 
+            {
+                return this.messagesInternal.Count == 0; 
+            }
+        }
+
+        /// <summary>
         /// Returns the timestamp of the most recent message in the thread, i.e. the last
         /// time a user posted to this thread.
         /// </summary>
@@ -87,7 +119,11 @@ namespace Yamster.Core
         {
             get
             {
-                return this.messagesInternal.Last().CreatedDate;
+                if (this.messagesInternal.Count > 0)
+                    return this.messagesInternal.Last().CreatedDate;
+                if (this.deletedMessagesInternal.Count > 0)
+                    return this.deletedMessagesInternal.Last().CreatedDate;
+                throw new InvalidOperationException("Program Bug: The thread contains no messages");
             }
         }
 
@@ -99,7 +135,6 @@ namespace Yamster.Core
         {
             get
             {
-                // Debug.Assert(totalLikesCount == this.messagesInternal.Sum(x => x.LikesCount));
                 return this.totalLikesCount; 
             }
         }
@@ -113,10 +148,13 @@ namespace Yamster.Core
         {
             get
             {
+                // NOTE: If messagesInternal.Count=0 and readMessageCount=0,
+                // we consider the thread to be "unread"
                 if (readMessageCount == 0)
                     return YamsterMessagesRead.None;
                 if (readMessageCount == this.messagesInternal.Count)
                     return YamsterMessagesRead.All;
+
                 return YamsterMessagesRead.Some;
             }
         }
@@ -134,7 +172,11 @@ namespace Yamster.Core
         {
             get
             {
-                return this.Messages.First();
+                if (this.messagesInternal.Count > 0)
+                    return this.messagesInternal[0];
+                if (this.deletedMessagesInternal.Count > 0)
+                    return this.deletedMessagesInternal[0];
+                throw new InvalidOperationException("Program Bug: The thread contains no messages");
             }
         }
 
@@ -177,30 +219,89 @@ namespace Yamster.Core
             // Insert sorted by MessageId
             int index = this.messagesInternal.BinarySearch(message,
                 Comparer<YamsterMessage>.Create((x, y) => Math.Sign(x.MessageId - y.MessageId)));
-            if (index >= 0)
+            int deletedIndex = this.deletedMessagesInternal.BinarySearch(message,
+                Comparer<YamsterMessage>.Create((x, y) => Math.Sign(x.MessageId - y.MessageId)));
+
+            if (index >= 0 || deletedIndex >= 0)
             {
                 throw new InvalidOperationException("Program Bug: The message was already added to this thread");
             }
 
-            bool oldThreadRead = this.Read;
+            bool oldAllMessagesDeleted = this.AllMessagesDeleted;
 
-            this.messagesInternal.Insert(~index, message);
-            message.NotifyAddedToThread(this);
-
-            if (message.Read)
-                ++readMessageCount;
-
-            if (this.Read != oldThreadRead)
+            if (!message.Deleted)
             {
-                this.Group.NotifyThreadReadChanged(this.Read, eventCollector);
+
+                this.messagesInternal.Insert(~index, message);
+                message.NotifyAddedToThread(this);
+
+                if (message.Read)
+                {
+                    // Increment the read message counter
+                    this.NotifyMessageReadChanged(newReadValue: true, eventCollector: eventCollector);
+                }
+
+                NotifyTotalLikesChanged(+message.LikesCount, eventCollector);
+
+                // Adding a message changes LastUpdate, Messages.Count, and possibly other properties
+                // like TotalLikesCount
+                eventCollector.NotifyAfterUpdate(this);
+            }
+            else
+            {
+                this.deletedMessagesInternal.Insert(~deletedIndex, message);
             }
 
-            this.totalLikesCount += message.LikesCount;
-            Debug.Assert(totalLikesCount == this.messagesInternal.Sum(x => x.LikesCount));
+            if (oldAllMessagesDeleted != this.AllMessagesDeleted)
+            {
+                // Remove and re-add the thread so it moves to the appropriate
+                // collection (YamsterGroup.Threads or DeletedThreads)
+                this.Group.RemoveThread(this, eventCollector);
+                this.Group.AddThread(this, eventCollector);
+            }
+        }
 
-            // Adding a message changes LastUpdate, Messages.Count, and possibly other properties
-            // like TotalLikesCount
-            eventCollector.NotifyAfterUpdate(this);
+        internal void RemoveMessage(YamsterMessage message, YamsterModelEventCollector eventCollector)
+        {
+            int index = this.messagesInternal.BinarySearch(message,
+                Comparer<YamsterMessage>.Create((x, y) => Math.Sign(x.MessageId - y.MessageId)));
+            int deletedIndex = this.deletedMessagesInternal.BinarySearch(message,
+                Comparer<YamsterMessage>.Create((x, y) => Math.Sign(x.MessageId - y.MessageId)));
+
+            if (index < 0 && deletedIndex < 0)
+            {
+                Debug.Assert(false, "RemoveMessage() called on message that doesn't belong to this thread");
+                return;
+            }
+
+            if (index >= 0)
+            {
+                bool oldAllMessagesDeleted = this.AllMessagesDeleted;
+
+                this.messagesInternal.RemoveAt(index);
+
+                if (oldAllMessagesDeleted != this.AllMessagesDeleted)
+                {
+                    // Remove and re-add the thread so it moves to the appropriate
+                    // collection (YamsterGroup.Threads or DeletedThreads)
+                    // (Note that NotifyMessageReadChanged() assumes that the thread
+                    // is in the right collection.)
+                    this.Group.RemoveThread(this, eventCollector);
+                    this.Group.AddThread(this, eventCollector);
+                }
+
+                if (message.Read && !message.Deleted)
+                {
+                    // Decrement the read message counter
+                    this.NotifyMessageReadChanged(newReadValue: false, eventCollector: eventCollector);
+                }
+
+                this.NotifyTotalLikesChanged(-message.LikesCount, eventCollector);
+            }
+            else
+            {
+                this.deletedMessagesInternal.RemoveAt(deletedIndex);
+            }
         }
 
         internal void NotifyMessageReadChanged(bool newReadValue, YamsterModelEventCollector eventCollector)
@@ -212,9 +313,9 @@ namespace Yamster.Core
             else
                 --readMessageCount;
 
-            Debug.Assert(readMessageCount >= 0 && readMessageCount <= messagesInternal.Count);
+            Debug.Assert(readMessageCount == this.messagesInternal.Where(x => x.Read).Count());
             
-            if (this.Read != oldThreadRead)
+            if (this.Read != oldThreadRead && !this.AllMessagesDeleted)
             {
                 this.Group.NotifyThreadReadChanged(this.Read, eventCollector);
                 eventCollector.NotifyAfterUpdate(this);
@@ -223,6 +324,8 @@ namespace Yamster.Core
 
         internal void NotifyTotalLikesChanged(int totalLikesCountDelta, YamsterModelEventCollector eventCollector)
         {
+            if (totalLikesCountDelta == 0)
+                return;
             this.totalLikesCount += totalLikesCountDelta;
             Debug.Assert(totalLikesCount == this.messagesInternal.Sum(x => x.LikesCount));
             eventCollector.NotifyAfterUpdate(this);
