@@ -184,6 +184,8 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                 int threadCount = 0;
                 int deletedMessageCount = 0;
 
+                YamsterMessage lastMessageAttempted = null;
+
                 try
                 {
                     ProcessThreads(group, olderThanCutoff,
@@ -211,6 +213,7 @@ license agreement and accept those terms, then type ""I AGREE"": ");
 
                                     try
                                     {
+                                        lastMessageAttempted = message;
                                         message.DeleteFromServer();
                                         Console.Write(" " + messageNumber);
                                         ++deletedMessageCount;
@@ -223,8 +226,7 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                                     {
                                         if (!this.IgnoreErrors)
                                             throw;
-                                        Utils.Log("");
-                                        Utils.Log("ERROR: " + ex.Message);
+                                        ShowMessageDeletionError(ex, lastMessageAttempted);
                                     }
                                 }
 
@@ -236,12 +238,23 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                 }
                 catch (Exception ex)
                 {
-                    Utils.Log("");
-                    Utils.Log("ERROR: " + ex.Message);
+                    ShowMessageDeletionError(ex, lastMessageAttempted);
                 }
 
                 Utils.Log("");
                 Utils.Log("Deleted {0} messages from {1} threads", deletedMessageCount, threadCount);
+            }
+        }
+
+        private void ShowMessageDeletionError(Exception ex, YamsterMessage lastMessageAttempted)
+        {
+            Utils.Log("");
+            Utils.Log("ERROR: " + ex.Message);
+            if (lastMessageAttempted != null)
+            {
+                Utils.Log("  while deleting Message #{0} posted by {1}",
+                    lastMessageAttempted.MessageId,
+                    lastMessageAttempted.SenderName);
             }
         }
 
