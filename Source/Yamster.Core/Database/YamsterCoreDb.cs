@@ -242,6 +242,13 @@ namespace Yamster.Core
                 coreMessage.AttachmentWidth = firstImageAttachment.Width ?? 0;
                 coreMessage.AttachmentHeight = firstImageAttachment.Height ?? 0;                
             }
+
+
+            if (!Enum.TryParse(message.MessageType, true, out coreMessage.MessageType))
+            {
+                coreMessage.MessageType = DbMessageType.Unknown;
+            }
+
             Messages.InsertRecord(coreMessage, SQLiteConflictResolution.Replace);
 
             DbMessageState messageState = new DbMessageState() { MessageId = archiveMessage.Id };

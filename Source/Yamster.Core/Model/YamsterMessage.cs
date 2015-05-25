@@ -147,6 +147,8 @@ namespace Yamster.Core
         public int AttachmentWidth { get { return DbMessage.AttachmentWidth; } }
         public int AttachmentHeight { get { return DbMessage.AttachmentHeight; } }
 
+        public DbMessageType MessageType { get { return DbMessage.MessageType; } }
+
         #endregion
 
         #region DbMessageState Properties

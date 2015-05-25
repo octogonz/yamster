@@ -417,6 +417,12 @@ END;
                 {
                     this.Mapper.ExecuteNonQuery(@"ALTER TABLE [MessageStates] ADD COLUMN [Deleted] INTEGER NOT NULL DEFAULT 0");
 
+                    this.RebuildTablesIfNeeded(
+                        // Added DbMessage.MessageType
+                        RebuildableTable.Messages,
+                        ref alreadyRebuiltTables
+                    );
+
                     archiveDb.SetObjectVersion("Core", 1018);
                     transaction.Commit();
                     coreDbVersion = 1018;

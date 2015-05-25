@@ -62,7 +62,7 @@ namespace YamsterCmd
     YamsterCmd -PostMessage -Body ""Hello to All Company!""
     YamsterCmd -PostMessage -Body ""Hello to private group!"" -GroupId 12345
 ");
-                //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
             }
         }
 

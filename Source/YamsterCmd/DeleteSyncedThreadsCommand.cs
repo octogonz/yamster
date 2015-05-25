@@ -35,6 +35,7 @@ namespace YamsterCmd
     {
         public int GroupId = YamsterGroup.AllCompanyGroupId;
         public int OlderThanDays;
+        public bool IgnoreErrors;
         public bool WhatIf;
 
         public override CommandId CommandId
@@ -70,6 +71,10 @@ account must have administrator permissions.
     recent update was older than the given number of days.  Otherwise, it 
     will delete every thread in the group.
 
+  -IgnoreErrors
+    If specified, then the command will not stop if an error occurs 
+    while attempting to delete a message.
+
   -WhatIf
     If specified, then the command will display a report of threads that 
     would have been deleted, without actually deleting anything.
@@ -78,7 +83,7 @@ account must have administrator permissions.
     YamsterCmd -DeleteSyncedThreads -GroupId 12345
     YamsterCmd -DeleteSyncedThreads -OlderThanDays 90 -WhatIf
 ");
-                //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
             }
         }
 
@@ -109,6 +114,9 @@ account must have administrator permissions.
                             return "Invalid OlderThanDays amount \"" + nextArg + "\"";
                         }
                         ++i; // consume nextArg
+                        break;
+                    case "-IGNOREERRORS":
+                        IgnoreErrors = true;
                         break;
                     case "-WHATIF":
                         WhatIf = true;
@@ -176,47 +184,73 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                 int threadCount = 0;
                 int deletedMessageCount = 0;
 
-                ProcessThreads(group, olderThanCutoff, (thread) => {
-                        ++threadCount;
+                try
+                {
+                    ProcessThreads(group, olderThanCutoff,
+                        (thread) => {
+                            ++threadCount;
 
-                        int messageNumber = 1;
-                        foreach (YamsterMessage message in thread.Messages.Reverse())
-                        {
-                            bool wroteDot = false;
-                            while (!AppContext.Default.YamsterApi.IsSafeToRequest(increasedPriority: false))
+                            int messageNumber = 1;
+                            foreach (YamsterMessage message in thread.Messages.Reverse())
                             {
-                                if (!wroteDot)
-                                    Console.Write(" ");
-                                Console.Write(".");
-                                wroteDot = true;
-                                Thread.Sleep(2000);
-                            }
+                                if (ShouldSkipMessage(message))
+                                {
+                                    Console.Write(" S");
+                                }
+                                else
+                                {
+                                    bool wroteDot = false;
+                                    while (!AppContext.Default.YamsterApi.IsSafeToRequest(increasedPriority: false))
+                                    {
+                                        if (!wroteDot)
+                                            Console.Write(" ");
+                                        Console.Write(".");
+                                        wroteDot = true;
+                                        Thread.Sleep(2000);
+                                    }
 
-                            try
-                            {
-                                message.DeleteFromServer();
-                                Console.Write(" " + messageNumber);
-                                ++deletedMessageCount;
+                                    try
+                                    {
+                                        message.DeleteFromServer();
+                                        Console.Write(" " + messageNumber);
+                                        ++deletedMessageCount;
+                                    }
+                                    catch (ServerObjectNotFoundException)
+                                    {
+                                        Console.Write(" E");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        if (!this.IgnoreErrors)
+                                            throw;
+                                        Utils.Log("");
+                                        Utils.Log("ERROR: " + ex.Message);
+                                    }
+                                }
+
+                                ++messageNumber;
                             }
-                            catch (ServerObjectNotFoundException)
-                            {
-                                Console.Write(" E");
-                            }
-                            catch (Exception ex)
-                            {
-                                Utils.Log("");
-                                Utils.Log("ERROR: " + ex.Message);
-                                break;
-                            }
-                            ++messageNumber;
+                            Console.WriteLine();
                         }
-                        Console.WriteLine();
-                    }
-                );
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Utils.Log("");
+                    Utils.Log("ERROR: " + ex.Message);
+                }
 
                 Utils.Log("");
                 Utils.Log("Deleted {0} messages from {1} threads", deletedMessageCount, threadCount);
             }
+        }
+
+        private bool ShouldSkipMessage(YamsterMessage message)
+        {
+            // System messages cannot be deleted
+            if (message.MessageType == DbMessageType.System)
+                return true;
+            return false;
         }
 
         void ProcessThreads(YamsterGroup group, DateTime? olderThanCutoff, Action<YamsterThread> action)

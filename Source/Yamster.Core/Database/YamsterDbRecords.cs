@@ -186,6 +186,15 @@ namespace Yamster.Core
         public readonly SQLiteIdList ParticipantUserIds = new SQLiteIdList();
     }
 
+    public enum DbMessageType
+    {
+        Unknown=0,
+        Update,
+        System,
+        Announcement,
+        Chat
+    }
+
     [MappedTableIndex("GroupId", "ThreadId", "MessageId", Unique = true)]
     [MappedTableIndex("ThreadId", "MessageId", Unique = true)]
     [MappedTableIndex("SenderUserId")]
@@ -255,6 +264,9 @@ namespace Yamster.Core
 
         [SQLiteMapperProperty(Nullable = OptionalBool.False)]
         public int AttachmentHeight;
+
+        [SQLiteMapperProperty]
+        public DbMessageType MessageType = DbMessageType.Unknown;
     }
 
     public class DbMessageState : MappedRecordWithChangeTracking

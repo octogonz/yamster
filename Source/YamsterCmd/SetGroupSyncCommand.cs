@@ -61,7 +61,7 @@ namespace YamsterCmd
     YamsterCmd -SetGroupSync -GroupId 12345
     YamsterCmd -SetGroupSync -GroupId Private -Off
 ");
-                //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
             }
         }
 
