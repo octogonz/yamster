@@ -9,7 +9,7 @@
   </import>
   <widget class="Gtk.Window" id="Yamster.MainWindow" design-size="985 649">
     <action-group name="Default">
-      <action id="mnuFile">
+      <action id="FileAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">_File</property>
         <property name="ShortLabel" translatable="yes">_File</property>
@@ -31,13 +31,13 @@
         <property name="ShortLabel" translatable="yes">E_xit</property>
         <signal name="Activated" handler="mnuFileExit_Activated" />
       </action>
-      <action id="mnuYammerSyncAction">
+      <action id="mnuFileYammerSync">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">_Yammer Sync...</property>
         <property name="ShortLabel" translatable="yes">_Yammer Sync...</property>
         <signal name="Activated" handler="mnuFileYammerSync_Activated" />
       </action>
-      <action id="OnlineDocumentationAction">
+      <action id="mnuHelpManual">
         <property name="Type">Action</property>
         <property name="Accelerator">F1</property>
         <property name="Label" translatable="yes">Online _Documentation...</property>
@@ -56,6 +56,12 @@
         <property name="ShortLabel" translatable="yes">_Ask a Question...</property>
         <signal name="Activated" handler="mnuHelpDiscussionGroup_Activated" />
       </action>
+      <action id="mnuYammerFullResync">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Resync Everything...</property>
+        <property name="ShortLabel" translatable="yes">_Resync Everything...</property>
+        <signal name="Activated" handler="mnuYammerFullResync_Activated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">Yamster!</property>
@@ -70,13 +76,14 @@
           <widget class="Gtk.MenuBar" id="ctlMenuBar">
             <property name="MemberName" />
             <node name="ctlMenuBar" type="Menubar">
-              <node type="Menu" action="mnuFile">
-                <node type="Menuitem" action="mnuYammerSyncAction" />
+              <node type="Menu" action="FileAction">
+                <node type="Menuitem" action="mnuFileYammerSync" />
+                <node type="Menuitem" action="mnuYammerFullResync" />
                 <node type="Separator" />
                 <node type="Menuitem" action="mnuFileExit" />
               </node>
               <node type="Menu" action="mnuHelp">
-                <node type="Menuitem" action="OnlineDocumentationAction" />
+                <node type="Menuitem" action="mnuHelpManual" />
                 <node type="Menuitem" action="mnuHelpDiscussionGroup" />
                 <node type="Menuitem" action="mnuHelpWebSite" />
                 <node type="Separator" />

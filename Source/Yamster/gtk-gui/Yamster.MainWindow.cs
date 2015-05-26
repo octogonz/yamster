@@ -6,7 +6,7 @@ namespace Yamster
 	{
 		private global::Gtk.UIManager UIManager;
 		
-		private global::Gtk.Action mnuFile;
+		private global::Gtk.Action FileAction;
 		
 		private global::Gtk.Action mnuHelp;
 		
@@ -14,13 +14,15 @@ namespace Yamster
 		
 		private global::Gtk.Action mnuFileExit;
 		
-		private global::Gtk.Action mnuYammerSyncAction;
+		private global::Gtk.Action mnuFileYammerSync;
 		
-		private global::Gtk.Action OnlineDocumentationAction;
+		private global::Gtk.Action mnuHelpManual;
 		
 		private global::Gtk.Action mnuHelpWebSite;
 		
 		private global::Gtk.Action mnuHelpDiscussionGroup;
+		
+		private global::Gtk.Action mnuYammerFullResync;
 		
 		private global::Gtk.VBox vbox1;
 		
@@ -76,9 +78,9 @@ namespace Yamster
 			// Widget Yamster.MainWindow
 			this.UIManager = new global::Gtk.UIManager ();
 			global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup ("Default");
-			this.mnuFile = new global::Gtk.Action ("mnuFile", global::Mono.Unix.Catalog.GetString ("_File"), null, null);
-			this.mnuFile.ShortLabel = global::Mono.Unix.Catalog.GetString ("_File");
-			w1.Add (this.mnuFile, null);
+			this.FileAction = new global::Gtk.Action ("FileAction", global::Mono.Unix.Catalog.GetString ("_File"), null, null);
+			this.FileAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_File");
+			w1.Add (this.FileAction, null);
 			this.mnuHelp = new global::Gtk.Action ("mnuHelp", global::Mono.Unix.Catalog.GetString ("_Help"), null, null);
 			this.mnuHelp.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Help");
 			w1.Add (this.mnuHelp, null);
@@ -88,18 +90,21 @@ namespace Yamster
 			this.mnuFileExit = new global::Gtk.Action ("mnuFileExit", global::Mono.Unix.Catalog.GetString ("E_xit"), null, null);
 			this.mnuFileExit.ShortLabel = global::Mono.Unix.Catalog.GetString ("E_xit");
 			w1.Add (this.mnuFileExit, null);
-			this.mnuYammerSyncAction = new global::Gtk.Action ("mnuYammerSyncAction", global::Mono.Unix.Catalog.GetString ("_Yammer Sync..."), null, null);
-			this.mnuYammerSyncAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Yammer Sync...");
-			w1.Add (this.mnuYammerSyncAction, null);
-			this.OnlineDocumentationAction = new global::Gtk.Action ("OnlineDocumentationAction", global::Mono.Unix.Catalog.GetString ("Online _Documentation..."), null, null);
-			this.OnlineDocumentationAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Online _Documentation...");
-			w1.Add (this.OnlineDocumentationAction, "F1");
+			this.mnuFileYammerSync = new global::Gtk.Action ("mnuFileYammerSync", global::Mono.Unix.Catalog.GetString ("_Yammer Sync..."), null, null);
+			this.mnuFileYammerSync.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Yammer Sync...");
+			w1.Add (this.mnuFileYammerSync, null);
+			this.mnuHelpManual = new global::Gtk.Action ("mnuHelpManual", global::Mono.Unix.Catalog.GetString ("Online _Documentation..."), null, null);
+			this.mnuHelpManual.ShortLabel = global::Mono.Unix.Catalog.GetString ("Online _Documentation...");
+			w1.Add (this.mnuHelpManual, "F1");
 			this.mnuHelpWebSite = new global::Gtk.Action ("mnuHelpWebSite", global::Mono.Unix.Catalog.GetString ("_Yamster Web Site"), null, null);
 			this.mnuHelpWebSite.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Yamster Web Site");
 			w1.Add (this.mnuHelpWebSite, null);
 			this.mnuHelpDiscussionGroup = new global::Gtk.Action ("mnuHelpDiscussionGroup", global::Mono.Unix.Catalog.GetString ("_Ask a Question..."), null, null);
 			this.mnuHelpDiscussionGroup.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Ask a Question...");
 			w1.Add (this.mnuHelpDiscussionGroup, null);
+			this.mnuYammerFullResync = new global::Gtk.Action ("mnuYammerFullResync", global::Mono.Unix.Catalog.GetString ("_Resync Everything..."), null, null);
+			this.mnuYammerFullResync.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Resync Everything...");
+			w1.Add (this.mnuYammerFullResync, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "Yamster.MainWindow";
@@ -111,7 +116,7 @@ namespace Yamster
 			this.vbox1.Name = "vbox1";
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString (@"<ui><menubar name='ctlMenuBar'><menu name='mnuFile' action='mnuFile'><menuitem name='mnuYammerSyncAction' action='mnuYammerSyncAction'/><separator/><menuitem name='mnuFileExit' action='mnuFileExit'/></menu><menu name='mnuHelp' action='mnuHelp'><menuitem name='OnlineDocumentationAction' action='OnlineDocumentationAction'/><menuitem name='mnuHelpDiscussionGroup' action='mnuHelpDiscussionGroup'/><menuitem name='mnuHelpWebSite' action='mnuHelpWebSite'/><separator/><menuitem name='mnuHelpAbout' action='mnuHelpAbout'/></menu></menubar></ui>");
+			this.UIManager.AddUiFromString (@"<ui><menubar name='ctlMenuBar'><menu name='FileAction' action='FileAction'><menuitem name='mnuFileYammerSync' action='mnuFileYammerSync'/><menuitem name='mnuYammerFullResync' action='mnuYammerFullResync'/><separator/><menuitem name='mnuFileExit' action='mnuFileExit'/></menu><menu name='mnuHelp' action='mnuHelp'><menuitem name='mnuHelpManual' action='mnuHelpManual'/><menuitem name='mnuHelpDiscussionGroup' action='mnuHelpDiscussionGroup'/><menuitem name='mnuHelpWebSite' action='mnuHelpWebSite'/><separator/><menuitem name='mnuHelpAbout' action='mnuHelpAbout'/></menu></menubar></ui>");
 			this.ctlMenuBar = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/ctlMenuBar")));
 			this.ctlMenuBar.Name = "ctlMenuBar";
 			this.vbox1.Add (this.ctlMenuBar);
@@ -312,10 +317,11 @@ namespace Yamster
 			this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 			this.mnuHelpAbout.Activated += new global::System.EventHandler (this.mnuHelpAbout_Activated);
 			this.mnuFileExit.Activated += new global::System.EventHandler (this.mnuFileExit_Activated);
-			this.mnuYammerSyncAction.Activated += new global::System.EventHandler (this.mnuFileYammerSync_Activated);
-			this.OnlineDocumentationAction.Activated += new global::System.EventHandler (this.mnuHelpManual_Activated);
+			this.mnuFileYammerSync.Activated += new global::System.EventHandler (this.mnuFileYammerSync_Activated);
+			this.mnuHelpManual.Activated += new global::System.EventHandler (this.mnuHelpManual_Activated);
 			this.mnuHelpWebSite.Activated += new global::System.EventHandler (this.mnuHelpWebSite_Activated);
 			this.mnuHelpDiscussionGroup.Activated += new global::System.EventHandler (this.mnuHelpDiscussionGroup_Activated);
+			this.mnuYammerFullResync.Activated += new global::System.EventHandler (this.mnuYammerFullResync_Activated);
 			this.btnTest.Clicked += new global::System.EventHandler (this.btnTest_Click);
 			this.btnSync.Clicked += new global::System.EventHandler (this.btnSync_Click);
 			this.btnAboutBox.Clicked += new global::System.EventHandler (this.btnAboutBox_Clicked);

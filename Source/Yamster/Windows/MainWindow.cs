@@ -257,6 +257,36 @@ namespace Yamster
             btnAboutBox_Clicked(sender, e);
         }
 
+        protected void mnuYammerFullResync_Activated(object sender, EventArgs e)
+        {
+            if (this.syncWindow != null && this.syncWindow.Status != SyncWindowStatus.Offline)
+            {
+                Utilities.ShowMessageBox(
+                    "This operation cannot be performed while syncing is active."
+                    + "\r\n\r\nStop the sync engine first.",
+                    "Yamster",
+                    Gtk.ButtonsType.Ok, Gtk.MessageType.Error);
+                return;
+            }
+
+            if (Utilities.ShowMessageBox(
+                "This will ask the sync engine to refetch all messages for all subscribed"
+                + " Yammer groups.  No data will be deleted, but it may take a long time"
+                + " to get back in sync.  It is an expensive operation."
+                + "\r\n\r\nAre you sure you want to proceed?",
+                "Yamster",
+                Gtk.ButtonsType.YesNo, Gtk.MessageType.Question) != Gtk.ResponseType.Yes)
+                return;
+            
+            appContext.MessagePuller.RequestFullResync();
+
+            Utilities.ShowMessageBox(
+                "The sync progress has been reset.  It will take effect the next time you start syncing.",
+                "Yamster",
+                Gtk.ButtonsType.Ok, Gtk.MessageType.Info);
+                return;
+        }
+
         #endregion
 
     }

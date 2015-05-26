@@ -147,6 +147,16 @@ namespace Yamster.Core
         }
 
         /// <summary>
+        /// Forgets all sync progress, and starts over with a clean slate.
+        /// The existing database objects are not deleted.
+        /// </summary>
+        public void RequestFullResync()
+        {
+            this.yamsterCoreDb.SyncingFeeds.DeleteRecords("");
+            this.yamsterCoreDb.SyncingThreads.DeleteRecords("");
+        }
+
+        /// <summary>
         /// Performs one step of the sync algorithm, which makes at most one service call
         /// to the Yammer REST endpoint.  This method is intended to be called at periodic intervals
         /// and may return without doing any work, e.g. if the state machine is waiting for a timeout.
