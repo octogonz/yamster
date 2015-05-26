@@ -35,6 +35,7 @@ namespace YamsterCmd
     {
         public int GroupId = YamsterGroup.AllCompanyGroupId;
         public int OlderThanDays;
+        public bool SkipStarred;
         public bool IgnoreErrors;
         public bool WhatIf;
 
@@ -47,7 +48,7 @@ namespace YamsterCmd
         {
             Utils.Log(
 @"YamsterCmd -DeleteSyncedThreads [-GroupId <int>] [-OlderThanDays <int>]
-           [-WhatIf]
+           [-SkipStarred] [-IgnoreErrors] [-WhatIf]
 ");
             if (detailed)
             {
@@ -70,6 +71,10 @@ account must have administrator permissions.
     If specified, then the command will only delete threads whose most 
     recent update was older than the given number of days.  Otherwise, it 
     will delete every thread in the group.
+
+  -SkipStarred
+    If specified, then the command will not attempt to delete messages
+    that are marked as ""starred"" by Yamster.
 
   -IgnoreErrors
     If specified, then the command will not stop if an error occurs 
@@ -114,6 +119,9 @@ account must have administrator permissions.
                             return "Invalid OlderThanDays amount \"" + nextArg + "\"";
                         }
                         ++i; // consume nextArg
+                        break;
+                    case "-SKIPSTARRED":
+                        SkipStarred = true;
                         break;
                     case "-IGNOREERRORS":
                         IgnoreErrors = true;
@@ -263,6 +271,11 @@ license agreement and accept those terms, then type ""I AGREE"": ");
             // System messages cannot be deleted
             if (message.MessageType == DbMessageType.System)
                 return true;
+            if (this.SkipStarred)
+            {
+                if (message.Starred)
+                    return true;
+            }
             return false;
         }
 
