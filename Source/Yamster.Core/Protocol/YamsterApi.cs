@@ -41,12 +41,15 @@ namespace Yamster.Core
     public class YamsterApi
     {
         AsyncRestCaller asyncRestCaller;
+        YamsterApiSettings settings;
+
         Queue<DateTime> talliedRequestsFor30Secs = new Queue<DateTime>();
         int backOffTimemark = 0;
 
-        public YamsterApi(AsyncRestCaller asyncRestCaller)
+        public YamsterApi(AppContext appContext)
         {
-            this.asyncRestCaller = asyncRestCaller;
+            this.asyncRestCaller = appContext.AsyncRestCaller;
+            this.settings = appContext.Settings;
         }
 
         public async Task<JsonMessageEnvelope> GetMessagesInThreadAsync(long threadId, long? olderThan = null)
@@ -160,7 +163,8 @@ namespace Yamster.Core
 
         public IList<JsonSearchedGroup> SearchForGroups(string keyword, int maxResults)
         {
-            var url = "https://www.yammer.com/api/v1/autocomplete/ranked";
+            
+            var url = this.settings.YammerServiceUrl + "/api/v1/autocomplete/ranked";
             
             var parameters = new Dictionary<string, string>();
             parameters["prefix"] = keyword;

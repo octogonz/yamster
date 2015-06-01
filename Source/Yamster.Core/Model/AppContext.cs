@@ -66,7 +66,7 @@ namespace Yamster.Core
             this.settings.Save(); // normalize settings file
 
             this.asyncRestCaller = new AsyncRestCaller(this);
-            this.yamsterApi = new YamsterApi(this.asyncRestCaller);
+            this.yamsterApi = new YamsterApi(this);
 
             this.userManager = new LightweightUserManager(this);
 
