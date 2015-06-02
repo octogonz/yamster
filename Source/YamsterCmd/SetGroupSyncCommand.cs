@@ -51,8 +51,10 @@ namespace YamsterCmd
 
   -GroupId <string>      
     The <string> is either the word ""Private"" to indicate the user's
-    private message feed, or else the integer from the feedId query parameter
-    that appears in the web browser URL when viewing the Yammer Group page.
+    private message feed, or the word ""Company"" to indicate the
+    ""All Company"" group, or else the integer from the feedId
+    query parameter that appears in the web browser URL when viewing
+    the group page on the Yammer web site.
 
   -Off
     Turn syncing off.  If omitted, the command turns syncing on.
@@ -80,20 +82,10 @@ namespace YamsterCmd
                 switch (flag.ToUpperInvariant())
                 {
                     case "-GROUPID":
-                        if (nextArg == null)
-                            return "Missing group ID";
-
-                        long groupId;
-                        if (nextArg.Trim().ToUpper() == "PRIVATE")
-                        {
-                            groupId = -1;
-                        }
-                        else if (!long.TryParse(nextArg, out groupId))
-                        {
-                            return "Invalid group ID \"" + nextArg + "\"";
-                        }
+                        string error = Utils.ParseGroupIdFromCommandLine(nextArg, out this.GroupId);
+                        if (error != null)
+                            return error;
                         ++i; // consume nextArg
-                        GroupId = groupId;
                         gotGroupId = true;
                         break;
                     case "-OFF":

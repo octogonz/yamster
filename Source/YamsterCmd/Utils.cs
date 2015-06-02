@@ -58,5 +58,28 @@ namespace YamsterCmd
                 throw new Exception("Unable to login to Yammer -- try running the Yamster desktop app to set up credentials.", ex);
             }
         }
+
+        static public string ParseGroupIdFromCommandLine(string nextArg, out long groupId)
+        {
+            groupId = 0;
+
+            if (nextArg == null)
+                return "The -GroupId option should be followed by an ID";
+
+            if (nextArg.Trim().ToUpper() == "PRIVATE")
+            {
+                groupId = YamsterGroup.ConversationsGroupId;
+            }
+            else if (nextArg.Trim().ToUpper() == "COMPANY")
+            {
+                groupId = YamsterGroup.AllCompanyGroupId;
+            }
+            else if (!long.TryParse(nextArg, out groupId)
+                || groupId <= 0)
+            {
+                return "Invalid group ID \"" + nextArg + "\"";
+            }
+            return null;
+        }
     }
 }

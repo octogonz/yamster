@@ -33,7 +33,7 @@ namespace YamsterCmd
 {
     class DeleteSyncedThreadsCommand : Command
     {
-        public int GroupId = YamsterGroup.AllCompanyGroupId;
+        public long GroupId = YamsterGroup.AllCompanyGroupId;
         public int OlderThanDays;
         public bool SkipStarred;
         public bool IgnoreErrors;
@@ -56,16 +56,18 @@ namespace YamsterCmd
 @"Permanently deletes discussion threads from Yammer's server.  This 
 command deletes all messages belonging to a single Yammer group only.
 It will only find messages that have been synced to in Yamster's local 
-database, so you should run ""YamsterCmd -Sync"" beforehand.
+database, so you should run ""YamsterCmd -LoadCsvDump"" or
+""YamsterCmd -Sync"" beforehand.
 
 NOTE: In order to delete messages posted by other users, your Yammer
 account must have administrator permissions.
 
-  -GroupId <int>
+  -GroupId <string>
     Specifies the group whose threads will be deleted.  If omitted, then the
     ""All Company"" group is used by default.  To find a group's id, visit
     the group's page on the Yammer web site, and then take the ""feedId""
-    query parameter from the URL.
+    query parameter from the URL.  To indicate private conversations,
+    specify the word ""Private"" instead of a number.
 
   -OlderThanDays
     If specified, then the command will only delete threads whose most 
@@ -74,7 +76,8 @@ account must have administrator permissions.
 
   -SkipStarred
     If specified, then the command will not attempt to delete messages
-    that are marked as ""starred"" by Yamster.
+    that are marked as ""starred"" by Yamster.  This is useful if a certain
+    message is causing errors that prevent the operation from progressing.
 
   -IgnoreErrors
     If specified, then the command will not stop if an error occurs 
@@ -105,11 +108,9 @@ account must have administrator permissions.
                 switch (flag.ToUpperInvariant())
                 {
                     case "-GROUPID":
-                        if (!int.TryParse(nextArg, out GroupId)
-                            || GroupId < 1)
-                        {
-                            return "Invalid group ID \"" + nextArg + "\"";
-                        }
+                        string error = Utils.ParseGroupIdFromCommandLine(nextArg, out this.GroupId);
+                        if (error != null)
+                            return error;
                         ++i; // consume nextArg
                         break;
                     case "-OLDERTHANDAYS":
@@ -268,9 +269,6 @@ license agreement and accept those terms, then type ""I AGREE"": ");
 
         private bool ShouldSkipMessage(YamsterMessage message)
         {
-            // System messages cannot be deleted
-            if (message.MessageType == DbMessageType.System)
-                return true;
             if (this.SkipStarred)
             {
                 if (message.Starred)

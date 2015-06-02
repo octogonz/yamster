@@ -49,7 +49,7 @@ namespace YamsterCmd
                 Utils.Log(
 @"Imports a zip archive that was created using the ""Export Data"" command
 on Yammer's administrator control panel.  The imported data completely
-replaces any existing data in Yamster's database.
+replaces any existing contents of Yamster's database.
 
   -Folder <string>      
     The path of a folder containing the unzipped archive contents.  This
