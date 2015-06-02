@@ -175,7 +175,7 @@ Yamster cannot guarantee that this command will work as expected.  In no event
 shall the authors or copyright holders be liable for any accidental data loss
 or other damages that may result.  Proceed at your own risk!
 
-If accept the risks involved with bulk deleting, and have read the Yamster
+If you accept the risks involved with bulk deleting, and have read the Yamster
 license agreement and accept those terms, then type ""I AGREE"": ");
 
                 string reply = Console.ReadLine();
@@ -210,6 +210,8 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                                 }
                                 else
                                 {
+                                    // NOTE: Apparently Yammer doesn't impose rate limits for deletes
+#if false
                                     bool wroteDot = false;
                                     while (!AppContext.Default.YamsterApi.IsSafeToRequest(increasedPriority: false))
                                     {
@@ -219,7 +221,7 @@ license agreement and accept those terms, then type ""I AGREE"": ");
                                         wroteDot = true;
                                         Thread.Sleep(2000);
                                     }
-
+#endif
                                     try
                                     {
                                         lastMessageAttempted = message;

@@ -190,6 +190,7 @@ namespace Yamster
 
         void UpdateStatusBarAction()
         {
+            // NOTE: This counts deleted and invisible messages
             var count = appContext.YamsterCoreDb.Messages.GetCount();
             string message = string.Format("{0:#,##0} yams in DB", count);
             SetStatusBarMessage(ctlStatusBarTotalYams, message);

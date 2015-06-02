@@ -359,8 +359,10 @@ namespace Yamster.Core
             return false;
         }
 
-        static Regex referenceRegex = new Regex(@"\[\[([a-z]+):([0-9]+)\]\]", RegexOptions.IgnoreCase);
-        static Regex inlineReferenceRegex = new Regex(@"\[([a-z]+):([0-9]+):([^]]+)\]", RegexOptions.IgnoreCase);
+        static Regex referenceRegex = new Regex(@"\[\[([a-z]+):([0-9]+)\]\]",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex inlineReferenceRegex = new Regex(@"\[([a-z]+):([0-9]+):([^]]+)\]",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         void WriteToDatabase(YamsterCoreDb yamsterCoreDb)
         {

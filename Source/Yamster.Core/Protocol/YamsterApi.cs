@@ -213,7 +213,12 @@ namespace Yamster.Core
             string url = string.Format("/api/v1/messages/{0}.json", messageId);
             try
             {
+                // NOTE: Yammer doesn't seem to impose any rate limits for deletes,
+                // so we don't need to check for RateLimitExceededException here.
                 await this.asyncRestCaller.PostFormAsync(url, parameters);
+
+                // But be a good citizen about it:
+                await Task.Delay(750);
             }
             catch (WebException ex)
             {

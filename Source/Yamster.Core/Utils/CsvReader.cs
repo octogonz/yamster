@@ -215,7 +215,11 @@ namespace Yamster.Core
                             case State.QuotedHandlingQuote:
                                 // This is not allowed:
                                 // "abc"d
-                                throw new InvalidOperationException("Invalid CSV synxtax on line " + lineNumber);
+                                if (!char.IsWhiteSpace(c))
+                                {
+                                    throw new InvalidOperationException("Invalid CSV synxtax on line " + lineNumber);
+                                }
+                                break;
                             default:
                                 throw new NotImplementedException();
                         }
