@@ -70,6 +70,7 @@ namespace Yamster.Core
         static internal PropertyInfo Info_UserId = Utilities.GetPropertyInfo(typeof(YamsterUser), "UserId");
 
         public string Alias { get { return dbUser.Alias; } }
+        public string Email { get { return dbUser.Email; } }
         public string FullName { get { return dbUser.FullName; } }
         public string JobTitle { get { return dbUser.JobTitle; } }
         public string WebUrl { get { return dbUser.WebUrl; } }

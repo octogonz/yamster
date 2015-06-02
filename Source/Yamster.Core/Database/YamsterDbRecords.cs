@@ -304,6 +304,9 @@ namespace Yamster.Core
         public string Alias = "";
 
         [SQLiteMapperProperty(Nullable = OptionalBool.False)]
+        public string Email = "";
+
+        [SQLiteMapperProperty(Nullable = OptionalBool.False)]
         public string FullName = "";
 
         [SQLiteMapperProperty(Nullable = OptionalBool.False)]

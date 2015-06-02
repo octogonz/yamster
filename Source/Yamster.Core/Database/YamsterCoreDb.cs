@@ -282,6 +282,7 @@ namespace Yamster.Core
             coreUser.LastFetchedUtc = archiveUser.LastFetchedUtc;
             coreUser.UserId = userRef.Id;
             coreUser.Alias = userRef.Alias ?? "";
+            coreUser.Email = userRef.Email ?? "";
             coreUser.FullName = userRef.DisplayValue ?? "";
             coreUser.JobTitle = userRef.JobTitle ?? "";
             coreUser.WebUrl = userRef.Permalink ?? "";

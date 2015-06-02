@@ -35,7 +35,7 @@ namespace Yamster.Core
     public partial class YamsterCoreDb
     {
         const int MinimumUpgradeableCoreDbVersion = 1004;
-        const int CurrentCoreDbVersion = 1018;
+        const int CurrentCoreDbVersion = 1019;
 
         [Flags]
         enum RebuildableTable
@@ -426,6 +426,23 @@ END;
                     archiveDb.SetObjectVersion("Core", 1018);
                     transaction.Commit();
                     coreDbVersion = 1018;
+                }
+            }
+
+            // Upgrade 1018 -> 1019
+            if (coreDbVersion < 1019)
+            {
+                using (var transaction = this.BeginTransaction())
+                {
+                    this.RebuildTablesIfNeeded(
+                        // Added DbUser.Alias
+                        RebuildableTable.Users,
+                        ref alreadyRebuiltTables
+                    );
+
+                    archiveDb.SetObjectVersion("Core", 1019);
+                    transaction.Commit();
+                    coreDbVersion = 1019;
                 }
             }
 
