@@ -152,8 +152,8 @@ namespace Yamster.Core
         /// </summary>
         public void RequestFullResync()
         {
-            this.yamsterCoreDb.SyncingFeeds.DeleteRecords("");
-            this.yamsterCoreDb.SyncingThreads.DeleteRecords("");
+            this.yamsterCoreDb.SyncingFeeds.DeleteAllRecords();
+            this.yamsterCoreDb.SyncingThreads.DeleteAllRecords();
         }
 
         /// <summary>

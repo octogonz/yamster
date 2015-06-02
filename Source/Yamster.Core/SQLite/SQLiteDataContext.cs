@@ -237,6 +237,11 @@ namespace Yamster.Core.SQLite
             return table.Context.Mapper.DeleteRecordUsingPrimaryKey(table, recordToDelete);
         }
 
+        public static int DeleteAllRecords<T>(this MappedTable<T> table)
+        {
+            return table.Context.Mapper.DeleteRecords(table, "");
+        }
+
         public static IEnumerable<T> Query<T>(this MappedTable<T> table, string sqlWhereClause)
         {
             string sqlQuery = "SELECT * FROM " + SQLiteMapperHelpers.GetEscaped(table.TableName)

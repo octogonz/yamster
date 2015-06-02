@@ -34,8 +34,14 @@ namespace Yamster.Core
 {
     public partial class YamsterCoreDb
     {
-        const int MinimumUpgradeableCoreDbVersion = 1004;
+        // The current CoreDB version
         const int CurrentCoreDbVersion = 1019;
+
+        // The oldest CoreDB version that can be upgraded without rebuilding tables
+        const int MinimumUpgradeableCoreDbVersion = 1004;
+
+        // The oldest CoreDB version that can be upgraded without relying on the ArchiveDB
+        const int MinimumUpgradeableCoreDbVersionWithoutArchiveDb = 1019;
 
         [Flags]
         enum RebuildableTable
@@ -60,6 +66,7 @@ namespace Yamster.Core
         {
             // Validate the database state
             int coreDbVersion = archiveDb.GetObjectVersion("Core");
+            bool inactiveArchiveDb = this.archiveDb.IsInactive();
 
             if (coreDbVersion == CurrentCoreDbVersion)
                 return;
@@ -67,6 +74,16 @@ namespace Yamster.Core
             if (coreDbVersion > CurrentCoreDbVersion)
             {
                 throw new UnsupportedDatabaseVersionException("Core", coreDbVersion, CurrentCoreDbVersion);
+            }
+
+            if (inactiveArchiveDb)
+            {
+                if (coreDbVersion < MinimumUpgradeableCoreDbVersionWithoutArchiveDb)
+                {
+                    // The database cannot be upgraded because the ArchiveDB is missing,
+                    // e.g. because the data was imported using CsvDumpLoader
+                    throw new UnsupportedDatabaseVersionException("Core", coreDbVersion, CurrentCoreDbVersion);
+                }
             }
 
             if (coreDbVersion < MinimumUpgradeableCoreDbVersion)
@@ -529,6 +546,7 @@ END;
             Debug.WriteLine("BEGIN REBUILD CORE DATABASE");
 
             // Delete and recreate all the core tables
+            CreateTables();
             InitDatabase();
             RebuildTables(RebuildableTable.All);
 
@@ -554,8 +572,6 @@ WHERE GroupId IN ( SELECT GroupId FROM Messages GROUP BY GroupId )
         {
             using (var transaction = BeginTransaction())
             {
-                CreateTables();
-
                 // Insert the predefined rows
                 DbProperties.InsertRecord(new DbPropertiesRow() { });
 
@@ -697,6 +713,5 @@ WHERE GroupId IN ( SELECT GroupId FROM Messages GROUP BY GroupId )
                 transaction.Commit();
             }
         }
-
     }
 }

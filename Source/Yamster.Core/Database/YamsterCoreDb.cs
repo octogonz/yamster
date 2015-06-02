@@ -316,5 +316,27 @@ namespace Yamster.Core
             SyncingFeeds.InsertRecord(row, SQLiteConflictResolution.Replace);
         }
 
+        internal void DeleteEverything(bool markArchiveDbInactive)
+        {
+            using (var transaction = this.BeginTransaction())
+            {
+                this.DbProperties.DeleteAllRecords();
+                this.SyncingFeeds.DeleteAllRecords();
+                this.SyncingThreads.DeleteAllRecords();
+                this.Groups.DeleteAllRecords();
+                this.GroupStates.DeleteAllRecords();
+                this.ThreadStates.DeleteAllRecords();
+                this.Conversations.DeleteAllRecords();
+                this.Messages.DeleteAllRecords();
+                this.MessageStates.DeleteAllRecords();
+                this.Users.DeleteAllRecords();
+
+                this.archiveDb.DeleteEverything(markInactive: markArchiveDbInactive);
+
+                this.InitDatabase();
+
+                transaction.Commit();
+            }
+        }
     }
 }

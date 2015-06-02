@@ -137,23 +137,34 @@ namespace Yamster.Core
                 {
                     Debug.WriteLine("Uninitialized database -- creating tables");
                 }
+                else if (archiveDbVersion == -1)
+                {
+                    Debug.WriteLine("ArchiveDb is inactive -- skipping initialization");
+                    return;
+                }
                 else
                 {
                     throw new UnsupportedDatabaseVersionException("Archive", archiveDbVersion, CurrentArchiveDbVersion);
                 }
 
-                InitDatabase();
+                CreateTables();
+                InitDatabase(markInactive: false);
             }
         }
 
-        void InitDatabase()
+        void InitDatabase(bool markInactive)
         {
             // TODO: Delete the old contents first
             using (var transaction = BeginTransaction())
             {
-                CreateTables();
-
-                SetObjectVersion("Archive", CurrentArchiveDbVersion);
+                if (markInactive)
+                {
+                    SetObjectVersion("Archive", -1);
+                }
+                else
+                {
+                    SetObjectVersion("Archive", CurrentArchiveDbVersion);
+                }
 
                 transaction.Commit();
             }
@@ -173,6 +184,15 @@ namespace Yamster.Core
         {
             Versions.InsertRecord(new DbVersion() { ObjectName = objectName, Version = version },
                 SQLiteConflictResolution.Replace);
+        }
+
+        /// <summary>
+        /// If this returns "true", then the ArchiveDb is empty and cannot be used to
+        /// regenerate the CoreDb.
+        /// </summary>
+        public bool IsInactive()
+        {
+            return GetObjectVersion("Archive") == -1;
         }
 
         public void InsertArchiveMessage(JsonMessage message, DateTime lastFetchedUtc)
@@ -245,6 +265,26 @@ namespace Yamster.Core
             archiveRecord.Json = reference.RawJson;
             Mapper.InsertRecord(table, archiveRecord, SQLiteConflictResolution.Replace);
             return archiveRecord;
+        }
+
+        internal void DeleteEverything(bool markInactive)
+        {
+            using (var transaction = this.BeginTransaction())
+            {
+                this.Versions.DeleteAllRecords();
+                this.ArchiveMessages.DeleteAllRecords();
+                this.ArchiveUserRefs.DeleteAllRecords();
+                this.ArchiveGroupRefs.DeleteAllRecords();
+                this.ArchiveConversationRefs.DeleteAllRecords();
+                this.ArchiveThreadRefs.DeleteAllRecords();
+                this.ArchivePageRefs.DeleteAllRecords();
+                this.ArchiveMessageRefs.DeleteAllRecords();
+                this.ArchiveTopicRefs.DeleteAllRecords();
+
+                this.InitDatabase(markInactive);
+
+                transaction.Commit();
+            }
         }
     }
 }
