@@ -30,10 +30,11 @@ namespace YamsterCmd
     enum CommandId
     {
         None,
-        Sync,
-        SetGroupSync,
+        DeleteSyncedThreads,
+        LoadCsvDump,
         PostMessage,
-        DeleteSyncedThreads
+        SetGroupSync,
+        Sync
     }
 
     abstract class Command

@@ -37,10 +37,11 @@ namespace YamsterCmd
         static void Main(string[] args)
         {
             Commands = new Command[] {
+                new DeleteSyncedThreadsCommand(),
+                new LoadCsvDumpCommand(),
                 new PostMessageCommand(),
                 new SetGroupSyncCommand(),
-                new SyncCommand(),
-                new DeleteSyncedThreadsCommand()
+                new SyncCommand()
             };
 
             try

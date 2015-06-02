@@ -37,6 +37,9 @@ namespace Yamster.Core
     /// on Yammer's administrator control panel.  The imported data completely
     /// replaces any existing data in Yamster's database.
     /// </summary>
+    /// <remarks>
+    /// This operation can be invoked from YamsterCmd.exe using the "-LoadCsvDump" option.
+    /// </remarks>
     public class CsvDumpLoader
     {
         private AppContext appContext;

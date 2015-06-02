@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="CommandLine.cs" />
     <Compile Include="DeleteSyncedThreadsCommand.cs" />
+    <Compile Include="LoadCsvDumpCommand.cs" />
     <Compile Include="PostMessageCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
