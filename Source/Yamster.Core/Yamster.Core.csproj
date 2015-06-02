@@ -141,10 +141,12 @@
     <Compile Include="SQLite\SQLiteJsonConverter.cs" />
     <Compile Include="SQLite\SQLiteMapper.cs" />
     <Compile Include="SQLite\SQLiteMapperHelpers.cs" />
+    <Compile Include="Sync\CsvDumpLoader.cs" />
     <Compile Include="Sync\FreshenThreadRequest.cs" />
     <Compile Include="Sync\JsonSyncingFeed.cs" />
     <Compile Include="Sync\MessagePuller.cs" />
     <Compile Include="Sync\SyncHelpers.cs" />
+    <Compile Include="Utils\CsvReader.cs" />
     <Compile Include="Utils\ForegroundSynchronizationContext.cs" />
     <Compile Include="Utils\FreezableObject.cs" />
     <Compile Include="Utils\Utilities.cs" />
