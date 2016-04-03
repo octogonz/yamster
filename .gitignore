@@ -1,14 +1,16 @@
 syntax: glob
 **.7z
+**.zip
 **.db
 **.pdb
 **.suo
 **.user
-**.vshost.exe
+**.vshost.*
 **.userprefs
 **/bin/**
 **/obj/**
 /Dev/**
+/Etc/**
 /Build/Binaries/**
 /Build/Installer/**
 /Build/Release/**
