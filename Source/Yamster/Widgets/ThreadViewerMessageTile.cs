@@ -277,8 +277,16 @@ namespace Yamster
                         mugshotUrl = "http://yammer.com" + mugshotUrl;
                     }
 
+                    var request = new YamsterHttpRequest(mugshotUrl);
+                    
+                    // Sometime in late 2015 or early 2016, the Yammer protocol changed such that 
+                    // user profile thumbnails (but not other images) failed to load with this error:
+                    // "This server does not support requests with Authorization header set"
+                    // Removing the header seems to resolve the problem.
+                    request.AddAuthorizationHeader = false;
+
                     Exception loadError = null;
-                    Pixbuf image = appContext.ImageCache.TryGetImageResized(mugshotUrl, new Size(33, 33), out loadError);
+                    Pixbuf image = appContext.ImageCache.TryGetImageResized(request, new Size(33, 33), out loadError);
                     if (image != null)
                     {
                         ctlUserImage.Pixbuf = image;
@@ -321,8 +329,11 @@ namespace Yamster
 
                     ctlAttachmentBox.Visible = true;
                     ctlAttachmentBox.TooltipText = loadedMessage.AttachmentFilename;
+
+                    var request = new YamsterHttpRequest(imageUrl);
+
                     Exception loadError = null;
-                    Pixbuf image = appContext.ImageCache.TryGetImage(imageUrl, out loadError);
+                    Pixbuf image = appContext.ImageCache.TryGetImage(request, out loadError);
                     if (image != null)
                     {
                         ctlAttachmentImage.Pixbuf = image;

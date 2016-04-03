@@ -52,6 +52,7 @@ namespace Yamster.Core
         public YamsterHttpMethod Method;
         public string Url;
         public readonly Dictionary<string, string> Parameters = new Dictionary<string,string>();
+        public bool AddAuthorizationHeader = true;
 
         public YamsterHttpRequest(string url, YamsterHttpMethod method = YamsterHttpMethod.Get) {
             this.Url = url;
@@ -279,8 +280,10 @@ namespace Yamster.Core
             webRequest.CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate);
 
             // Modify the request, given the oauth settings
-            string token = this.appContext.Settings.OAuthToken;
-            webRequest.Headers.Add("Authorization", string.Format("Bearer {0}", token));
+            if (request.AddAuthorizationHeader) {
+                string token = this.appContext.Settings.OAuthToken;
+                webRequest.Headers.Add("Authorization", string.Format("Bearer {0}", token));
+            }
 
             setBody(webRequest, request);
 

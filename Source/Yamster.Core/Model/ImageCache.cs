@@ -109,9 +109,9 @@ namespace Yamster.Core
             imageToLoad.RequestTask = null;
         }
 
-        public Pixbuf TryGetImageResized(string imageUrl, Size resizeDimensions, out Exception loadError)
+        public Pixbuf TryGetImageResized(YamsterHttpRequest request, Size resizeDimensions, out Exception loadError)
         {
-            CachedImageKey key = new CachedImageKey(imageUrl, resizeDimensions);
+            CachedImageKey key = new CachedImageKey(request.Url, resizeDimensions);
 
             CachedImage cachedImage = null;
             Task<byte[]> requestTask;
@@ -123,10 +123,9 @@ namespace Yamster.Core
                     imagesByUrl.Clear();
                 }
 
-                var request = new YamsterHttpRequest(imageUrl);
                 requestTask = this.asyncRestCaller.ProcessRawRequestAsync(request);
-                
-                cachedImage = new CachedImage(requestTask, imageUrl, resizeDimensions);
+
+                cachedImage = new CachedImage(requestTask, request.Url, resizeDimensions);
                 imagesByUrl.Add(key, cachedImage);
             }
             else
@@ -145,9 +144,9 @@ namespace Yamster.Core
             loadError = cachedImage.LoadError;
             return cachedImage.Pixbuf;
         }
-        public Pixbuf TryGetImage(string imageUrl, out Exception loadError)
+        public Pixbuf TryGetImage(YamsterHttpRequest request, out Exception loadError)
         {
-            return this.TryGetImageResized(imageUrl, new Size(), out loadError);
+            return this.TryGetImageResized(request, new Size(), out loadError);
         }
     }
 }
