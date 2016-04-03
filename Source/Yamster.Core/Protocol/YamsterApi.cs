@@ -276,19 +276,19 @@ namespace Yamster.Core
         static public void CheckForErrors(WebException ex)
         {
             HttpWebResponse response = ex.Response as HttpWebResponse;
-            string str = null;
+            string responseBody = null;
             if (response != null)
             {
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    str = reader.ReadToEnd();
+                    responseBody = reader.ReadToEnd();
                 }
             }
-            if (!string.IsNullOrEmpty(str))
+            if (!string.IsNullOrEmpty(responseBody))
             {
                 try
                 {
-                    JsonErrorResponse response2 = JsonConvert.DeserializeObject<JsonErrorResponse>(str);
+                    JsonErrorResponse response2 = JsonConvert.DeserializeObject<JsonErrorResponse>(responseBody);
                     if (response2 != null)
                     {
                         Exception exception = GetExceptionForError(response2);
@@ -301,6 +301,13 @@ namespace Yamster.Core
                 catch (JsonReaderException exception2)
                 {
                     Debug.WriteLine("Could not translate error response: " + exception2.Message);
+                    if (responseBody.Trim().Length > 1) {
+                        // In this case, the response body contains an error string without any JSON encoding:
+                        throw new WebException("Error: " + responseBody, ex, ex.Status, ex.Response);
+                    } else {
+                        // If the response body doesn't contain any informaiton, then just rethrow the original exception
+                        throw ex;
+                    }                    
                 }
             }
         }
