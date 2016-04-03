@@ -39,13 +39,24 @@ using Newtonsoft.Json;
 
 namespace Yamster.Core
 {
-    public enum HttpRequestMethod
+    public enum YamsterHttpMethod
     {
         Get,
         Post,
         Delete,
         Put,
         Head
+    }
+
+    public class YamsterHttpRequest {
+        public YamsterHttpMethod Method;
+        public string Url;
+        public readonly Dictionary<string, string> Parameters = new Dictionary<string,string>();
+
+        public YamsterHttpRequest(string url, YamsterHttpMethod method = YamsterHttpMethod.Get) {
+            this.Url = url;
+            this.Method = method;
+        }
     }
 
     internal class AsyncRestCall
@@ -218,23 +229,23 @@ namespace Yamster.Core
 
         #endregion
 
-        public T ProcessRequest<T>(HttpRequestMethod method, string url, Dictionary<string, string> parameters = null)
+        public T ProcessRequest<T>(YamsterHttpRequest request)
         {
-            AsyncRestCall call = CreateRequestObject(method, url, parameters);
+            AsyncRestCall call = CreateRequestObject(request);
             call.ProcessThreadsafe();
             byte[] bytes = call.GetResult();
             return YamsterApi.ParseJsonResponse<T>(bytes);
         }
 
-        public async Task<T> ProcessRequestAsync<T>(HttpRequestMethod method, string url, Dictionary<string, string> parameters = null)
+        public async Task<T> ProcessRequestAsync<T>(YamsterHttpRequest request)
         {
-            byte[] bytes = await this.ProcessRawRequestAsync(method, url, parameters);
+            byte[] bytes = await this.ProcessRawRequestAsync(request);
             return YamsterApi.ParseJsonResponse<T>(bytes);
         }
 
-        public async Task<byte[]> ProcessRawRequestAsync(HttpRequestMethod method, string url, Dictionary<string, string> parameters = null)
+        public async Task<byte[]> ProcessRawRequestAsync(YamsterHttpRequest request)
         {
-            AsyncRestCall asyncRestCall = CreateRequestObject(method, url, parameters);
+            AsyncRestCall asyncRestCall = CreateRequestObject(request);
             asyncRestCall.Semaphore = new SemaphoreSlim(initialCount: 0, maxCount: 1);
             this.EnsureBackgroundThreadStarted();
             lock (this.lockObject)
@@ -250,30 +261,30 @@ namespace Yamster.Core
             return bytes;
         }
 
-        AsyncRestCall CreateRequestObject(HttpRequestMethod method, string url, Dictionary<string, string> parameters)
+        AsyncRestCall CreateRequestObject(YamsterHttpRequest request)
         {
-            string methodString = method.ToString().ToUpperInvariant();
+            string methodString = request.Method.ToString().ToUpperInvariant();
 
             // Transform the URL, given the oauth settings
             // This should probably be a no-op
-            var urlWithQuerystring = getFinalUrl(methodString, parameters, buildAbsoluteUrl(url));
+            var urlWithQuerystring = getFinalUrl(request);
 
-            Debug.WriteLine("AsyncRestCaller: Starting request {0}: {1}", method,
+            Debug.WriteLine("AsyncRestCaller: Starting request {0}: {1}", request.Method,
                 new Uri(urlWithQuerystring).GetLeftPart(UriPartial.Path));
 
-            var request = (HttpWebRequest)HttpWebRequest.Create(urlWithQuerystring);
+            var webRequest = (HttpWebRequest)HttpWebRequest.Create(urlWithQuerystring);
 
-            request.Method = methodString;
-            request.UserAgent = userAgent;
-            request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate);
+            webRequest.Method = methodString;
+            webRequest.UserAgent = userAgent;
+            webRequest.CachePolicy = new RequestCachePolicy(RequestCacheLevel.Revalidate);
 
             // Modify the request, given the oauth settings
             string token = this.appContext.Settings.OAuthToken;
-            request.Headers.Add("Authorization", string.Format("Bearer {0}", token));
+            webRequest.Headers.Add("Authorization", string.Format("Bearer {0}", token));
 
-            setBody(request, parameters);
+            setBody(webRequest, request);
 
-            return new AsyncRestCall(request);
+            return new AsyncRestCall(webRequest);
         }
 
         private string buildAbsoluteUrl(string url)
@@ -293,25 +304,27 @@ namespace Yamster.Core
             return this.appContext.Settings.YammerServiceUrl + url;
         }
 
-        private string getFinalUrl(string method, Dictionary<string, string> parameters, string part)
+        private string getFinalUrl(YamsterHttpRequest request)
         {
-            return !sendParamsAsBody(method) ? finishUrl(part, parameters) : part;
+            string part = buildAbsoluteUrl(request.Url);
+            return !sendParamsAsBody(request.Method) ? finishUrl(part, request.Parameters) : part;
         }
 
-        private void setBody(HttpWebRequest request, object parameters)
+        private void setBody(HttpWebRequest webRequest, YamsterHttpRequest request)
         {
+            var parameters = request.Parameters;
             if (parameters == null || !sendParamsAsBody(request.Method)) return;
 
             var serializedContent = buildBody(parameters);
 
-            request.ContentType = "application/json";
-            request.ContentLength = serializedContent.Length;
+            webRequest.ContentType = "application/json";
+            webRequest.ContentLength = serializedContent.Length;
 
-            var stream = request.GetRequestStream();
+            var stream = webRequest.GetRequestStream();
             stream.Write(serializedContent, 0, serializedContent.Length);
         }
 
-        private byte[] buildBody(object parameters)
+        private byte[] buildBody(Dictionary<string, string> parameters)
         {
             var serializationSettings = new JsonSerializerSettings {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -321,9 +334,9 @@ namespace Yamster.Core
             return UTF8Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(parameters, Formatting.None, serializationSettings));
         }
 
-        private bool sendParamsAsBody(string method)
+        private bool sendParamsAsBody(YamsterHttpMethod method)
         {
-            return method == "POST" || method == "PUT" || method == "DELETE";
+            return method == YamsterHttpMethod.Post || method == YamsterHttpMethod.Put || method == YamsterHttpMethod.Delete;
         }
 
         private string finishUrl(string url, Dictionary<string, string> parameters)
@@ -348,7 +361,7 @@ namespace Yamster.Core
         }
 
         public async Task<byte[]> PostFormAsync(string url, NameValueCollection parameters,
-            HttpRequestMethod method = HttpRequestMethod.Post)
+            YamsterHttpMethod method = YamsterHttpMethod.Post)
         {
             using (var webClient = new WebClient())
             {

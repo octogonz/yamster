@@ -49,10 +49,9 @@ namespace Yamster.Core
             // Assign the new accessToken, which we will for ProcessRequest() below
             UpdateOAuth(accessToken);
 
-            var parameters = new Dictionary<string,string>();
-            parameters.Add("include_groups", "false");
-            JsonUserReference user = this.appContext.AsyncRestCaller.ProcessRequest<JsonUserReference>(
-                HttpRequestMethod.Get, "/api/v1/users/current.json", parameters);
+            var request = new YamsterHttpRequest("/api/v1/users/current.json");
+            request.Parameters.Add("include_groups", "false");
+            JsonUserReference user = this.appContext.AsyncRestCaller.ProcessRequest<JsonUserReference>(request);
 
             if (LoginSuccess != null)
                 LoginSuccess(this, EventArgs.Empty);

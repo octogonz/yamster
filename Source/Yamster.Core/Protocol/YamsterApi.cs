@@ -56,16 +56,16 @@ namespace Yamster.Core
         {
             string restPath = string.Format("/api/v1/messages/in_thread/{0}.json", threadId);
 
-            var parameters = new Dictionary<string,string>();
+            var request = new YamsterHttpRequest(restPath);
 
             if (olderThan != null)
             {
-                parameters["older_than"] = olderThan.Value.ToString();
+                request.Parameters["older_than"] = olderThan.Value.ToString();
             }
 
             TallyRequest();
 
-            return await GetMessageEnvelopeJsonAsync(restPath, parameters);
+            return await GetMessageEnvelopeJsonAsync(request);
         }
 
         public async Task<JsonMessageEnvelope> GetMessagesInFeedAsync(long feedId, long? olderThan = null)
@@ -80,22 +80,21 @@ namespace Yamster.Core
             else
                 restPath = string.Format("/api/v1/messages/in_group/{0}.json", feedId);
 
-            var parameters = new Dictionary<string, string>();
-            parameters["threaded"] = "extended";
+            var request = new YamsterHttpRequest(restPath);
+            request.Parameters["threaded"] = "extended";
             if (olderThan != null)
             {
-                parameters["older_than"] = olderThan.Value.ToString();
+                request.Parameters["older_than"] = olderThan.Value.ToString();
             }
 
             TallyRequest();
-            return await GetMessageEnvelopeJsonAsync(restPath, parameters);
+            return await GetMessageEnvelopeJsonAsync(request);
         }
 
-        private async Task<JsonMessageEnvelope> GetMessageEnvelopeJsonAsync(string url,
-            Dictionary<string, string> parameters = null)
+        private async Task<JsonMessageEnvelope> GetMessageEnvelopeJsonAsync(YamsterHttpRequest request)
         {
             JsonMessageEnvelopeUntyped untypedEnvelope = await this.asyncRestCaller
-                .ProcessRequestAsync<JsonMessageEnvelopeUntyped>(HttpRequestMethod.Get, url, parameters);
+                .ProcessRequestAsync<JsonMessageEnvelopeUntyped>(request);
             return ConvertArchiveMessageEnvelope(untypedEnvelope);
         }
 
@@ -157,21 +156,20 @@ namespace Yamster.Core
 
         public void TestServerConnection()
         {
-            this.asyncRestCaller.ProcessRequest<JsonMessageEnvelope>(HttpRequestMethod.Get,
-                "/api/v1/messages.json");
+            var request = new YamsterHttpRequest("/api/v1/messages.json");
+            this.asyncRestCaller.ProcessRequest<JsonMessageEnvelope>(request);
         }
 
         public IList<JsonSearchedGroup> SearchForGroups(string keyword, int maxResults)
         {
             
             var url = this.settings.YammerServiceUrl + "/api/v1/autocomplete/ranked";
-            
-            var parameters = new Dictionary<string, string>();
-            parameters["prefix"] = keyword;
-            parameters["models"] = "group:" + maxResults.ToString();
 
-            JsonAutoCompleteResult result = this.asyncRestCaller.ProcessRequest<JsonAutoCompleteResult>(
-                HttpRequestMethod.Get, url, parameters);
+            var request = new YamsterHttpRequest(url);
+            request.Parameters["prefix"] = keyword;
+            request.Parameters["models"] = "group:" + maxResults.ToString();
+
+            JsonAutoCompleteResult result = this.asyncRestCaller.ProcessRequest<JsonAutoCompleteResult>(request);
             return result.Groups;
         }
 
@@ -249,13 +247,13 @@ namespace Yamster.Core
                 if (liked)
                 {
                     await this.asyncRestCaller.PostFormAsync("/api/v1/messages/liked_by/current.json", parameters,
-                        HttpRequestMethod.Post);
+                        YamsterHttpMethod.Post);
                 }
                 else
                 {
                     parameters["_method"] = "DELETE";
                     await this.asyncRestCaller.PostFormAsync("/api/v1/messages/liked_by/current.json", parameters,
-                        HttpRequestMethod.Delete);
+                        YamsterHttpMethod.Delete);
                 }
             }
             catch (WebException ex)

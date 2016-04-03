@@ -123,8 +123,8 @@ namespace Yamster.Core
                     imagesByUrl.Clear();
                 }
 
-                requestTask = this.asyncRestCaller.ProcessRawRequestAsync(
-                    HttpRequestMethod.Get, imageUrl, null);
+                var request = new YamsterHttpRequest(imageUrl);
+                requestTask = this.asyncRestCaller.ProcessRawRequestAsync(request);
                 
                 cachedImage = new CachedImage(requestTask, imageUrl, resizeDimensions);
                 imagesByUrl.Add(key, cachedImage);
