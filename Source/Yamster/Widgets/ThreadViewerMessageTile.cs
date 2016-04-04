@@ -53,6 +53,10 @@ namespace Yamster
         {
             this.Build();
 
+            this.lblSender.WidthRequest = MainWindow.ChatPaneWidth - 80;
+            this.lblBody.WidthRequest = MainWindow.ChatPaneWidth - 80;
+            this.lblLikes.WidthRequest = MainWindow.ChatPaneWidth - 110;
+
 #if DEBUG
             // This feature is experimental
             lblDelete.Visible = true;

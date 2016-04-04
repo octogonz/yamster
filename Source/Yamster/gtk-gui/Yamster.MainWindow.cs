@@ -24,11 +24,11 @@ namespace Yamster
 		
 		private global::Gtk.Action mnuYammerFullResync;
 		
-		private global::Gtk.VBox vbox1;
+		private global::Gtk.VBox ctlMainVBox;
 		
 		private global::Gtk.MenuBar ctlMenuBar;
 		
-		private global::Gtk.HBox hbox2;
+		private global::Gtk.HBox ctlMainHBox;
 		
 		private global::Gtk.Notebook ctlScreenBox;
 		
@@ -52,9 +52,9 @@ namespace Yamster
 		
 		private global::Gtk.Label label17;
 		
-		private global::Gtk.VBox vbox10;
+		private global::Gtk.VBox ctlChatPaneVBox;
 		
-		private global::Gtk.HBox hbox11;
+		private global::Gtk.HBox ctlButtonStripHBox;
 		
 		private global::Gtk.Button btnAboutBox;
 		
@@ -112,24 +112,24 @@ namespace Yamster
 			this.Icon = global::Gdk.Pixbuf.LoadFromResource ("Yamster.Resources.Yamster-16x16.png");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Container child Yamster.MainWindow.Gtk.Container+ContainerChild
-			this.vbox1 = new global::Gtk.VBox ();
-			this.vbox1.Name = "vbox1";
-			this.vbox1.Spacing = 6;
-			// Container child vbox1.Gtk.Box+BoxChild
+			this.ctlMainVBox = new global::Gtk.VBox ();
+			this.ctlMainVBox.Name = "ctlMainVBox";
+			this.ctlMainVBox.Spacing = 6;
+			// Container child ctlMainVBox.Gtk.Box+BoxChild
 			this.UIManager.AddUiFromString (@"<ui><menubar name='ctlMenuBar'><menu name='FileAction' action='FileAction'><menuitem name='mnuFileYammerSync' action='mnuFileYammerSync'/><menuitem name='mnuYammerFullResync' action='mnuYammerFullResync'/><separator/><menuitem name='mnuFileExit' action='mnuFileExit'/></menu><menu name='mnuHelp' action='mnuHelp'><menuitem name='mnuHelpManual' action='mnuHelpManual'/><menuitem name='mnuHelpDiscussionGroup' action='mnuHelpDiscussionGroup'/><menuitem name='mnuHelpWebSite' action='mnuHelpWebSite'/><separator/><menuitem name='mnuHelpAbout' action='mnuHelpAbout'/></menu></menubar></ui>");
 			this.ctlMenuBar = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/ctlMenuBar")));
 			this.ctlMenuBar.Name = "ctlMenuBar";
-			this.vbox1.Add (this.ctlMenuBar);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.ctlMenuBar]));
+			this.ctlMainVBox.Add (this.ctlMenuBar);
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.ctlMainVBox [this.ctlMenuBar]));
 			w2.Position = 0;
 			w2.Expand = false;
 			w2.Fill = false;
-			// Container child vbox1.Gtk.Box+BoxChild
-			this.hbox2 = new global::Gtk.HBox ();
-			this.hbox2.Name = "hbox2";
-			this.hbox2.Spacing = 6;
-			this.hbox2.BorderWidth = ((uint)(5));
-			// Container child hbox2.Gtk.Box+BoxChild
+			// Container child ctlMainVBox.Gtk.Box+BoxChild
+			this.ctlMainHBox = new global::Gtk.HBox ();
+			this.ctlMainHBox.Name = "ctlMainHBox";
+			this.ctlMainHBox.Spacing = 6;
+			this.ctlMainHBox.BorderWidth = ((uint)(5));
+			// Container child ctlMainHBox.Gtk.Box+BoxChild
 			this.ctlScreenBox = new global::Gtk.Notebook ();
 			this.ctlScreenBox.CanFocus = true;
 			this.ctlScreenBox.Name = "ctlScreenBox";
@@ -202,76 +202,76 @@ namespace Yamster
 			this.label17.UseUnderline = true;
 			this.ctlScreenBox.SetTabLabel (this.ctlGroupConfigScreen, this.label17);
 			this.label17.ShowAll ();
-			this.hbox2.Add (this.ctlScreenBox);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.ctlScreenBox]));
+			this.ctlMainHBox.Add (this.ctlScreenBox);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.ctlMainHBox [this.ctlScreenBox]));
 			w8.Position = 0;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.vbox10 = new global::Gtk.VBox ();
-			this.vbox10.WidthRequest = 380;
-			this.vbox10.Name = "vbox10";
-			this.vbox10.Spacing = 6;
-			this.vbox10.BorderWidth = ((uint)(5));
-			// Container child vbox10.Gtk.Box+BoxChild
-			this.hbox11 = new global::Gtk.HBox ();
-			this.hbox11.Name = "hbox11";
-			this.hbox11.Spacing = 6;
-			// Container child hbox11.Gtk.Box+BoxChild
+			// Container child ctlMainHBox.Gtk.Box+BoxChild
+			this.ctlChatPaneVBox = new global::Gtk.VBox ();
+			this.ctlChatPaneVBox.WidthRequest = 380;
+			this.ctlChatPaneVBox.Name = "ctlChatPaneVBox";
+			this.ctlChatPaneVBox.Spacing = 6;
+			this.ctlChatPaneVBox.BorderWidth = ((uint)(5));
+			// Container child ctlChatPaneVBox.Gtk.Box+BoxChild
+			this.ctlButtonStripHBox = new global::Gtk.HBox ();
+			this.ctlButtonStripHBox.Name = "ctlButtonStripHBox";
+			this.ctlButtonStripHBox.Spacing = 6;
+			// Container child ctlButtonStripHBox.Gtk.Box+BoxChild
 			this.btnAboutBox = new global::Gtk.Button ();
 			this.btnAboutBox.CanFocus = true;
 			this.btnAboutBox.Name = "btnAboutBox";
 			this.btnAboutBox.UseUnderline = true;
 			this.btnAboutBox.Label = global::Mono.Unix.Catalog.GetString ("_About Yamster...");
-			this.hbox11.Add (this.btnAboutBox);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.btnAboutBox]));
+			this.ctlButtonStripHBox.Add (this.btnAboutBox);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.ctlButtonStripHBox [this.btnAboutBox]));
 			w9.PackType = ((global::Gtk.PackType)(1));
 			w9.Position = 1;
 			w9.Expand = false;
 			w9.Fill = false;
-			// Container child hbox11.Gtk.Box+BoxChild
+			// Container child ctlButtonStripHBox.Gtk.Box+BoxChild
 			this.btnSync = new global::Gtk.Button ();
 			this.btnSync.CanFocus = true;
 			this.btnSync.Name = "btnSync";
 			this.btnSync.UseUnderline = true;
 			this.btnSync.Label = global::Mono.Unix.Catalog.GetString ("_Yammer Sync...");
-			this.hbox11.Add (this.btnSync);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.btnSync]));
+			this.ctlButtonStripHBox.Add (this.btnSync);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.ctlButtonStripHBox [this.btnSync]));
 			w10.PackType = ((global::Gtk.PackType)(1));
 			w10.Position = 2;
 			w10.Expand = false;
 			w10.Fill = false;
-			// Container child hbox11.Gtk.Box+BoxChild
+			// Container child ctlButtonStripHBox.Gtk.Box+BoxChild
 			this.btnTest = new global::Gtk.Button ();
 			this.btnTest.CanFocus = true;
 			this.btnTest.Name = "btnTest";
 			this.btnTest.UseUnderline = true;
 			this.btnTest.Label = global::Mono.Unix.Catalog.GetString ("Test");
-			this.hbox11.Add (this.btnTest);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.btnTest]));
+			this.ctlButtonStripHBox.Add (this.btnTest);
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.ctlButtonStripHBox [this.btnTest]));
 			w11.PackType = ((global::Gtk.PackType)(1));
 			w11.Position = 3;
 			w11.Expand = false;
 			w11.Fill = false;
-			this.vbox10.Add (this.hbox11);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox10 [this.hbox11]));
+			this.ctlChatPaneVBox.Add (this.ctlButtonStripHBox);
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.ctlChatPaneVBox [this.ctlButtonStripHBox]));
 			w12.Position = 0;
 			w12.Expand = false;
 			w12.Fill = false;
-			// Container child vbox10.Gtk.Box+BoxChild
+			// Container child ctlChatPaneVBox.Gtk.Box+BoxChild
 			this.ctlThreadViewer = new global::Yamster.ThreadViewer ();
 			this.ctlThreadViewer.WidthRequest = 400;
 			this.ctlThreadViewer.Events = ((global::Gdk.EventMask)(256));
 			this.ctlThreadViewer.Name = "ctlThreadViewer";
-			this.vbox10.Add (this.ctlThreadViewer);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.vbox10 [this.ctlThreadViewer]));
+			this.ctlChatPaneVBox.Add (this.ctlThreadViewer);
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.ctlChatPaneVBox [this.ctlThreadViewer]));
 			w13.Position = 1;
-			this.hbox2.Add (this.vbox10);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.vbox10]));
+			this.ctlMainHBox.Add (this.ctlChatPaneVBox);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.ctlMainHBox [this.ctlChatPaneVBox]));
 			w14.Position = 1;
 			w14.Expand = false;
-			this.vbox1.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.hbox2]));
+			this.ctlMainVBox.Add (this.ctlMainHBox);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.ctlMainVBox [this.ctlMainHBox]));
 			w15.Position = 1;
-			// Container child vbox1.Gtk.Box+BoxChild
+			// Container child ctlMainVBox.Gtk.Box+BoxChild
 			this.ctlStatusBarHbox = new global::Gtk.HBox ();
 			this.ctlStatusBarHbox.Name = "ctlStatusBarHbox";
 			this.ctlStatusBarHbox.Spacing = 6;
@@ -302,12 +302,12 @@ namespace Yamster
 			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.ctlStatusBarHbox [this.ctlStatusBarSyncStatus]));
 			w18.Position = 2;
 			w18.Expand = false;
-			this.vbox1.Add (this.ctlStatusBarHbox);
-			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.ctlStatusBarHbox]));
+			this.ctlMainVBox.Add (this.ctlStatusBarHbox);
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.ctlMainVBox [this.ctlStatusBarHbox]));
 			w19.Position = 2;
 			w19.Expand = false;
 			w19.Fill = false;
-			this.Add (this.vbox1);
+			this.Add (this.ctlMainVBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}

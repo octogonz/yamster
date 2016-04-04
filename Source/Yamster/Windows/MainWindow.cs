@@ -41,10 +41,14 @@ namespace Yamster
         SyncWindow syncWindow = null;
         ActionLagger updateStatusBarLagger;
 
+        public static int ChatPaneWidth = 380;  // minimum: 320
+
         public MainWindow()
             : base(Gtk.WindowType.Toplevel)
         {
             Build();
+
+            this.ctlChatPaneVBox.WidthRequest = MainWindow.ChatPaneWidth;
 
 #if YAMSTER_MAC
             ctlMenuBar.Visible = false;

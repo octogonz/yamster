@@ -69,7 +69,7 @@
     <property name="WindowPosition">CenterOnParent</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
-      <widget class="Gtk.VBox" id="vbox1">
+      <widget class="Gtk.VBox" id="ctlMainVBox">
         <property name="MemberName" />
         <property name="Spacing">6</property>
         <child>
@@ -99,7 +99,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.HBox" id="hbox2">
+          <widget class="Gtk.HBox" id="ctlMainHBox">
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <property name="BorderWidth">5</property>
@@ -207,13 +207,13 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.VBox" id="vbox10">
+              <widget class="Gtk.VBox" id="ctlChatPaneVBox">
                 <property name="MemberName" />
                 <property name="WidthRequest">380</property>
                 <property name="Spacing">6</property>
                 <property name="BorderWidth">5</property>
                 <child>
-                  <widget class="Gtk.HBox" id="hbox11">
+                  <widget class="Gtk.HBox" id="ctlButtonStripHBox">
                     <property name="MemberName" />
                     <property name="Spacing">6</property>
                     <child>
