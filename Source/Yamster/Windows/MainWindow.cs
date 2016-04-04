@@ -41,11 +41,16 @@ namespace Yamster
         SyncWindow syncWindow = null;
         ActionLagger updateStatusBarLagger;
 
-        public static int ChatPaneWidth = 380;  // minimum: 320
+        public static int ChatPaneWidth { get; private set; }
 
         public MainWindow()
             : base(Gtk.WindowType.Toplevel)
         {
+            appContext = AppContext.Default;
+            yamsterCache = appContext.YamsterCache;
+
+            MainWindow.ChatPaneWidth = appContext.Settings.ChatPaneWidth;
+
             Build();
 
             this.ctlChatPaneVBox.WidthRequest = MainWindow.ChatPaneWidth;
@@ -58,9 +63,6 @@ namespace Yamster
             SetStatusBarFormat(ctlStatusBarTotalYams, x => x.Xalign = 0.5f);
             ctlStatusBarSyncStatus.Push(0, "");
             SetStatusBarFormat(ctlStatusBarSyncStatus, x => x.Xalign = 0.5f);
-
-            appContext = AppContext.Default;
-            yamsterCache = appContext.YamsterCache;
 
             yamsterCache.MessageChanged += yamsterCache_MessageChanged;
 

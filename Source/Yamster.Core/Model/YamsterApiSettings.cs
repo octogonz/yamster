@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -46,6 +47,7 @@ namespace Yamster.Core
         string appClientId;
         string oAuthToken;
         bool protectTokenWhenSaving;
+        int chatPaneWidth;
 
         public YamsterApiSettings(AppContext appContext)
         {
@@ -111,6 +113,16 @@ namespace Yamster.Core
             set { this.protectTokenWhenSaving = value; }
         }
 
+        /// <summary>
+        /// The width in pixels of the chat pane on the main window.
+        /// </summary>
+        [DefaultValue(380)]
+        public int ChatPaneWidth
+        {
+            get { return this.chatPaneWidth; }
+            set { this.chatPaneWidth = Math.Max(320, value); }
+        }
+
         #endregion
 
         string GetSettingsFilePath()
@@ -124,6 +136,7 @@ namespace Yamster.Core
             appClientId = "";
             oAuthToken = "";
             protectTokenWhenSaving = true;
+            chatPaneWidth = 380;
         }
 
         public void Load()
@@ -174,6 +187,10 @@ namespace Yamster.Core
                 var appClientIdElement = XmlUtilities.GetChildElement(authenticationElement, "AppClientId");
                 this.AppClientId = appClientIdElement.Value;
             }
+            if (version >= new Version(1,2)) {
+                var yamsterApplicationElement = XmlUtilities.GetChildElement(rootElement, "YamsterApplication");
+                this.ChatPaneWidth = int.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ChatPaneWidth"));
+            }
 
             var oAuthTokenElement = XmlUtilities.GetChildElement(authenticationElement, "OAuthToken");
             string unprocessedToken = oAuthTokenElement.Value ?? "";
@@ -218,7 +235,12 @@ namespace Yamster.Core
                     rootElement
                 );
 
-                rootElement.Add(new XAttribute("Version", "1.1"));
+                rootElement.Add(new XAttribute("Version", "1.2"));
+
+                rootElement.Add(new XElement("YamsterApplication", 
+                    new XAttribute("ChatPaneWidth", this.ChatPaneWidth)
+                ));
+
                 WriteAuthenticationProperties(rootElement);
 
                 var xmlWriterSettings = new XmlWriterSettings() { Indent = true, IndentChars = "    " };
