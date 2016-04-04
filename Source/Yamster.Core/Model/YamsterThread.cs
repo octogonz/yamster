@@ -231,8 +231,10 @@ namespace Yamster.Core
 
             if (!message.Deleted)
             {
+                this.PerformActionAndCheckRead(() => {
+                    this.messagesInternal.Insert(~index, message);
+                }, eventCollector);
 
-                this.messagesInternal.Insert(~index, message);
                 message.NotifyAddedToThread(this);
 
                 if (message.Read)
@@ -278,7 +280,10 @@ namespace Yamster.Core
             {
                 bool oldAllMessagesDeleted = this.AllMessagesDeleted;
 
-                this.messagesInternal.RemoveAt(index);
+                this.PerformActionAndCheckRead(() => {
+                    this.messagesInternal.RemoveAt(index);
+                }, eventCollector);
+
 
                 if (oldAllMessagesDeleted != this.AllMessagesDeleted)
                 {
@@ -290,7 +295,7 @@ namespace Yamster.Core
                     this.Group.AddThread(this, eventCollector);
                 }
 
-                if (message.Read && !message.Deleted)
+                if (message.Read)
                 {
                     // Decrement the read message counter
                     this.NotifyMessageReadChanged(newReadValue: false, eventCollector: eventCollector);
@@ -306,15 +311,21 @@ namespace Yamster.Core
 
         internal void NotifyMessageReadChanged(bool newReadValue, YamsterModelEventCollector eventCollector)
         {
+            this.PerformActionAndCheckRead(() => {
+                if (newReadValue)
+                    ++readMessageCount;
+                else
+                    --readMessageCount;
+            }, eventCollector);
+        }
+
+        private void PerformActionAndCheckRead(Action action, YamsterModelEventCollector eventCollector) {
             bool oldThreadRead = this.Read;
-            
-            if (newReadValue)
-                ++readMessageCount;
-            else
-                --readMessageCount;
+
+            action();
 
             Debug.Assert(readMessageCount == this.messagesInternal.Where(x => x.Read).Count());
-            
+
             if (this.Read != oldThreadRead && !this.AllMessagesDeleted)
             {
                 this.Group.NotifyThreadReadChanged(this.Read, eventCollector);

@@ -96,6 +96,12 @@ namespace Yamster.Core
             }
         }
 
+        public int UnreadThreadCount {
+            get {
+                return this.threadsInternal.Count - readThreadCount;
+            }
+        }
+
         internal DbGroup DbGroup
         {
             get { return this.dbGroup; }
@@ -286,10 +292,7 @@ AND [TrackRead] <> ?",
 
             Debug.Assert(readThreadCount >= 0 && readThreadCount <= threadsInternal.Count);
 
-            if (oldGroupRead != this.Read)
-            {
-                eventCollector.NotifyAfterUpdate(this);
-            }
+            eventCollector.NotifyAfterUpdate(this);
         }
 
         #endregion

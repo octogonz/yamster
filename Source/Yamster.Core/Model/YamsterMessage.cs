@@ -312,23 +312,27 @@ AND [Starred] <> ?",
 
             bool oldRead = this.Read;
             bool oldDeleted = this.Deleted;
-            this.dbMessageState = newValue;
 
-            if (this.Deleted != oldDeleted)
+            if (newValue.Deleted != oldDeleted)
             {
                 // Remove and re-add the message so it moves to the appropriate
                 // collection (YamsterThread.Messages or DeletedMessages).
                 // (Note that NotifyMessageReadChanged() assumes that the message
                 // is in the right collection.)
                 this.Thread.RemoveMessage(this, eventCollector);
+
+                this.dbMessageState = newValue;
+
                 this.Thread.AddMessage(this, eventCollector);
 
                 this.cachedPreviewText = null;
-            }
+            } else {
+                this.dbMessageState = newValue;
 
-            if (this.Read != oldRead && !this.Deleted)
-            {
-                this.Thread.NotifyMessageReadChanged(this.Read, eventCollector);
+                if (this.Read != oldRead && !this.Deleted)
+                {
+                    this.Thread.NotifyMessageReadChanged(this.Read, eventCollector);
+                }
             }
 
             UpdateLoadedStatus();
