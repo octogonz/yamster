@@ -21,7 +21,7 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<?define ProductVersion = "2.8.0.0"?>
+<?define ProductVersion = "2.9.0.0"?>
 <?define ProductUpgradeCode = "acd7c640-926c-4880-af3b-db86d66e5d98"?>
 <?define InputDir = "$(sys.CURRENTDIR)..\..\Build\Release\"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
