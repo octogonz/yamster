@@ -48,6 +48,7 @@ namespace Yamster.Core
         string oAuthToken;
         bool protectTokenWhenSaving;
         int chatPaneWidth;
+        bool showUnreadThreadCount;
 
         public YamsterApiSettings(AppContext appContext)
         {
@@ -123,6 +124,12 @@ namespace Yamster.Core
             set { this.chatPaneWidth = Math.Max(320, value); }
         }
 
+        public bool ShowUnreadThreadCount
+        {
+            get { return this.showUnreadThreadCount; }
+            set { this.showUnreadThreadCount = value; }
+        }
+
         #endregion
 
         string GetSettingsFilePath()
@@ -137,6 +144,7 @@ namespace Yamster.Core
             oAuthToken = "";
             protectTokenWhenSaving = true;
             chatPaneWidth = 380;
+            showUnreadThreadCount = false;
         }
 
         public void Load()
@@ -165,6 +173,14 @@ namespace Yamster.Core
                     Version version = new Version(XmlUtilities.GetStringAttribute(rootElement, "Version"));
 
                     ReadAuthenticationProperties(rootElement, version);
+
+                    if (version >= new Version(1, 2))
+                    {
+                        var yamsterApplicationElement = XmlUtilities.GetChildElement(rootElement, "YamsterApplication");
+                        this.ChatPaneWidth = int.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ChatPaneWidth"));
+                        this.ShowUnreadThreadCount = bool.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ShowUnreadThreadCount"));
+                    }
+
                 }
                 succeeded = true;
             }
@@ -186,10 +202,6 @@ namespace Yamster.Core
 
                 var appClientIdElement = XmlUtilities.GetChildElement(authenticationElement, "AppClientId");
                 this.AppClientId = appClientIdElement.Value;
-            }
-            if (version >= new Version(1,2)) {
-                var yamsterApplicationElement = XmlUtilities.GetChildElement(rootElement, "YamsterApplication");
-                this.ChatPaneWidth = int.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ChatPaneWidth"));
             }
 
             var oAuthTokenElement = XmlUtilities.GetChildElement(authenticationElement, "OAuthToken");
@@ -237,9 +249,12 @@ namespace Yamster.Core
 
                 rootElement.Add(new XAttribute("Version", "1.2"));
 
-                rootElement.Add(new XElement("YamsterApplication", 
-                    new XAttribute("ChatPaneWidth", this.ChatPaneWidth)
-                ));
+                var yamsterApplicationElement = new XElement("YamsterApplication");
+                rootElement.Add(yamsterApplicationElement);
+                yamsterApplicationElement.Add(
+                    new XAttribute("ChatPaneWidth", this.ChatPaneWidth),
+                    new XAttribute("ShowUnreadThreadCount", this.ShowUnreadThreadCount)
+                );
 
                 WriteAuthenticationProperties(rootElement);
 

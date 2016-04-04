@@ -90,6 +90,13 @@ namespace Yamster
                     string title = group.GroupName;
                     if (!group.ShouldSync)
                         title += "*";
+
+                    if (appContext.Settings.ShowUnreadThreadCount) {
+                        if (group.TrackRead && group.UnreadThreadCount > 0)
+                        {
+                            title += " [" + group.UnreadThreadCount + "]";
+                        }
+                    }
                     return title;
                 }
             );
