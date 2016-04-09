@@ -47,6 +47,7 @@ namespace Yamster.Core
         string appClientId;
         string oAuthToken;
         bool protectTokenWhenSaving;
+        string databaseFilename;
         int chatPaneWidth;
         bool showUnreadThreadCount;
 
@@ -115,6 +116,20 @@ namespace Yamster.Core
         }
 
         /// <summary>
+        /// This specifies the filename for the Yamster database.  It is used to determine
+        /// AppContext.DatabaseFilePath.  If DatabaseFilename is a relative path,
+        /// it will be resolved relative to the AppContext.AppDataFolder folder.  It can
+        /// also be an absolute path.
+        /// </summary>
+        [DefaultValue("Yamster.db")]
+        public string DatabaseFilename
+        {
+            get { return this.databaseFilename; }
+            set { this.databaseFilename = value; }
+        }
+
+
+        /// <summary>
         /// The width in pixels of the chat pane on the main window.
         /// </summary>
         [DefaultValue(380)]
@@ -124,6 +139,10 @@ namespace Yamster.Core
             set { this.chatPaneWidth = Math.Max(320, value); }
         }
 
+        /// <summary>
+        /// Whether the application's group list should show the number of unread threads
+        /// in each group.
+        /// </summary>
         public bool ShowUnreadThreadCount
         {
             get { return this.showUnreadThreadCount; }
@@ -143,6 +162,7 @@ namespace Yamster.Core
             appClientId = "";
             oAuthToken = "";
             protectTokenWhenSaving = true;
+            databaseFilename = "Yamster.db";
             chatPaneWidth = 380;
             showUnreadThreadCount = false;
         }
@@ -172,8 +192,6 @@ namespace Yamster.Core
 
                     Version version = new Version(XmlUtilities.GetStringAttribute(rootElement, "Version"));
 
-                    ReadAuthenticationProperties(rootElement, version);
-
                     if (version >= new Version(1, 2))
                     {
                         var yamsterApplicationElement = XmlUtilities.GetChildElement(rootElement, "YamsterApplication");
@@ -181,6 +199,19 @@ namespace Yamster.Core
                         this.ShowUnreadThreadCount = bool.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ShowUnreadThreadCount"));
                     }
 
+                    if (version >= new Version(1, 1))
+                    {
+                        var yammerServiceUrlElement = XmlUtilities.GetChildElement(rootElement, "YammerServiceUrl");
+                        this.YammerServiceUrl = yammerServiceUrlElement.Value;
+                    }
+
+                    if (version >= new Version(1, 3))
+                    {
+                        var databaseFilenameElement = XmlUtilities.GetChildElement(rootElement, "DatabaseFilename");
+                        this.DatabaseFilename = databaseFilenameElement.Value;
+                    }
+
+                    ReadAuthenticationProperties(rootElement, version);
                 }
                 succeeded = true;
             }
@@ -197,9 +228,6 @@ namespace Yamster.Core
 
             if (version >= new Version(1,1))
             {
-                var yammerServiceUrlElement = XmlUtilities.GetChildElement(rootElement, "YammerServiceUrl");
-                this.YammerServiceUrl = yammerServiceUrlElement.Value;
-
                 var appClientIdElement = XmlUtilities.GetChildElement(authenticationElement, "AppClientId");
                 this.AppClientId = appClientIdElement.Value;
             }
@@ -247,7 +275,7 @@ namespace Yamster.Core
                     rootElement
                 );
 
-                rootElement.Add(new XAttribute("Version", "1.2"));
+                rootElement.Add(new XAttribute("Version", "1.3"));
 
                 var yamsterApplicationElement = new XElement("YamsterApplication");
                 rootElement.Add(yamsterApplicationElement);
@@ -255,6 +283,9 @@ namespace Yamster.Core
                     new XAttribute("ChatPaneWidth", this.ChatPaneWidth),
                     new XAttribute("ShowUnreadThreadCount", this.ShowUnreadThreadCount)
                 );
+
+                rootElement.Add(new XElement("YammerServiceUrl", this.YammerServiceUrl));
+                rootElement.Add(new XElement("DatabaseFilename", this.DatabaseFilename));
 
                 WriteAuthenticationProperties(rootElement);
 
@@ -270,9 +301,6 @@ namespace Yamster.Core
         private void WriteAuthenticationProperties(XElement rootElement)
         {
             var authenticationElement = new XElement("Authentication");
-
-            rootElement.Add(new XElement("YammerServiceUrl", this.YammerServiceUrl));
-
             rootElement.Add(authenticationElement);
             authenticationElement.Add(new XElement("AppClientId", this.AppClientId));
 

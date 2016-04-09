@@ -38,6 +38,7 @@ namespace Yamster.Core
     {
         bool disposed = false;
         string appDataFolder;
+        string databaseFilePath;
         int foregroundThreadId;
 
         YamsterApiSettings settings;
@@ -126,9 +127,13 @@ namespace Yamster.Core
             if (this.DatabaseConnected)
                 throw new InvalidOperationException("The database is already connected");
 
-            string databaseFilename = Path.Combine(AppDataFolder, "Yamster.db");
-            this.sqliteMapper = new SQLiteMapper(databaseFilename, createIfMissing: true);
-            this.sqliteMapper.Open();
+            this.sqliteMapper = new SQLiteMapper(this.DatabaseFilePath, createIfMissing: true);
+            try {
+                this.sqliteMapper.Open();
+            }
+            catch (Exception ex) {
+                throw new Exception("Error opening Yamster database file:\r\n\r\n\"" + this.DatabaseFilePath + "\"", ex);
+            }
             this.yamsterArchiveDb = new YamsterArchiveDb(sqliteMapper, 
                 beforeUpgradeHandler, afterUpgradeHandler);
             this.yamsterCoreDb = new YamsterCoreDb(yamsterArchiveDb);
@@ -211,6 +216,26 @@ namespace Yamster.Core
                     }
                 }
                 return this.appDataFolder;
+            }
+        }
+
+        public string DatabaseFilePath
+        {
+            get
+            {
+                if (this.databaseFilePath == null) {
+                    string databaseFilename = this.Settings.DatabaseFilename;
+                    
+                    if (Path.IsPathRooted(databaseFilename)) {
+                        this.databaseFilePath = databaseFilename;
+                    }
+                    else
+                    {
+                        this.databaseFilePath = Path.Combine(this.AppDataFolder, databaseFilename);
+                    }
+                }
+                Debug.WriteLine("Setting DatabaseFilePath=\"" + this.databaseFilePath + "\"");
+                return this.databaseFilePath;
             }
         }
 
