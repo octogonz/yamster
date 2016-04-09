@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 
 namespace Yamster.Core.SQLite
 {
@@ -39,7 +40,7 @@ namespace Yamster.Core.SQLite
         SqlTrace    // trace each SQL command
     }
 
-    public class SQLiteMapper : IDisposable
+    public sealed class SQLiteMapper : IDisposable
     {
         public const string ChangeNumberColumnName = "ChangeNumber";
 
@@ -47,9 +48,12 @@ namespace Yamster.Core.SQLite
 
         public static SQLiteMapperLogLevel DefaultLogLevel = SQLiteMapperLogLevel.Normal;
 
+        string sqliteFilename;
+
         public SQLiteMapper(string sqliteFilename, bool createIfMissing = false)
         {
             SQLiteConnectionStringBuilder connectionStringBuilder = new SQLiteConnectionStringBuilder();
+            this.sqliteFilename = sqliteFilename;
             connectionStringBuilder.DataSource = sqliteFilename;
             connectionStringBuilder.Pooling = true;
             connectionStringBuilder.FailIfMissing = !createIfMissing;
@@ -75,23 +79,63 @@ namespace Yamster.Core.SQLite
             remove { connection.Trace -= value; }
         }
 
+        private void WrapDatabaseExceptions(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception("Error accessing database file:\r\n\r\n\"" + this.sqliteFilename + "\"", ex);
+            }
+        }
+
+        private T WrapDatabaseExceptions<T>(Func<T> action)
+        {
+            try
+            {
+                return action();
+            }
+            catch (SQLiteException ex)
+            {
+                throw new Exception("Error accessing database file:\r\n\r\n\"" + this.sqliteFilename + "\"", ex);
+            }
+        }
+
         public void Open()
         {
-            connection.Open();
+            WrapDatabaseExceptions(() => {
+                try
+                {
+                    connection.Open();
+                }
+                catch (SQLiteException ex) {
+                    string directory = Path.GetDirectoryName(this.sqliteFilename);
+                    if (!Directory.Exists(directory)) {
+                        throw new Exception("The specified database folder does not exist:\r\n\r\n\"" + this.sqliteFilename + "\"", ex);
+                    }
+                    throw;
+                }
+            });
         }
 
         public SQLiteTransaction BeginTransaction()
         {
-            return (SQLiteTransaction)connection.BeginTransaction();
+            return WrapDatabaseExceptions(() => {
+                return (SQLiteTransaction) connection.BeginTransaction();
+            });
         }
 
         public void CreateTable(MappedTable mappedTable)
         {
-            using (SQLiteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = SQLiteMapperHelpers.GetCreateTableStatement(mappedTable);
-                command.ExecuteNonQuery();
-            }
+            WrapDatabaseExceptions(() => {
+                using (SQLiteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = SQLiteMapperHelpers.GetCreateTableStatement(mappedTable);
+                    command.ExecuteNonQuery();
+                }
+            });
         }
 
         public void InsertRecords<T>(MappedTable table, IEnumerable<T> records, 
@@ -105,83 +149,85 @@ namespace Yamster.Core.SQLite
 
             var descriptors = SQLiteMapperHelpers.GetPropertyDescriptors(recordType, columnSet);
 
-            using (SQLiteCommand command = connection.CreateCommand())
-            using (SQLiteCommand fixReplaceCommand = connection.CreateCommand())
-            {
-                command.CommandText = SQLiteMapperHelpers.GetInsertStatement(columnSet, table.TableName, conflictResolution);
-
-                foreach (var column in columnSet.Columns)
+            WrapDatabaseExceptions(() => {
+                using (SQLiteCommand command = connection.CreateCommand())
+                using (SQLiteCommand fixReplaceCommand = connection.CreateCommand())
                 {
-                    var parameter = command.CreateParameter();
-                    parameter.Direction = ParameterDirection.Input;
-                    command.Parameters.Add(parameter);
-                }
-                command.Prepare();
+                    command.CommandText = SQLiteMapperHelpers.GetInsertStatement(columnSet, table.TableName, conflictResolution);
 
-                // SQLite implements "INSERT OR REPLACE" as a DELETE followed by an INSERT, which can cause
-                // trouble when our TrackChanges trigger tries to compute MAX(ChangeNumber).  The workaround
-                // is to make sure an accurate ChangeNumber is in the C# record before we start 
-                // the INSERT OR REPLACE.  (Normally this is already true, but sometimes it's 0 or a 
-                // little outdated so we do a SELECT to be sure.)
-                bool fixReplace = table.TrackChanges && conflictResolution == SQLiteConflictResolution.Replace;
-                SQLiteParameter fixReplaceParameter = null;
-                PropertyDescriptor fixReplacePrimaryKeyDescriptor = null;
-
-                if (fixReplace)
-                {
-                    if (columnSet.PrimaryKeyColumn == null)
+                    foreach (var column in columnSet.Columns)
                     {
-                        throw new InvalidOperationException(
-                            "SQLiteConflictResolution.Replace cannot be used without including the primary key");
+                        var parameter = command.CreateParameter();
+                        parameter.Direction = ParameterDirection.Input;
+                        command.Parameters.Add(parameter);
                     }
-                    int primaryKeyIndex = columnSet.Columns.IndexOf(columnSet.PrimaryKeyColumn);
-                    fixReplacePrimaryKeyDescriptor = descriptors[primaryKeyIndex];
+                    command.Prepare();
 
-                    fixReplaceCommand.CommandText = string.Format(
-                        "SELECT [{0}] FROM [{1}] WHERE [{2}] = ?",
-                        SQLiteMapper.ChangeNumberColumnName,
-                        table.TableName,
-                        columnSet.PrimaryKeyColumn.Name);
+                    // SQLite implements "INSERT OR REPLACE" as a DELETE followed by an INSERT, which can cause
+                    // trouble when our TrackChanges trigger tries to compute MAX(ChangeNumber).  The workaround
+                    // is to make sure an accurate ChangeNumber is in the C# record before we start 
+                    // the INSERT OR REPLACE.  (Normally this is already true, but sometimes it's 0 or a 
+                    // little outdated so we do a SELECT to be sure.)
+                    bool fixReplace = table.TrackChanges && conflictResolution == SQLiteConflictResolution.Replace;
+                    SQLiteParameter fixReplaceParameter = null;
+                    PropertyDescriptor fixReplacePrimaryKeyDescriptor = null;
 
-                    fixReplaceParameter = fixReplaceCommand.CreateParameter();
-                    fixReplaceParameter.Direction = ParameterDirection.Input;
-                    fixReplaceCommand.Parameters.Add(fixReplaceParameter);
-                }
-
-                using (var transaction = this.BeginTransaction())
-                {
-                    foreach (var record in records)
+                    if (fixReplace)
                     {
-                        if (fixReplace)
+                        if (columnSet.PrimaryKeyColumn == null)
                         {
-                            var castedRecord = record as IMappedRecordWithChangeTracking;
-                            if (castedRecord == null)
+                            throw new InvalidOperationException(
+                                "SQLiteConflictResolution.Replace cannot be used without including the primary key");
+                        }
+                        int primaryKeyIndex = columnSet.Columns.IndexOf(columnSet.PrimaryKeyColumn);
+                        fixReplacePrimaryKeyDescriptor = descriptors[primaryKeyIndex];
+
+                        fixReplaceCommand.CommandText = string.Format(
+                            "SELECT [{0}] FROM [{1}] WHERE [{2}] = ?",
+                            SQLiteMapper.ChangeNumberColumnName,
+                            table.TableName,
+                            columnSet.PrimaryKeyColumn.Name);
+
+                        fixReplaceParameter = fixReplaceCommand.CreateParameter();
+                        fixReplaceParameter.Direction = ParameterDirection.Input;
+                        fixReplaceCommand.Parameters.Add(fixReplaceParameter);
+                    }
+
+                    using (var transaction = this.BeginTransaction())
+                    {
+                        foreach (var record in records)
+                        {
+                            if (fixReplace)
                             {
-                                throw new InvalidOperationException(
-                                    "SQLiteConflictResolution.Replace cannot be used without including the ChangeNumber column");
+                                var castedRecord = record as IMappedRecordWithChangeTracking;
+                                if (castedRecord == null)
+                                {
+                                    throw new InvalidOperationException(
+                                        "SQLiteConflictResolution.Replace cannot be used without including the ChangeNumber column");
+                                }
+                                fixReplaceParameter.Value = fixReplacePrimaryKeyDescriptor.GetValue(record);
+                                // NOTE: If the SELECT returns no rows, Convert.ToInt64() will convert NULL to 0
+                                castedRecord.ChangeNumber = Convert.ToInt64(fixReplaceCommand.ExecuteScalar());
                             }
-                            fixReplaceParameter.Value = fixReplacePrimaryKeyDescriptor.GetValue(record);
-                            // NOTE: If the SELECT returns no rows, Convert.ToInt64() will convert NULL to 0
-                            castedRecord.ChangeNumber = Convert.ToInt64(fixReplaceCommand.ExecuteScalar());
+
+                            for (int i = 0; i < columnSet.Columns.Count; ++i)
+                            {
+                                var column = columnSet.Columns[i];
+                                var parameter = command.Parameters[i];
+                                var descriptor = descriptors[i];
+                                object obj = descriptor.GetValue(record);
+                                parameter.Value = SQLiteMapperHelpers.ConvertObjectToSql(descriptor.PropertyType, obj);
+                            }
+
+                            int recordsModified = command.ExecuteNonQuery();
+
+                            if (SQLiteMapper.DefaultLogLevel >= SQLiteMapperLogLevel.Verbose)
+                                Debug.WriteLine("Inserted " + recordsModified + " rows");
                         }
-
-                        for (int i = 0; i < columnSet.Columns.Count; ++i)
-                        {
-                            var column = columnSet.Columns[i];
-                            var parameter = command.Parameters[i];
-                            var descriptor = descriptors[i];
-                            object obj = descriptor.GetValue(record);
-                            parameter.Value = SQLiteMapperHelpers.ConvertObjectToSql(descriptor.PropertyType, obj);
-                        }
-
-                        int recordsModified = command.ExecuteNonQuery();
-
-                        if (SQLiteMapper.DefaultLogLevel >= SQLiteMapperLogLevel.Verbose)
-                            Debug.WriteLine("Inserted " + recordsModified + " rows");
+                        transaction.Commit();
                     }
-                    transaction.Commit();
                 }
-            }
+            });
         }
 
         public void InsertRecord<T>(MappedTable table, T record, 
@@ -219,29 +265,38 @@ namespace Yamster.Core.SQLite
 
         public int ExecuteNonQuery(string sqlQuery, params object[] parameters)
         {
-            using (SQLiteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = sqlQuery;
-
-                foreach (object parameter in parameters)
+            return WrapDatabaseExceptions(() => {
+                using (SQLiteCommand command = connection.CreateCommand())
                 {
-                    var sqlParameter = command.CreateParameter();
-                    sqlParameter.Direction = ParameterDirection.Input;
-                    sqlParameter.Value = parameter;
-                    command.Parameters.Add(sqlParameter);
-                }
-                command.Prepare();
+                    command.CommandText = sqlQuery;
 
-                using (var transaction = this.BeginTransaction())
-                {
-                    int recordsModified = command.ExecuteNonQuery();
-                    transaction.Commit();
-                    return recordsModified;
+                    foreach (object parameter in parameters)
+                    {
+                        var sqlParameter = command.CreateParameter();
+                        sqlParameter.Direction = ParameterDirection.Input;
+                        sqlParameter.Value = parameter;
+                        command.Parameters.Add(sqlParameter);
+                    }
+                    command.Prepare();
+
+                    using (var transaction = this.BeginTransaction())
+                    {
+                        int recordsModified = command.ExecuteNonQuery();
+                        transaction.Commit();
+                        return recordsModified;
+                    }
                 }
-            }
+            });
         }
 
         public IEnumerable<T> Query<T>(string sqlQuery, Type recordType = null)
+        {
+            return WrapDatabaseExceptions(() => {
+                return this.QueryCore<T>(sqlQuery, recordType);
+            });
+        }
+
+        private IEnumerable<T> QueryCore<T>(string sqlQuery, Type recordType)
         {
             if (recordType == null)
                 recordType = typeof(T);
@@ -306,7 +361,7 @@ namespace Yamster.Core.SQLite
                                 throw new Exception("Unable to assign " + columnSet.Columns[i].Name + ": " + ex.Message, ex);
                             }
                         }
-                        yield return (T)record;
+                        yield return (T) record;
                     }
                 }
             }
@@ -314,23 +369,25 @@ namespace Yamster.Core.SQLite
 
         public T QueryScalar<T>(string sqlQuery)
         {
-            using (SQLiteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = sqlQuery;
-
-                object value = command.ExecuteScalar();
-                if (value == DBNull.Value || value == null)
+            return WrapDatabaseExceptions(() => {
+                using (SQLiteCommand command = connection.CreateCommand())
                 {
-                    if (object.ReferenceEquals(default(T), null))
-                        return default(T);
+                    command.CommandText = sqlQuery;
+
+                    object value = command.ExecuteScalar();
+                    if (value == DBNull.Value || value == null)
+                    {
+                        if (object.ReferenceEquals(default(T), null))
+                            return default(T);
+                    }
+
+                    Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+
+                    T coercedValue = (T) Convert.ChangeType(value, targetType);
+
+                    return coercedValue;
                 }
-
-                Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-
-                T coercedValue = (T)Convert.ChangeType(value, targetType);
-                
-                return coercedValue;
-            }
+            });
         }
 
         public bool DoesTableExist(string tableName)

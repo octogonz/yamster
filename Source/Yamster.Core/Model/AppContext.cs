@@ -128,12 +128,7 @@ namespace Yamster.Core
                 throw new InvalidOperationException("The database is already connected");
 
             this.sqliteMapper = new SQLiteMapper(this.DatabaseFilePath, createIfMissing: true);
-            try {
-                this.sqliteMapper.Open();
-            }
-            catch (Exception ex) {
-                throw new Exception("Error opening Yamster database file:\r\n\r\n\"" + this.DatabaseFilePath + "\"", ex);
-            }
+            this.sqliteMapper.Open();
             this.yamsterArchiveDb = new YamsterArchiveDb(sqliteMapper, 
                 beforeUpgradeHandler, afterUpgradeHandler);
             this.yamsterCoreDb = new YamsterCoreDb(yamsterArchiveDb);
