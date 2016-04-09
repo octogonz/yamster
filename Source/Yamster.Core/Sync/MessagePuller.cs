@@ -178,6 +178,10 @@ namespace Yamster.Core
                 {
                     bool finished = previousAsyncTask.IsCanceled || previousAsyncTask.IsCompleted
                         || previousAsyncTask.IsFaulted;
+
+                    if (previousAsyncTask.IsFaulted) {
+                        throw previousAsyncTask.Exception.InnerExceptions.First();
+                    }
                     if (!finished)
                         return;
                 }
