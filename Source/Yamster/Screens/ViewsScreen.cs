@@ -79,6 +79,8 @@ namespace Yamster
         }
         #endregion
 
+        AppContext appContext;
+
         readonly List<GridQuery> gridQueries = new List<GridQuery>();
 
         GridQuery focusedGridQuery = null;
@@ -89,6 +91,8 @@ namespace Yamster
         {
             this.Build();
 
+            this.appContext = AppContext.Default;
+
             reloadModelGridLagger = new ActionLagger(ReloadModelGridAction);
 
             this.ctlNotebook.ShowTabs = false;
@@ -96,6 +100,8 @@ namespace Yamster
             ctlQueriesGrid.ItemType = typeof(GridQuery);
 
             SetupViewsGridColumns();
+
+            ctlQueriesGrid.FormatCell += ctlQueriesGrid_FormatCell;
 
             SetupQueries();
 
@@ -107,7 +113,15 @@ namespace Yamster
         {
             ctlQueriesGrid.AddTextColumn("Name", 140,
                 (GridQuery gridQuery) => {
-                    return gridQuery.Query.Title;
+                    string title = gridQuery.Query.Title;
+                    if (appContext.Settings.ShowUnreadThreadCount)
+                    {
+                        if (gridQuery.View.UnreadItemCount > 0)
+                        {
+                            title += " [" + gridQuery.View.UnreadItemCount + "]";
+                        }
+                    }
+                    return title;
                 }
             );
             ctlQueriesGrid.AddTextColumn("View Type", 80,
@@ -123,6 +137,14 @@ namespace Yamster
                     }                    
                 }
             );
+        }
+
+        private void ctlQueriesGrid_FormatCell(object sender, GridFormatCellEventArgs e)
+        {
+            var gridQuery = (GridQuery) e.Item;
+
+            bool bold = !gridQuery.View.Read;
+            e.Renderer.Weight = bold ? 800 : 400;
         }
 
         #region SetupQueries()
@@ -238,8 +260,16 @@ namespace Yamster
 
         void NotifyViewChanged(GridQuery gridQuery, ViewChangedEventArgs e)
         {
-            if (gridQuery == focusedGridQuery)
-                reloadModelGridLagger.RequestAction();
+            if (e.ChangeType == YamsterViewChangeType.StatisticsChanged)
+            {
+                ctlQueriesGrid.QueueDraw();
+            }
+            else 
+            {
+                // For all other events, rebuild everything
+                if (gridQuery == focusedGridQuery)
+                    reloadModelGridLagger.RequestAction();
+            }
         }
 
         void ReloadModelGridAction()

@@ -86,12 +86,12 @@ namespace Yamster.Core
             base.Dispose();
         }
 
-        public override int TotalItems
+        public override int TotalItemCount
         {
             get { return this.viewedMessagesById.Count; }
         }
 
-        public override int UnreadItems
+        public override int UnreadItemCount
         {
             get { return this.viewedMessagesById.Count - this.readMessageCount; }
         }
@@ -126,7 +126,7 @@ namespace Yamster.Core
                 executionContext.Message = message;
                 if (CompiledFunc(executionContext))
                 {
-                    this.viewedMessagesById.Add(message.MessageId, new ViewedMessage(message));
+                    this.AddViewedMessage(new ViewedMessage(message));
                 }
             }
         }
@@ -158,21 +158,43 @@ namespace Yamster.Core
             ViewedMessage viewedMessage = null;
             bool isInView = viewedMessagesById.TryGetValue(message.MessageId, out viewedMessage);
 
+            bool statisticsChanged = false;
+
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
                     this.RemoveViewedMessage(viewedMessage);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, message);
+
+                    // TotalItemCount changed
+                    statisticsChanged = true;
+                }
+                else
+                {
+                    if (message.Read != viewedMessage.Read)
+                    {
+                        this.readMessageCount += message.Read ? +1 : -1;
+                        viewedMessage.Read = message.Read;
+                        statisticsChanged = true;
+                    }
                 }
             }
             else
             {
                 if (shouldBeInView)
                 {
-                    this.viewedMessagesById.Add(message.MessageId, new ViewedMessage(message));
+                    AddViewedMessage(new ViewedMessage(message));
                     NotifyViewChanged(YamsterViewChangeType.ModelEnterView, message);
+
+                    // TotalItemCount changed
+                    statisticsChanged = true;
                 }
+            }
+
+            if (statisticsChanged)
+            {
+                NotifyViewChanged(YamsterViewChangeType.StatisticsChanged, null);
             }
         }
 
@@ -180,17 +202,21 @@ namespace Yamster.Core
         {
             this.viewedMessagesById.Add(viewedMessage.MessageId, viewedMessage);
             if (viewedMessage.Read)
+            {
                 ++this.readMessageCount;
+            }
         }
 
         void RemoveViewedMessage(ViewedMessage viewedMessage)
         {
-            if (viewedMessage.Read)
-                --this.readMessageCount;
-
             if (!this.viewedMessagesById.Remove(viewedMessage.MessageId))
             {
                 throw new KeyNotFoundException();
+            }
+
+            if (viewedMessage.Read)
+            {
+                --this.readMessageCount;
             }
         }
     }

@@ -86,12 +86,12 @@ namespace Yamster.Core
             base.Dispose();
         }
 
-        public override int TotalItems
+        public override int TotalItemCount
         {
             get { return this.viewedThreadsById.Count; }
         }
 
-        public override int UnreadItems
+        public override int UnreadItemCount
         {
             get { return this.viewedThreadsById.Count - this.readThreadCount; }
         }
@@ -126,7 +126,7 @@ namespace Yamster.Core
                 executionContext.Thread = thread;
                 if (CompiledFunc(executionContext))
                 {
-                    this.viewedThreadsById.Add(thread.ThreadId, new ViewedThread(thread));
+                    this.AddViewedThread(new ViewedThread(thread));
                 }
             }
         }
@@ -158,21 +158,43 @@ namespace Yamster.Core
             ViewedThread viewedThread = null;
             bool isInView = viewedThreadsById.TryGetValue(thread.ThreadId, out viewedThread);
 
+            bool statisticsChanged = false;
+
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
                     this.RemoveViewedThread(viewedThread);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, thread);
+
+                    // TotalItemCount changed
+                    statisticsChanged = true;
+                }
+                else
+                {
+                    if (thread.Read != viewedThread.Read)
+                    {
+                        this.readThreadCount += thread.Read ? +1 : -1;
+                        viewedThread.Read = thread.Read;
+                        statisticsChanged = true;
+                    }
                 }
             }
             else
             {
                 if (shouldBeInView)
                 {
-                    this.viewedThreadsById.Add(thread.ThreadId, new ViewedThread(thread));
+                    AddViewedThread(new ViewedThread(thread));
                     NotifyViewChanged(YamsterViewChangeType.ModelEnterView, thread);
+
+                    // TotalItemCount changed
+                    statisticsChanged = true;
                 }
+            }
+
+            if (statisticsChanged)
+            {
+                NotifyViewChanged(YamsterViewChangeType.StatisticsChanged, null);
             }
         }
 
@@ -180,17 +202,21 @@ namespace Yamster.Core
         {
             this.viewedThreadsById.Add(viewedThread.ThreadId, viewedThread);
             if (viewedThread.Read)
+            {
                 ++this.readThreadCount;
+            }
         }
 
         void RemoveViewedThread(ViewedThread viewedThread)
         {
-            if (viewedThread.Read)
-                --this.readThreadCount;
-
             if (!this.viewedThreadsById.Remove(viewedThread.ThreadId))
             {
                 throw new KeyNotFoundException();
+            }
+
+            if (viewedThread.Read)
+            {
+                --this.readThreadCount;
             }
         }
     }

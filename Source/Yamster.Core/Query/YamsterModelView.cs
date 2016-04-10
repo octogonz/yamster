@@ -32,9 +32,22 @@ namespace Yamster.Core
 {
     public enum YamsterViewChangeType
     {
+        /// <summary>
+        /// A new thread or message has appeared in the view.
+        /// </summary>
         ModelEnterView,
+        /// <summary>
+        /// A thread or message has been removed from the view.
+        /// </summary>
         ModelLeaveView,
-        FlushView        
+        /// <summary>
+        /// The entire list of items has been rebuilt.
+        /// </summary>
+        Refreshed,
+        /// <summary>
+        /// The number of read, unread, or total items has been updated.
+        /// </summary>
+        StatisticsChanged
     }
 
     public class ViewChangedEventArgs : EventArgs
@@ -95,12 +108,24 @@ namespace Yamster.Core
         /// <summary>
         /// The total number of items in the view, or 0 if the view has not been validated yet.
         /// </summary>
-        public abstract int TotalItems { get; }
+        public abstract int TotalItemCount { get; }
 
         /// <summary>
         /// The total number of unread items in the view, or 0 if the view has not been validated yet.
         /// </summary>
-        public abstract int UnreadItems { get; }
+        public abstract int UnreadItemCount { get; }
+
+        /// <summary>
+        /// Returns true if all the items in the view have been read.
+        /// </summary>
+        public bool Read
+        {
+            get
+            {
+                int readItemCount = this.TotalItemCount - UnreadItemCount;
+                return readItemCount == this.TotalItemCount;
+            }
+        }
 
         void RequireNotDisposed()
         {
@@ -157,8 +182,6 @@ namespace Yamster.Core
             {
                 OnInvalidate();
                 valid = false;
-
-                NotifyViewChanged(YamsterViewChangeType.FlushView, null);
             }
         }
 
@@ -182,6 +205,9 @@ namespace Yamster.Core
             }
 
             valid = true;
+
+            NotifyViewChanged(YamsterViewChangeType.Refreshed, null);
+            NotifyViewChanged(YamsterViewChangeType.StatisticsChanged, null);
         }
 
         protected abstract void OnValidate();
