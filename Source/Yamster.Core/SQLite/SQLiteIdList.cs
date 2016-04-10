@@ -39,6 +39,7 @@ namespace Yamster.Core.SQLite
     /// </summary>
     public class SQLiteIdList : List<long>
     {
+        static readonly Regex idListRegex = new Regex(@"^\s*(?:\|([\-0-9]+))+\|\s*$", RegexOptions.Compiled);
         public SQLiteIdList()
         {
         }
@@ -55,7 +56,7 @@ namespace Yamster.Core.SQLite
         {
             if (string.IsNullOrEmpty(encodedIdList))
                 return new SQLiteIdList(0);
-            var match = Regex.Match(encodedIdList, @"^\s*(?:\|([\-0-9]+))+\|\s*$");
+            var match = SQLiteIdList.idListRegex.Match(encodedIdList);
             if (!match.Success)
                 throw new ArgumentException("Invalid ID list syntax: " + encodedIdList);
             var captures = match.Groups[1].Captures;
