@@ -121,6 +121,7 @@
     <Compile Include="Protocol\Json\JsonMessageEnvelope.cs" />
     <Compile Include="Protocol\ProtocolExceptions.cs" />
     <Compile Include="Protocol\YamsterApi.cs" />
+    <Compile Include="Query\YamsterModelQuery.cs" />
     <Compile Include="Query\YamsterModelView.cs" />
     <Compile Include="Query\YamsterThreadView.cs" />
     <Compile Include="Query\YqlTextMatchNode.cs" />
