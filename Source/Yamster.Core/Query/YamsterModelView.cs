@@ -184,6 +184,15 @@ namespace Yamster.Core
             get { return this.yamsterCache == null; }
         }
 
+        /// <summary>
+        /// Returns true if Validate() has been called, i.e. the internal list of items
+        /// has been built and is being actively updated.
+        /// </summary>
+        protected bool IsValid
+        {
+            get { return this.valid; }
+        }
+
         void RequireNotDisposed()
         {
             if (IsDisposed)
@@ -228,6 +237,11 @@ namespace Yamster.Core
             }
         }
 
+        /// <summary>
+        /// Marks the view as invalid, discarding the internal list of items.
+        /// This is called e.g. if the query has changed.  To ensure that the view
+        /// is valid, call Validate().
+        /// </summary>
         protected void Invalidate()
         {
             if (valid)
@@ -241,6 +255,11 @@ namespace Yamster.Core
 
         protected abstract void OnInvalidate();
 
+        /// <summary>
+        /// If the view is not valid yet, calling Validate() performs an expensive
+        /// operation that rebuilds the internal list of items from scratch.  Thereafter
+        /// it will be actively maintained by monitoring for change events.
+        /// </summary>
         protected void Validate()
         {
             if (valid)

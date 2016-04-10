@@ -94,6 +94,9 @@ namespace Yamster.Core
 
         void YamsterCache_MessageChanged(object sender, YamsterMessageChangedEventArgs e)
         {
+            if (!this.IsValid)
+                return;
+
             switch (e.ChangeType)
             {
                 case YamsterModelChangeType.Added:
