@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -41,9 +42,10 @@ namespace Yamster.Core
         /// </summary>
         ModelLeaveView,
         /// <summary>
-        /// The entire list of items has been rebuilt.
+        /// Something changed that requires the entire list of items to be rebuilt.
+        /// For example, a new query was loaded.
         /// </summary>
-        Refreshed,
+        Invalidated,
         /// <summary>
         /// The number of read, unread, or total items has been updated.
         /// </summary>
@@ -182,6 +184,9 @@ namespace Yamster.Core
             {
                 OnInvalidate();
                 valid = false;
+                Debug.WriteLine("YamsterModelView: Invalidated \"" + this.Query.Title + "\"");
+                NotifyViewChanged(YamsterViewChangeType.Invalidated, null);
+                NotifyViewChanged(YamsterViewChangeType.StatisticsChanged, null);
             }
         }
 
@@ -205,8 +210,7 @@ namespace Yamster.Core
             }
 
             valid = true;
-
-            NotifyViewChanged(YamsterViewChangeType.Refreshed, null);
+            Debug.WriteLine("YamsterModelView: Validated \"" + this.Query.Title + "\"");
             NotifyViewChanged(YamsterViewChangeType.StatisticsChanged, null);
         }
 
