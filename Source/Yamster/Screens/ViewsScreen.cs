@@ -85,7 +85,8 @@ namespace Yamster
 
         GridQuery focusedGridQuery = null;
 
-        ActionLagger reloadModelGridLagger;
+        ActionLagger showFocusedGridQueryLagger;
+        ActionLagger validateViewsLagger;
 
         public ViewsScreen()
         {
@@ -93,7 +94,8 @@ namespace Yamster
 
             this.appContext = AppContext.Default;
 
-            reloadModelGridLagger = new ActionLagger(ReloadModelGridAction);
+            showFocusedGridQueryLagger = new ActionLagger(ShowFocusedGridQueryAction);
+            validateViewsLagger = new ActionLagger(ValidateViewsAction);
 
             this.ctlNotebook.ShowTabs = false;
 
@@ -104,7 +106,6 @@ namespace Yamster
             ctlQueriesGrid.FormatCell += ctlQueriesGrid_FormatCell;
 
             SetupQueries();
-
         }
 
         public ThreadViewer ThreadViewer { get; set; }
@@ -243,13 +244,14 @@ namespace Yamster
                     gridQuery.View.LoadQuery(gridQuery.Query);
                 }
             }
-            reloadModelGridLagger.RequestAction();
+            validateViewsLagger.RequestAction();
+            showFocusedGridQueryLagger.RequestAction();
         }
 
         protected void ctlQueriesGrid_FocusedItemChanged(object sender, EventArgs e)
         {
             focusedGridQuery = (GridQuery) ctlQueriesGrid.FocusedItem;
-            reloadModelGridLagger.RequestAction();
+            showFocusedGridQueryLagger.RequestAction();
         }
 
         void NotifyViewChanged(GridQuery gridQuery, ViewChangedEventArgs e)
@@ -262,11 +264,11 @@ namespace Yamster
             {
                 // For all other events, rebuild everything
                 if (gridQuery == focusedGridQuery)
-                    reloadModelGridLagger.RequestAction();
+                    showFocusedGridQueryLagger.RequestAction();
             }
         }
 
-        void ReloadModelGridAction()
+        void ShowFocusedGridQueryAction()
         {
             if (focusedGridQuery == null)
             {
@@ -300,6 +302,17 @@ namespace Yamster
                 ctlNotebook.Page = MessageNotebookPage;
                 ctlThreadGrid.ClearThreads();
             }
+        }
+
+        void ValidateViewsAction()
+        {
+            var s = Stopwatch.StartNew();
+            foreach (var gridQuery in this.gridQueries)
+            {
+                gridQuery.View.Validate();
+            }
+            s.Stop();
+            Debug.WriteLine("ValidateViews() took " + s.ElapsedMilliseconds + "ms");
         }
 
         protected void ctlThreadGrid_FocusedItemChanged(object sender, EventArgs e)

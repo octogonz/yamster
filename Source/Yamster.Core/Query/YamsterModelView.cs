@@ -102,7 +102,7 @@ namespace Yamster.Core
         /// Returns true if Validate() has been called, i.e. the internal list of items
         /// has been built and is being actively updated.
         /// </summary>
-        protected bool IsValid
+        public bool IsValid
         {
             get { return this.valid; }
         }
@@ -197,7 +197,7 @@ namespace Yamster.Core
         /// operation that rebuilds the internal list of items from scratch.  Thereafter
         /// it will be actively maintained by monitoring for change events.
         /// </summary>
-        protected void Validate()
+        public void Validate()
         {
             if (valid)
                 return;

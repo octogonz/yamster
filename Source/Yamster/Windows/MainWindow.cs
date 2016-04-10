@@ -100,14 +100,7 @@ namespace Yamster
 
         protected void btnTest_Click(object sender, EventArgs e)
         {
-            using (var window = new UserChooserWindow())
-            {
-                Utilities.RunWindowAsDialog(window);
-                if (window.ChosenUser != null)
-                {
-                    Debug.WriteLine("CHOSE: " + window.ChosenUser.Alias);
-                }
-            }
+            Debug.WriteLine("Test button was clicked");
         }
 
         protected void btnSync_Click(object sender, EventArgs e)
