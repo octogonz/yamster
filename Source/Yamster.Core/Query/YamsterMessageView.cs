@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -49,7 +50,24 @@ namespace Yamster.Core
 
     public class YamsterMessageView : YamsterModelView
     {
-        readonly Dictionary<long, YamsterMessage> messagesById = new Dictionary<long, YamsterMessage>();
+        class ViewedMessage
+        {
+            public readonly YamsterMessage Message;
+            public bool Read;
+
+            public ViewedMessage(YamsterMessage message)
+            {
+                this.Message = message;
+                this.Read = message.Read;
+            }
+
+            public long MessageId
+            {
+                get { return this.Message.MessageId; }
+            }
+        }
+
+        readonly Dictionary<long, ViewedMessage> viewedMessagesById = new Dictionary<long, ViewedMessage>();
 
         public YamsterMessageView(AppContext appContext)
             : base(appContext)
@@ -70,24 +88,33 @@ namespace Yamster.Core
         public ReadOnlyCollection<YamsterMessage> GetMessagesInView()
         {
             Validate();
-            return new ReadOnlyCollection<YamsterMessage>(this.messagesById.Values.ToList());
+
+            var list = new List<YamsterMessage>(this.viewedMessagesById.Count);
+            foreach (var viewedMessage in this.viewedMessagesById.Values)
+            {
+                list.Add(viewedMessage.Message);
+            }
+
+            return new ReadOnlyCollection<YamsterMessage>(list);
         }
 
         protected override void OnInvalidate() // abstract
         {
-            messagesById.Clear();
+            viewedMessagesById.Clear();
         }
 
         protected override void OnValidate() // abstract
         {
-            var exectionContext = new YqlExecutionContext(appContext);
+            var executionContext = new YqlExecutionContext(appContext);
+
+            Debug.Assert(viewedMessagesById.Count == 0);
 
             foreach (var message in appContext.YamsterCache.GetAllMessages())
             {
-                exectionContext.Message = message;
-                if (CompiledFunc(exectionContext))
+                executionContext.Message = message;
+                if (CompiledFunc(executionContext))
                 {
-                    this.messagesById.Add(message.MessageId, message);
+                    this.viewedMessagesById.Add(message.MessageId, new ViewedMessage(message));
                 }
             }
         }
@@ -111,18 +138,18 @@ namespace Yamster.Core
             bool shouldBeInView = false;
             if (CompiledFunc != null)
             {
-                var exectionContext = new YqlExecutionContext(this.appContext);
-                exectionContext.Message = message;
-                shouldBeInView = CompiledFunc(exectionContext);
+                var executionContext = new YqlExecutionContext(this.appContext);
+                executionContext.Message = message;
+                shouldBeInView = CompiledFunc(executionContext);
             }
 
-            bool isInView = messagesById.ContainsKey(message.MessageId);
+            bool isInView = viewedMessagesById.ContainsKey(message.MessageId);
 
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
-                    this.messagesById.Remove(message.MessageId);
+                    this.RemoveViewedMessage(message.MessageId);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, message);
                 }
             }
@@ -130,9 +157,22 @@ namespace Yamster.Core
             {
                 if (shouldBeInView)
                 {
-                    this.messagesById.Add(message.MessageId, message);
+                    this.viewedMessagesById.Add(message.MessageId, new ViewedMessage(message));
                     NotifyViewChanged(YamsterViewChangeType.ModelEnterView, message);
                 }
+            }
+        }
+
+        void AddViewedMessage(ViewedMessage viewedMessage)
+        {
+            this.viewedMessagesById.Add(viewedMessage.MessageId, viewedMessage);
+        }
+
+        void RemoveViewedMessage(long messageId)
+        {
+            if (!this.viewedMessagesById.Remove(messageId))
+            {
+                throw new KeyNotFoundException();
             }
         }
 

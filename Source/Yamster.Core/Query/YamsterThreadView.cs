@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -49,7 +50,21 @@ namespace Yamster.Core
 
     public class YamsterThreadView : YamsterModelView
     {
-        readonly Dictionary<long, YamsterThread> threadsById = new Dictionary<long, YamsterThread>();
+        class ViewedThread {
+            public readonly YamsterThread Thread;
+            public bool Read;
+
+            public ViewedThread(YamsterThread thread) {
+                this.Thread = thread;
+                this.Read = thread.Read;
+            }
+
+            public long ThreadId { 
+                get { return this.Thread.ThreadId; }
+            }
+        }
+
+        readonly Dictionary<long, ViewedThread> viewedThreadsById = new Dictionary<long, ViewedThread>();
 
         public YamsterThreadView(AppContext appContext)
             : base(appContext)
@@ -70,24 +85,32 @@ namespace Yamster.Core
         public ReadOnlyCollection<YamsterThread> GetThreadsInView()
         {
             Validate();
-            return new ReadOnlyCollection<YamsterThread>(this.threadsById.Values.ToList());
+
+            var list = new List<YamsterThread>(this.viewedThreadsById.Count);
+            foreach (var viewedThread in this.viewedThreadsById.Values) {
+                list.Add(viewedThread.Thread);
+            }
+
+            return new ReadOnlyCollection<YamsterThread>(list);
         }
 
         protected override void OnInvalidate() // abstract
         {
-            threadsById.Clear();
+            viewedThreadsById.Clear();
         }
 
         protected override void OnValidate() // abstract
         {
-            var exectionContext = new YqlExecutionContext(appContext);
+            var executionContext = new YqlExecutionContext(appContext);
+
+            Debug.Assert(viewedThreadsById.Count == 0);
 
             foreach (var thread in appContext.YamsterCache.GetAllThreads())
             {
-                exectionContext.Thread = thread;
-                if (CompiledFunc(exectionContext))
+                executionContext.Thread = thread;
+                if (CompiledFunc(executionContext))
                 {
-                    this.threadsById.Add(thread.ThreadId, thread);
+                    this.viewedThreadsById.Add(thread.ThreadId, new ViewedThread(thread));
                 }
             }
         }
@@ -111,18 +134,18 @@ namespace Yamster.Core
             bool shouldBeInView = false;
             if (CompiledFunc != null)
             {
-                var exectionContext = new YqlExecutionContext(this.appContext);
-                exectionContext.Thread = thread;
-                shouldBeInView = CompiledFunc(exectionContext);
+                var executionContext = new YqlExecutionContext(this.appContext);
+                executionContext.Thread = thread;
+                shouldBeInView = CompiledFunc(executionContext);
             }
 
-            bool isInView = threadsById.ContainsKey(thread.ThreadId);
+            bool isInView = viewedThreadsById.ContainsKey(thread.ThreadId);
 
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
-                    this.threadsById.Remove(thread.ThreadId);
+                    this.RemoveViewedThread(thread.ThreadId);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, thread);
                 }
             }
@@ -130,11 +153,24 @@ namespace Yamster.Core
             {
                 if (shouldBeInView)
                 {
-                    this.threadsById.Add(thread.ThreadId, thread);
+                    this.viewedThreadsById.Add(thread.ThreadId, new ViewedThread(thread));
                     NotifyViewChanged(YamsterViewChangeType.ModelEnterView, thread);
                 }
             }
         }
+
+        void AddViewedThread(ViewedThread viewedThread) 
+        {
+            this.viewedThreadsById.Add(viewedThread.ThreadId, viewedThread);
+        }
+
+        void RemoveViewedThread(long threadId)
+        {
+            if (!this.viewedThreadsById.Remove(threadId)) {
+                throw new KeyNotFoundException();
+            }
+        }
+
     }
 
 }
