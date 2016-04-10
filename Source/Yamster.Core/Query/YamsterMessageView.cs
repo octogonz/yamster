@@ -68,6 +68,7 @@ namespace Yamster.Core
         }
 
         readonly Dictionary<long, ViewedMessage> viewedMessagesById = new Dictionary<long, ViewedMessage>();
+        int readMessageCount = 0;
 
         public YamsterMessageView(AppContext appContext)
             : base(appContext)
@@ -83,6 +84,16 @@ namespace Yamster.Core
             }
 
             base.Dispose();
+        }
+
+        public override int TotalItems
+        {
+            get { return this.viewedMessagesById.Count; }
+        }
+
+        public override int UnreadItems
+        {
+            get { return this.viewedMessagesById.Count - this.readMessageCount; }
         }
 
         public ReadOnlyCollection<YamsterMessage> GetMessagesInView()
@@ -101,6 +112,7 @@ namespace Yamster.Core
         protected override void OnInvalidate() // abstract
         {
             viewedMessagesById.Clear();
+            this.readMessageCount = 0;
         }
 
         protected override void OnValidate() // abstract
@@ -143,13 +155,14 @@ namespace Yamster.Core
                 shouldBeInView = CompiledFunc(executionContext);
             }
 
-            bool isInView = viewedMessagesById.ContainsKey(message.MessageId);
+            ViewedMessage viewedMessage = null;
+            bool isInView = viewedMessagesById.TryGetValue(message.MessageId, out viewedMessage);
 
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
-                    this.RemoveViewedMessage(message.MessageId);
+                    this.RemoveViewedMessage(viewedMessage);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, message);
                 }
             }
@@ -166,16 +179,20 @@ namespace Yamster.Core
         void AddViewedMessage(ViewedMessage viewedMessage)
         {
             this.viewedMessagesById.Add(viewedMessage.MessageId, viewedMessage);
+            if (viewedMessage.Read)
+                ++this.readMessageCount;
         }
 
-        void RemoveViewedMessage(long messageId)
+        void RemoveViewedMessage(ViewedMessage viewedMessage)
         {
-            if (!this.viewedMessagesById.Remove(messageId))
+            if (viewedMessage.Read)
+                --this.readMessageCount;
+
+            if (!this.viewedMessagesById.Remove(viewedMessage.MessageId))
             {
                 throw new KeyNotFoundException();
             }
         }
-
     }
 
 }

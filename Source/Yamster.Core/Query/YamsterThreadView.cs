@@ -50,21 +50,25 @@ namespace Yamster.Core
 
     public class YamsterThreadView : YamsterModelView
     {
-        class ViewedThread {
+        class ViewedThread
+        {
             public readonly YamsterThread Thread;
             public bool Read;
 
-            public ViewedThread(YamsterThread thread) {
+            public ViewedThread(YamsterThread thread)
+            {
                 this.Thread = thread;
                 this.Read = thread.Read;
             }
 
-            public long ThreadId { 
+            public long ThreadId
+            {
                 get { return this.Thread.ThreadId; }
             }
         }
 
         readonly Dictionary<long, ViewedThread> viewedThreadsById = new Dictionary<long, ViewedThread>();
+        int readThreadCount = 0;
 
         public YamsterThreadView(AppContext appContext)
             : base(appContext)
@@ -82,12 +86,23 @@ namespace Yamster.Core
             base.Dispose();
         }
 
+        public override int TotalItems
+        {
+            get { return this.viewedThreadsById.Count; }
+        }
+
+        public override int UnreadItems
+        {
+            get { return this.viewedThreadsById.Count - this.readThreadCount; }
+        }
+
         public ReadOnlyCollection<YamsterThread> GetThreadsInView()
         {
             Validate();
 
             var list = new List<YamsterThread>(this.viewedThreadsById.Count);
-            foreach (var viewedThread in this.viewedThreadsById.Values) {
+            foreach (var viewedThread in this.viewedThreadsById.Values)
+            {
                 list.Add(viewedThread.Thread);
             }
 
@@ -97,6 +112,7 @@ namespace Yamster.Core
         protected override void OnInvalidate() // abstract
         {
             viewedThreadsById.Clear();
+            this.readThreadCount = 0;
         }
 
         protected override void OnValidate() // abstract
@@ -139,13 +155,14 @@ namespace Yamster.Core
                 shouldBeInView = CompiledFunc(executionContext);
             }
 
-            bool isInView = viewedThreadsById.ContainsKey(thread.ThreadId);
+            ViewedThread viewedThread = null;
+            bool isInView = viewedThreadsById.TryGetValue(thread.ThreadId, out viewedThread);
 
             if (isInView)
             {
                 if (!shouldBeInView)
                 {
-                    this.RemoveViewedThread(thread.ThreadId);
+                    this.RemoveViewedThread(viewedThread);
                     NotifyViewChanged(YamsterViewChangeType.ModelLeaveView, thread);
                 }
             }
@@ -159,18 +176,23 @@ namespace Yamster.Core
             }
         }
 
-        void AddViewedThread(ViewedThread viewedThread) 
+        void AddViewedThread(ViewedThread viewedThread)
         {
             this.viewedThreadsById.Add(viewedThread.ThreadId, viewedThread);
+            if (viewedThread.Read)
+                ++this.readThreadCount;
         }
 
-        void RemoveViewedThread(long threadId)
+        void RemoveViewedThread(ViewedThread viewedThread)
         {
-            if (!this.viewedThreadsById.Remove(threadId)) {
+            if (viewedThread.Read)
+                --this.readThreadCount;
+
+            if (!this.viewedThreadsById.Remove(viewedThread.ThreadId))
+            {
                 throw new KeyNotFoundException();
             }
         }
-
     }
 
 }

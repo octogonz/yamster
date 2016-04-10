@@ -92,6 +92,16 @@ namespace Yamster.Core
             get { return this.valid; }
         }
 
+        /// <summary>
+        /// The total number of items in the view, or 0 if the view has not been validated yet.
+        /// </summary>
+        public abstract int TotalItems { get; }
+
+        /// <summary>
+        /// The total number of unread items in the view, or 0 if the view has not been validated yet.
+        /// </summary>
+        public abstract int UnreadItems { get; }
+
         void RequireNotDisposed()
         {
             if (IsDisposed)
