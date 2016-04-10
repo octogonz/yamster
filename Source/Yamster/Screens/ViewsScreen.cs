@@ -208,7 +208,8 @@ namespace Yamster
                 new YqlValueNode(true)
             ));
 
-            LoadQueries();
+            ctlQueriesGrid.ReplaceAllItems(gridQueries);
+            ReloadQueries(threadsOnly: false);
         }
 
         void AddQuery(YamsterModelQuery query)
@@ -218,26 +219,13 @@ namespace Yamster
 
         #endregion
 
-        public void LoadQueries()
+        void ReloadQueries(bool threadsOnly)
         {
-            ctlQueriesGrid.ReplaceAllItems(gridQueries);
-        }
-
-        protected void ctlQueriesGrid_FocusedItemChanged(object sender, EventArgs e)
-        {
-            ReloadQuery();
-        }
-
-        void ReloadQuery()
-        {
-            focusedGridQuery = (GridQuery) ctlQueriesGrid.FocusedItem;
-
-            if (focusedGridQuery != null)
+            foreach (var gridQuery in this.gridQueries)
             {
-
-                if (focusedGridQuery.ModelType == YamsterModelType.Thread)
+                if (gridQuery.ModelType == YamsterModelType.Thread)
                 {
-                    var copyQuery = focusedGridQuery.Query.Clone();
+                    var copyQuery = gridQuery.Query.Clone();
                     if (!chkShowReadThreads.Active)
                     {
                         // Add a filter clause to hide threads that were already read
@@ -248,13 +236,19 @@ namespace Yamster
                             copyQuery.FilterNode
                         );
                     }
-                    focusedGridQuery.View.LoadQuery(copyQuery);
+                    gridQuery.View.LoadQuery(copyQuery);
                 }
-                else
+                else if (!threadsOnly)
                 {
-                    focusedGridQuery.View.LoadQuery(focusedGridQuery.Query);
+                    gridQuery.View.LoadQuery(gridQuery.Query);
                 }
             }
+            reloadModelGridLagger.RequestAction();
+        }
+
+        protected void ctlQueriesGrid_FocusedItemChanged(object sender, EventArgs e)
+        {
+            focusedGridQuery = (GridQuery) ctlQueriesGrid.FocusedItem;
             reloadModelGridLagger.RequestAction();
         }
 
@@ -327,7 +321,7 @@ namespace Yamster
 
         protected void chkShowReadThreads_Toggled(object sender, EventArgs e)
         {
-            ReloadQuery();
+            this.ReloadQueries(threadsOnly: true);
         }
 
         protected void lblMarkAllRead_ButtonPress(object o, ButtonPressEventArgs args)
