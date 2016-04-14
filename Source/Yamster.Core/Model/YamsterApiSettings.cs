@@ -215,6 +215,10 @@ namespace Yamster.Core
                 }
                 succeeded = true;
             }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Error reading settings file:\r\n\"" + filename + "\"", ex);
+            }
             finally
             {
                 if (!succeeded)
@@ -241,11 +245,18 @@ namespace Yamster.Core
             } 
             else if (unprocessedToken.StartsWith(ProtectedPrefix))
             {
-                string encrypted = unprocessedToken.Substring(ProtectedPrefix.Length);
-                byte[] bytes2 = Convert.FromBase64String(encrypted);
-                byte[] bytes1 = ProtectedData.Unprotect(bytes2, null, DataProtectionScope.LocalMachine);
-                byte[] bytes0 = ProtectedData.Unprotect(bytes1, null, DataProtectionScope.CurrentUser);
-                this.OAuthToken = Encoding.UTF8.GetString(bytes0);
+                try
+                {
+                    string encrypted = unprocessedToken.Substring(ProtectedPrefix.Length);
+                    byte[] bytes2 = Convert.FromBase64String(encrypted);
+                    byte[] bytes1 = ProtectedData.Unprotect(bytes2, null, DataProtectionScope.LocalMachine);
+                    byte[] bytes0 = ProtectedData.Unprotect(bytes1, null, DataProtectionScope.CurrentUser);
+                    this.OAuthToken = Encoding.UTF8.GetString(bytes0);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Unable to decrypt OAuthToken (was it saved by a different user or PC?)", ex);
+                }
             }
             else if (unprocessedToken.StartsWith(UnprotectedPrefix))
             {
