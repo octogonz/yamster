@@ -13,6 +13,8 @@ Yamster uses the [Mono/Gtk](http://www.mono-project.com/GtkSharp) framework whic
 
 Yamster originated at Microsoft as part of an internal "hackathon" event where employees are encouraged to create fun prototypes that explore new ideas.  The author continued development in his spare time and later obtained permission to release the project to the Yammer community under an open source license.  Yamster is not officially supported or maintained by Microsoft, but hopefully you will find it useful!  Suggestions and feedback are welcome.
 
+> **Update June 2018:** Yamster was originally released on CodePlex.com, which is now defunct.  GitHub is now the official home for this project.
+
 # Screenshots
 
 ![application main window](Docs/Home_Screenshot-Groups.png)<br/>
