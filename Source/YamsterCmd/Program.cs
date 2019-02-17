@@ -152,7 +152,7 @@ namespace YamsterCmd
 
         private static void ShowGeneralHelp()
         {
-            Utils.Log(@"https://yamster.codeplex.com/
+            Utils.Log(@"https://github.com/octogonz/yamster
 
 YamsterCmd -Help
 YamsterCmd -Help <command>

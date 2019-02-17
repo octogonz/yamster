@@ -104,17 +104,17 @@ namespace Yamster
 
         internal static void ShowHelpManual()
         {
-            Process.Start("https://yamster.codeplex.com/documentation");
+            Process.Start("https://github.com/octogonz/yamster/blob/master/README.md");
         }
 
         internal static void ShowDiscussionGroup()
         {
-            Process.Start("https://yamster.codeplex.com/discussions");
+            Process.Start("https://github.com/octogonz/yamster/issues");
         }
 
         internal static void ShowWebSite()
         {
-            Process.Start("https://yamster.codeplex.com/");
+            Process.Start("https://github.com/octogonz/yamster");
         }
 
     }

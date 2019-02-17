@@ -58,7 +58,7 @@ namespace Yamster
 #if YAMSTER_MAC
             ctlMenuBar.Visible = false;
 #endif
-            ctlStatusBarMain.Push(0, "  Version " + Utilities.YamsterTerseVersion + "  -  https://yamster.codeplex.com/");
+            ctlStatusBarMain.Push(0, "  Version " + Utilities.YamsterTerseVersion + "  -  https://github.com/octogonz/yamster");
             ctlStatusBarTotalYams.Push(0, "");
             SetStatusBarFormat(ctlStatusBarTotalYams, x => x.Xalign = 0.5f);
             ctlStatusBarSyncStatus.Push(0, "");

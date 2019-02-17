@@ -71,7 +71,7 @@ namespace Yamster
                     + "  If that doesn't help, please report your issue so we can fix it!",
                     "Yamster!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 
-                Process.Start("https://yamster.codeplex.com/documentation");
+                Process.Start("https://github.com/octogonz/yamster");
             }
         }
     }
