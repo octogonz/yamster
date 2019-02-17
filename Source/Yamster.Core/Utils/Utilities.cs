@@ -61,35 +61,50 @@ namespace Yamster.Core
         /// <summary>
         /// Returns a text summary including inner exceptions and (in debug builds) the call stack
         /// </summary>
-        public static string GetExceptionSummary(Exception ex, bool omitCallstack)
+        public static string GetExceptionSummary(Exception ex, bool showCallStack)
         {
             string indent = "  --> ";
-            string message = indent + ex.Message;
 
-            // Inner exceptions generally give more information, so prepend them.
-            Exception inner = ex.InnerException;
-            while (inner != null)
+            string message = "";
+
+            for (Exception current = ex; current != null; current = current.InnerException) 
             {
-                if (inner.Message != "")
-                    message = indent + inner.Message + "\r\n\r\n" + message;
-                inner = inner.InnerException;
+                string record = indent + current.Message;
+                if (showCallStack) 
+                    record += "\r\n\r\n" + current.StackTrace + "\r\n";
+
+                // Inner exceptions generally give more information, so prepend them.
+                if (message != "")
+                {
+                    message = record + "\r\n" + message;
+                }
+                else
+                {
+                    message = record;
+                }
+                
             }
 
-#if DEBUG
-            if (!omitCallstack)
-                message += "\r\n\r\n" + ex.StackTrace;
-#endif
             return message;
-        }
-        /// <inheritdoc cref="GetExceptionSummary(Exception,bool)" /> 
-        public static string GetExceptionSummary(Exception ex)
-        {
-            return GetExceptionSummary(ex, false);
         }
 
         public static void ShowApplicationException(Exception exception)
         {
-            ShowMessageBox("An error occurred:\r\n" + Utilities.GetExceptionSummary(exception, true), 
+            bool showCallStack = false;
+
+            if (AppContext.DefaultInstanceInitialized)
+            {
+                try
+                {
+                    showCallStack = AppContext.Default.Settings.ShowCallStackWithError;
+                }
+                catch (Exception ex) {
+                    Debug.WriteLine("ShowApplicationException() was unable to read the settings: "
+                        + ex.Message);
+                }
+            }
+
+            ShowMessageBox("An error occurred:\r\n" + Utilities.GetExceptionSummary(exception, showCallStack), 
                 "Yamster", ButtonsType.Ok, MessageType.Error);
         }
 

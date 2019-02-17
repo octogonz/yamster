@@ -50,6 +50,7 @@ namespace Yamster.Core
         string databaseFilename;
         int chatPaneWidth;
         bool showUnreadThreadCount;
+        bool showCallStackWithError;
 
         public YamsterApiSettings(AppContext appContext)
         {
@@ -149,6 +150,16 @@ namespace Yamster.Core
             set { this.showUnreadThreadCount = value; }
         }
 
+        /// <summary>
+        /// Whether to show the call stack when reporting an error to the end user.
+        /// Enable this when debugging an issue.
+        /// </summary>
+        public bool ShowCallStackWithError
+        {
+            get { return this.showCallStackWithError; }
+            set { this.showCallStackWithError = value; }
+        }
+
         #endregion
 
         string GetSettingsFilePath()
@@ -197,6 +208,11 @@ namespace Yamster.Core
                         var yamsterApplicationElement = XmlUtilities.GetChildElement(rootElement, "YamsterApplication");
                         this.ChatPaneWidth = int.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ChatPaneWidth"));
                         this.ShowUnreadThreadCount = bool.Parse(XmlUtilities.GetStringAttribute(yamsterApplicationElement, "ShowUnreadThreadCount"));
+
+                        if (version >= new Version(1, 4))
+                        {
+                            this.ShowCallStackWithError = XmlUtilities.GetBooleanAttribute(yamsterApplicationElement, "ShowCallStackWithError");
+                        }
                     }
 
                     if (version >= new Version(1, 1))
@@ -286,13 +302,14 @@ namespace Yamster.Core
                     rootElement
                 );
 
-                rootElement.Add(new XAttribute("Version", "1.3"));
+                rootElement.Add(new XAttribute("Version", "1.4"));
 
                 var yamsterApplicationElement = new XElement("YamsterApplication");
                 rootElement.Add(yamsterApplicationElement);
                 yamsterApplicationElement.Add(
                     new XAttribute("ChatPaneWidth", this.ChatPaneWidth),
-                    new XAttribute("ShowUnreadThreadCount", this.ShowUnreadThreadCount)
+                    new XAttribute("ShowUnreadThreadCount", this.ShowUnreadThreadCount),
+                    new XAttribute("ShowCallStackWithError", this.ShowCallStackWithError)
                 );
 
                 rootElement.Add(new XElement("YammerServiceUrl", this.YammerServiceUrl));

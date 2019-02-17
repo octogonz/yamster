@@ -180,7 +180,9 @@ namespace Yamster.Core
                         || previousAsyncTask.IsFaulted;
 
                     if (previousAsyncTask.IsFaulted) {
-                        throw previousAsyncTask.Exception.InnerExceptions.First();
+                        var innerException = previousAsyncTask.Exception.InnerExceptions.First();
+                        throw new Exception("A problem occurred while syncing messages.",
+                            innerException);
                     }
                     if (!finished)
                         return;
