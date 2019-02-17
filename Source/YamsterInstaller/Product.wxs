@@ -34,8 +34,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
         <Icon Id="ProductIcon" SourceFile="Yamster.ico"/>
 
         <Property Id="ARPPRODUCTICON" Value="ProductIcon"/>
-        <Property Id="ARPHELPLINK" Value="https://yamster.codeplex.com"/>
-        <Property Id="ARPURLINFOABOUT" Value="https://yamster.codeplex.com"/>
+        <Property Id="ARPHELPLINK" Value="https://github.com/octogonz/yamster/issues"/>
+        <Property Id="ARPURLINFOABOUT" Value="https://github.com/octogonz/yamster"/>
         <Property Id="ARPNOREPAIR" Value="1"/>
         <!-- <Property Id="ARPNOMODIFY" Value="1"/> -->
 
@@ -92,7 +92,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                             Target="[INSTALLDIR]Yamster.exe" WorkingDirectory="INSTALLDIR"/>
 
                         <util:InternetShortcut Id="WebSite" Name="Yamster! Web Site"
-                            Target="https://yamster.codeplex.com"/>
+                            Target="https://github.com/octogonz/yamster"/>
 
                         <RemoveFolder Id="ProgramMenuSubfolder" On="uninstall"/>
                     </Component>
