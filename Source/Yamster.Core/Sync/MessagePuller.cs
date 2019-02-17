@@ -238,7 +238,7 @@ namespace Yamster.Core
                         freshenedThread.ThreadId = freshenThreadRequest.Thread.ThreadId;
 
                         // NOTE: The thread is presumed to be contiguous at this point.
-                        int latestMessageInDb = yamsterArchiveDb.Mapper.QueryScalar<int>(
+                        long latestMessageInDb = yamsterArchiveDb.Mapper.QueryScalar<long>(
                             "SELECT MAX(Id) FROM " + this.yamsterArchiveDb.ArchiveMessages.TableName
                             + " WHERE ThreadId = " + freshenThreadRequest.Thread.ThreadId.ToString());
                         freshenedThread.StopMessageId = latestMessageInDb;
@@ -654,7 +654,7 @@ namespace Yamster.Core
 
                     // NOTE: The thread is presumed to be contiguous at this point.
                     // This is guaranteed to return at least threadStarter.Id written above
-                    int latestMessageInDb = yamsterArchiveDb.Mapper.QueryScalar<int>(
+                    long latestMessageInDb = yamsterArchiveDb.Mapper.QueryScalar<long>(
                         "SELECT MAX(Id) FROM [" + this.yamsterArchiveDb.ArchiveMessages.TableName 
                         + "] WHERE ThreadId = " + threadStarter.ThreadId.ToString());
 
@@ -809,7 +809,7 @@ if ((threadStarter.ThreadId & 31) != 0)
         void WriteMessageToDb(JsonMessage message, DateTime lastFetchedUtc)
         {
 #if DEBUG
-            if (yamsterArchiveDb.Mapper.QueryScalar<int>("SELECT COUNT(*) FROM "
+            if (yamsterArchiveDb.Mapper.QueryScalar<long>("SELECT COUNT(*) FROM "
                 + this.yamsterArchiveDb.ArchiveMessages.TableName + " WHERE Id = " + message.Id) > 0)
             {
                 Debug.WriteLine("MessagePuller: Processing record " + message.Id + " UPDATE");

@@ -284,7 +284,7 @@ END;
                     );
 
                     // This could have been lost if the ArchiveDb was regenerated
-                    if (this.Mapper.QueryScalar<int>(
+                    if (this.Mapper.QueryScalar<long>(
                         "SELECT COUNT(*) FROM sqlite_master WHERE name ='ArchiveSyncState' and type='table'") > 0)
                     {
                         var syncStates = this.Mapper.Query<V1011_DbArchiveSyncState>(
