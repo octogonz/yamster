@@ -305,7 +305,7 @@ namespace Yamster.Core
             {
                 string versionString = YamsterTerseVersion;
 #if YAMSTER_MAC
-                versionString += " for Mac";
+                versionString += " for Linux";
 #else
                 versionString += " for Win32";
 #endif
